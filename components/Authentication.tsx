@@ -5,7 +5,7 @@ import AppScreen from "./AppScreen";
 import { emailSchema, passwordSchema } from "../schemas/validationSchemas";
 import { useAuthStore } from "../stores/useAuthStore";
 import { z } from "zod";
-import { useShallow } from "zustand/react/shallow";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Auth() {
   const [email, setEmail] = useState("");
@@ -14,13 +14,9 @@ export default function Auth() {
   const [passwordError, setPasswordError] = useState("");
   const [passwordVisible, setPasswordVisible] = useState(false);
 
-  const { isLoading, signInWithEmail, signUpWithEmail } = useAuthStore(
-    useShallow((state) => ({
-      isLoading: state.isLoading,
-      signInWithEmail: state.signInWithEmail,
-      signUpWithEmail: state.signUpWithEmail,
-    })),
-  );
+  const isLoading = useAuthStore((state) => state.isLoading);
+  const signInWithEmail = useAuthStore((state) => state.signInWithEmail);
+  const signUpWithEmail = useAuthStore((state) => state.signUpWithEmail);
 
   const togglePasswordVisibility = useCallback(() => {
     setPasswordVisible((prev) => !prev);
@@ -63,9 +59,6 @@ export default function Auth() {
 
   const handleSignIn = useCallback(async () => {
     Keyboard.dismiss();
-    if (!validateForm()) {
-      return;
-    }
     await signInWithEmail(email, password);
   }, [email, password, validateForm, signInWithEmail]);
 
@@ -99,7 +92,7 @@ export default function Auth() {
         left={<TextInput.Icon icon="lock" />}
         right={
           <TextInput.Icon
-            icon={passwordVisible ? "eye-off" : "eye"}
+            icon={passwordVisible ? "eye" : "eye-off"}
             onPress={togglePasswordVisibility}
           />
         }

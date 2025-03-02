@@ -11,7 +11,6 @@ import Auth from "../components/Authentication";
 import { useAuthStore } from "../stores/useAuthStore";
 import { AppState } from "react-native";
 import { supabase } from "../lib/supabase";
-import { useShallow } from "zustand/react/shallow";
 
 const queryClient = new QueryClient({});
 
@@ -22,12 +21,8 @@ export default function RootLayout() {
   const paperTheme =
     colorScheme === "dark" ? junoteDarkTheme : junoteLightTheme;
 
-  const { session, setSession } = useAuthStore(
-    useShallow((state) => ({
-      session: state.session,
-      setSession: state.setSession,
-    })),
-  );
+  const session = useAuthStore((state) => state.session);
+  const setSession = useAuthStore((state) => state.setSession);
 
   useEffect(() => {
     // Listen for session changes

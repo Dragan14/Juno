@@ -5,51 +5,27 @@ import { useAuthStore } from "../stores/useAuthStore";
 import { useProfileStore } from "../stores/useProfileStore";
 import { usernameSchema } from "../schemas/validationSchemas";
 import { z } from "zod";
-import { useShallow } from "zustand/react/shallow";
 
 export default function Account() {
-  const {
-    user,
-    session,
-    isLoading: isAuthLoading,
-    signOut,
-    setUser,
-  } = useAuthStore(
-    useShallow((state) => ({
-      user: state.user,
-      session: state.session,
-      isLoading: state.isLoading,
-      signOut: state.signOut,
-      setUser: state.setUser,
-    })),
-  );
+  const user = useAuthStore((state) => state.user);
+  const isAuthLoading = useAuthStore((state) => state.isLoading);
+  const signOut = useAuthStore((state) => state.signOut);
+  const setUser = useAuthStore((state) => state.setUser);
 
-  const {
-    profile,
-    isLoading: isProfileLoading,
-    setProfile,
-    updateProfile,
-    clearProfile,
-  } = useProfileStore(
-    useShallow((state) => ({
-      profile: state.profile,
-      isLoading: state.isLoading,
-      setProfile: state.setProfile,
-      updateProfile: state.updateProfile,
-      clearProfile: state.clearProfile,
-    })),
-  );
+  const profile = useProfileStore((state) => state.profile);
+  const isProfileLoading = useProfileStore((state) => state.isLoading);
+  const setProfile = useProfileStore((state) => state.setProfile);
+  const updateProfile = useProfileStore((state) => state.updateProfile);
+  const clearProfile = useProfileStore((state) => state.clearProfile);
 
   // Form state
   const [username, setUsername] = useState("");
   const [usernameError, setUsernameError] = useState("");
 
   useEffect(() => {
-    if (session) {
-      setProfile();
-      setUser();
-    }
-  }, [session, setProfile, setUser]);
+    setProfile();
+    setUser();
+  }, [setProfile, setUser]);
 
   useEffect(() => {
     if (profile?.username) {

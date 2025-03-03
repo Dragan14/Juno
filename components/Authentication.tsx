@@ -5,7 +5,6 @@ import AppScreen from "./AppScreen";
 import { emailSchema, passwordSchema } from "../schemas/validationSchemas";
 import { useAuthStore } from "../stores/useAuthStore";
 import { z } from "zod";
-import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Auth() {
   const [email, setEmail] = useState("");
@@ -59,6 +58,9 @@ export default function Auth() {
 
   const handleSignIn = useCallback(async () => {
     Keyboard.dismiss();
+    if (!validateForm()) {
+      return;
+    }
     await signInWithEmail(email, password);
   }, [email, password, validateForm, signInWithEmail]);
 

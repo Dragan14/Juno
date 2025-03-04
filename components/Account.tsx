@@ -26,7 +26,7 @@ export default function Account() {
 
   // Form state
   const [username, setUsername] = useState("");
-  const [usernameError, setUsernameError] = useState("");
+  const [errors, setErrors] = useState({ username: "" });
   const [isEditing, setIsEditing] = useState(false);
   const [snackbarVisible, setSnackbarVisible] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
@@ -42,11 +42,11 @@ export default function Account() {
   const validateUsername = () => {
     try {
       usernameSchema.parse(username);
-      setUsernameError("");
+      setErrors((prev) => ({ ...prev, username: "" }));
       return true;
     } catch (error) {
       if (error instanceof z.ZodError) {
-        setUsernameError(error.errors[0].message);
+        setErrors((prev) => ({ ...prev, username: error.errors[0].message }));
       }
       return false;
     }
@@ -74,7 +74,7 @@ export default function Account() {
       setUsername(profile.data.username || "");
     }
     setIsEditing(false);
-    setUsernameError("");
+    setErrors((prev) => ({ ...prev, username: "" }));
   };
 
   // Handle sign out
@@ -125,13 +125,13 @@ export default function Account() {
         value={username}
         onChangeText={setUsername}
         disabled={!isEditing || signOut.isPending}
-        error={!!usernameError}
+        error={!!errors.username}
         mode="outlined"
         autoCapitalize="none"
       />
-      {usernameError && (
-        <HelperText type="error" visible={!!usernameError}>
-          {usernameError}
+      {errors.username && (
+        <HelperText type="error" visible={!!errors.username}>
+          {errors.username}
         </HelperText>
       )}
       {isEditing ? (

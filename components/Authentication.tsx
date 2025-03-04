@@ -13,8 +13,7 @@ export default function Authentication() {
   // Form state
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [emailError, setEmailError] = useState("");
-  const [passwordError, setPasswordError] = useState("");
+  const [errors, setErrors] = useState({ email: "", password: "" });
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [snackbarVisible, setSnackbarVisible] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
@@ -28,11 +27,11 @@ export default function Authentication() {
   const validateEmail = useCallback(() => {
     try {
       emailSchema.parse(email);
-      setEmailError("");
+      setErrors((prev) => ({ ...prev, email: "" }));
       return true;
     } catch (error) {
       if (error instanceof z.ZodError) {
-        setEmailError(error.errors[0].message);
+        setErrors((prev) => ({ ...prev, email: error.errors[0].message }));
       }
       return false;
     }
@@ -42,11 +41,11 @@ export default function Authentication() {
   const validatePassword = useCallback(() => {
     try {
       passwordSchema.parse(password);
-      setPasswordError("");
+      setErrors((prev) => ({ ...prev, password: "" }));
       return true;
     } catch (error) {
       if (error instanceof z.ZodError) {
-        setPasswordError(error.errors[0].message);
+        setErrors((prev) => ({ ...prev, password: error.errors[0].message }));
       }
       return false;
     }
@@ -101,10 +100,12 @@ export default function Authentication() {
         autoCapitalize="none"
         keyboardType="email-address"
         mode="outlined"
-        error={!!emailError}
+        error={!!errors.email}
         autoComplete="email"
       />
-      {emailError ? <HelperText type="error">{emailError}</HelperText> : null}
+      {errors.email ? (
+        <HelperText type="error">{errors.email}</HelperText>
+      ) : null}
       <TextInput
         label="Password"
         left={<TextInput.Icon icon="lock" />}
@@ -121,11 +122,11 @@ export default function Authentication() {
         placeholder="Password"
         autoCapitalize="none"
         mode="outlined"
-        error={!!passwordError}
+        error={!!errors.password}
         autoComplete="password"
       />
-      {passwordError ? (
-        <HelperText type="error">{passwordError}</HelperText>
+      {errors.password ? (
+        <HelperText type="error">{errors.password}</HelperText>
       ) : null}
       <Button
         mode="contained"

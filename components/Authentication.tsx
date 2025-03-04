@@ -3,7 +3,7 @@ import { Button, TextInput, HelperText } from "react-native-paper";
 import { Keyboard } from "react-native";
 import AppScreen from "./AppScreen";
 import { emailSchema, passwordSchema } from "../schemas/validationSchemas";
-import { useAuthStore } from "../stores/useAuthStore";
+import { useSignIn, useSignUp } from "../hooks/useAuth";
 import { z } from "zod";
 
 export default function Auth() {
@@ -13,9 +13,8 @@ export default function Auth() {
   const [passwordError, setPasswordError] = useState("");
   const [passwordVisible, setPasswordVisible] = useState(false);
 
-  const isLoading = useAuthStore((state) => state.isLoading);
-  const signInWithEmail = useAuthStore((state) => state.signInWithEmail);
-  const signUpWithEmail = useAuthStore((state) => state.signUpWithEmail);
+  const { mutate: signIn, isPending: isSigningIn } = useSignIn();
+  const { mutate: signUp, isPending: isSigningUp } = useSignUp();
 
   const togglePasswordVisibility = useCallback(() => {
     setPasswordVisible((prev) => !prev);
@@ -61,16 +60,18 @@ export default function Auth() {
     if (!validateForm()) {
       return;
     }
-    await signInWithEmail(email, password);
-  }, [email, password, validateForm, signInWithEmail]);
+
+    signIn({ email, password });
+  }, [email, password, validateForm, signIn]);
 
   const handleSignUp = useCallback(async () => {
     Keyboard.dismiss();
     if (!validateForm()) {
       return;
     }
-    await signUpWithEmail(email, password);
-  }, [email, password, validateForm, signUpWithEmail]);
+
+    signUp({ email, password });
+  }, [email, password, validateForm, signUp]);
 
   return (
     <AppScreen>
@@ -114,18 +115,18 @@ export default function Auth() {
 
       <Button
         mode="contained"
-        disabled={isLoading}
+        disabled={isSigningIn || isSigningUp}
         onPress={handleSignIn}
-        loading={isLoading}
+        loading={isSigningIn}
         style={{ marginTop: 16 }}
       >
         Sign in
       </Button>
       <Button
         mode="contained"
-        disabled={isLoading}
+        disabled={isSigningIn || isSigningUp}
         onPress={handleSignUp}
-        loading={isLoading}
+        loading={isSigningUp}
         style={{ marginTop: 8 }}
       >
         Sign up

@@ -5,33 +5,34 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useReactQueryDevTools } from "@dev-plugins/react-query";
 import { useColorScheme } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import { Provider as PaperProvider } from "react-native-paper";
+import {
+  Provider as PaperProvider,
+  ActivityIndicator,
+} from "react-native-paper";
 import { junoteLightTheme, junoteDarkTheme } from "../themes/junote-theme";
 import Auth from "../components/Authentication";
-import { useAuthStore } from "../stores/useAuthStore";
+import { useSession, useAuthStateChange } from "../hooks/useAuth";
 import { AppState } from "react-native";
 import { supabase } from "../lib/supabase";
+import AppScreen from "../components/AppScreen";
 
 const queryClient = new QueryClient({});
 
-export default function RootLayout() {
+// Create a separate component for content that uses React Query hooks
+function AppContent() {
   useReactQueryDevTools(queryClient);
 
   const colorScheme = useColorScheme();
   const paperTheme =
     colorScheme === "dark" ? junoteDarkTheme : junoteLightTheme;
 
-  const session = useAuthStore((state) => state.session);
-  const setSession = useAuthStore((state) => state.setSession);
+  // Get the current session
+  const { data: session, isLoading } = useSession();
+
+  // Handle auth state changes
+  useAuthStateChange();
 
   useEffect(() => {
-    // Listen for session changes
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange(() => {
-      setSession();
-    });
-
     // Handle app state changes for auto-refresh
     const appStateSubscription = AppState.addEventListener(
       "change",
@@ -43,34 +44,43 @@ export default function RootLayout() {
         }
       },
     );
-
     // Return a cleanup function
     return () => {
-      subscription.unsubscribe();
       appStateSubscription.remove();
     };
-  }, [setSession]);
+  }, []);
 
+  return (
+    <PaperProvider theme={paperTheme}>
+      <StatusBar
+        style={colorScheme === "dark" ? "light" : "dark"}
+        backgroundColor={paperTheme.colors.background}
+      />
+      {isLoading ? (
+        <AppScreen>
+          <ActivityIndicator
+            animating={true}
+            size="large"
+            color={paperTheme.colors.primary}
+          />
+        </AppScreen>
+      ) : session && session.user ? (
+        <Stack>
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen name="+not-found" options={{ headerShown: false }} />
+        </Stack>
+      ) : (
+        <Auth />
+      )}
+    </PaperProvider>
+  );
+}
+
+export default function RootLayout() {
   return (
     <SafeAreaProvider>
       <QueryClientProvider client={queryClient}>
-        <PaperProvider theme={paperTheme}>
-          <StatusBar
-            style={colorScheme === "dark" ? "light" : "dark"}
-            backgroundColor={paperTheme.colors.background}
-          />
-          {session && session.user ? (
-            <Stack>
-              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-              <Stack.Screen
-                name="+not-found"
-                options={{ headerShown: false }}
-              />
-            </Stack>
-          ) : (
-            <Auth />
-          )}
-        </PaperProvider>
+        <AppContent />
       </QueryClientProvider>
     </SafeAreaProvider>
   );

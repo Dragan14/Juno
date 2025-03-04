@@ -1,10 +1,10 @@
 import { Button, Text } from "react-native-paper";
 import { Link } from "expo-router";
-import AppScreen from "../components/AppScreen";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function NotFoundScreen() {
   return (
-    <AppScreen
+    <SafeAreaView
       style={{
         justifyContent: "center",
         alignItems: "center",
@@ -15,6 +15,6 @@ export default function NotFoundScreen() {
       <Link href="/" asChild>
         <Button mode="contained">Go back to Home screen!</Button>
       </Link>
-    </AppScreen>
+    </SafeAreaView>
   );
 }

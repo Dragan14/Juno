@@ -4,7 +4,7 @@ import { StatusBar } from "expo-status-bar";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useReactQueryDevTools } from "@dev-plugins/react-query";
 import { useColorScheme } from "react-native";
-import { SafeAreaProvider } from "react-native-safe-area-context";
+import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
 import {
   Provider as PaperProvider,
   ActivityIndicator,
@@ -14,7 +14,6 @@ import Authentication from "../components/Authentication";
 import { useSession, useAuthStateChange } from "../hooks/useAuth";
 import { AppState } from "react-native";
 import { supabase } from "../lib/supabase";
-import AppScreen from "../components/AppScreen";
 
 const queryClient = new QueryClient({});
 
@@ -57,22 +56,26 @@ function AppContent() {
         backgroundColor={paperTheme.colors.background}
       />
       {isLoading ? (
-        <AppScreen>
+        <SafeAreaView
+          style={{ flex: 1, backgroundColor: paperTheme.colors.background }}
+        >
           <ActivityIndicator
             animating={true}
             size="large"
             color={paperTheme.colors.primary}
           />
-        </AppScreen>
+        </SafeAreaView>
       ) : session && session.user ? (
         <Stack>
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
           <Stack.Screen name="+not-found" options={{ headerShown: false }} />
         </Stack>
       ) : (
-        <AppScreen>
+        <SafeAreaView
+          style={{ flex: 1, backgroundColor: paperTheme.colors.background }}
+        >
           <Authentication />
-        </AppScreen>
+        </SafeAreaView>
       )}
     </PaperProvider>
   );

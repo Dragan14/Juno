@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { View } from "react-native";
+import { View, Keyboard } from "react-native";
 import { usernameSchema } from "../schemas/validationSchemas";
 import { useUser, useSignOut } from "../hooks/useAuth";
 import {
@@ -17,6 +17,7 @@ import {
 import { z } from "zod";
 
 export default function Account() {
+  // User and profile state
   const user = useUser();
   const signOut = useSignOut();
   const profile = useProfile();
@@ -46,13 +47,14 @@ export default function Account() {
     } catch (error) {
       if (error instanceof z.ZodError) {
         setUsernameError(error.errors[0].message);
-        return false;
       }
+      return false;
     }
   };
 
   // Handle saving the updated username
   const handleSave = async () => {
+    Keyboard.dismiss();
     if (validateUsername()) {
       try {
         await updateProfile.mutateAsync({ username });
@@ -100,7 +102,13 @@ export default function Account() {
     return (
       <View>
         <Text>Error loading profile. Please try again.</Text>
-        <Button mode="contained" onPress={() => profile.refetch()}>
+        <Button
+          mode="contained"
+          onPress={() => {
+            if (profile.isError) profile.refetch();
+            if (user.isError) user.refetch();
+          }}
+        >
           Retry
         </Button>
       </View>
@@ -110,68 +118,57 @@ export default function Account() {
   return (
     <View>
       <Text>Account</Text>
-
-      {/* Email display */}
-      <View>
-        <Text>Email</Text>
-        <Text>{user.data?.email || "No email available"}</Text>
-      </View>
-
-      {/* Username edit field */}
-      <View>
-        <Text>Username</Text>
-        <TextInput
-          value={username}
-          onChangeText={setUsername}
-          disabled={!isEditing}
-          error={!!usernameError}
-          mode="outlined"
-        />
-        {usernameError && (
-          <HelperText type="error" visible={!!usernameError}>
-            {usernameError}
-          </HelperText>
-        )}
-      </View>
-
-      {/* Edit/Save buttons */}
-      <View>
-        {isEditing ? (
-          <>
-            <Button
-              mode="contained"
-              onPress={handleSave}
-              loading={updateProfile.isPending}
-              disabled={updateProfile.isPending}
-            >
-              Save
-            </Button>
-            <Button
-              mode="outlined"
-              onPress={handleCancel}
-              disabled={updateProfile.isPending}
-            >
-              Cancel
-            </Button>
-          </>
-        ) : (
-          <Button mode="contained" onPress={() => setIsEditing(true)}>
-            Edit Username
+      <Text>Email</Text>
+      <Text>{user.data?.email || "No email available"}</Text>
+      <Text>Username</Text>
+      <TextInput
+        value={username}
+        onChangeText={setUsername}
+        disabled={!isEditing || signOut.isPending}
+        error={!!usernameError}
+        mode="outlined"
+        autoCapitalize="none"
+      />
+      {usernameError && (
+        <HelperText type="error" visible={!!usernameError}>
+          {usernameError}
+        </HelperText>
+      )}
+      {isEditing ? (
+        <>
+          <Button
+            mode="contained"
+            onPress={handleSave}
+            loading={updateProfile.isPending}
+            disabled={signOut.isPending || updateProfile.isPending}
+          >
+            Save
           </Button>
-        )}
-      </View>
-
-      {/* Sign out button */}
+          <Button
+            mode="outlined"
+            onPress={handleCancel}
+            disabled={signOut.isPending || updateProfile.isPending}
+          >
+            Cancel
+          </Button>
+        </>
+      ) : (
+        <Button
+          mode="contained"
+          onPress={() => setIsEditing(true)}
+          disabled={signOut.isPending || updateProfile.isPending}
+        >
+          Edit Username
+        </Button>
+      )}
       <Button
         mode="outlined"
         onPress={handleSignOut}
         loading={signOut.isPending}
-        disabled={signOut.isPending}
+        disabled={signOut.isPending || updateProfile.isPending}
       >
         Sign Out
       </Button>
-
-      {/* Notification snackbar */}
       <Snackbar
         visible={snackbarVisible}
         onDismiss={() => setSnackbarVisible(false)}

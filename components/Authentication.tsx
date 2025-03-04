@@ -1,24 +1,28 @@
 import { useState, useCallback } from "react";
-import { Button, TextInput, HelperText } from "react-native-paper";
-import { Keyboard } from "react-native";
-import AppScreen from "./AppScreen";
+import { View, Keyboard } from "react-native";
 import { emailSchema, passwordSchema } from "../schemas/validationSchemas";
 import { useSignIn, useSignUp } from "../hooks/useAuth";
+import { Button, TextInput, HelperText, Snackbar } from "react-native-paper";
 import { z } from "zod";
 
-export default function Auth() {
+export default function Authentication() {
+  // Auth hooks
+  const signIn = useSignIn();
+  const signUp = useSignUp();
+
+  // Form state
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [passwordVisible, setPasswordVisible] = useState(false);
+  const [snackbarVisible, setSnackbarVisible] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
 
-  const { mutate: signIn, isPending: isSigningIn } = useSignIn();
-  const { mutate: signUp, isPending: isSigningUp } = useSignUp();
-
-  const togglePasswordVisibility = useCallback(() => {
+  // Toggle password visibility
+  const togglePasswordVisibility = () => {
     setPasswordVisible((prev) => !prev);
-  }, []);
+  };
 
   // Validate email input
   const validateEmail = useCallback(() => {
@@ -55,26 +59,38 @@ export default function Auth() {
     return isEmailValid && isPasswordValid;
   }, [validateEmail, validatePassword]);
 
-  const handleSignIn = useCallback(async () => {
+  // Handle sign in
+  const handleSignIn = async () => {
     Keyboard.dismiss();
-    if (!validateForm()) {
-      return;
+    if (validateForm()) {
+      try {
+        await signIn.mutateAsync({ email, password });
+        setSnackbarMessage("Signed in successfully");
+        setSnackbarVisible(true);
+      } catch {
+        setSnackbarMessage("Failed to sign in");
+        setSnackbarVisible(true);
+      }
     }
+  };
 
-    signIn({ email, password });
-  }, [email, password, validateForm, signIn]);
-
-  const handleSignUp = useCallback(async () => {
+  // Handle sign up
+  const handleSignUp = async () => {
     Keyboard.dismiss();
-    if (!validateForm()) {
-      return;
+    if (validateForm()) {
+      try {
+        await signUp.mutateAsync({ email, password });
+        setSnackbarMessage("Signed up successfully");
+        setSnackbarVisible(true);
+      } catch {
+        setSnackbarMessage("Failed to sign up");
+        setSnackbarVisible(true);
+      }
     }
-
-    signUp({ email, password });
-  }, [email, password, validateForm, signUp]);
+  };
 
   return (
-    <AppScreen>
+    <View>
       <TextInput
         label="Email"
         left={<TextInput.Icon icon="email" />}
@@ -89,7 +105,6 @@ export default function Auth() {
         autoComplete="email"
       />
       {emailError ? <HelperText type="error">{emailError}</HelperText> : null}
-
       <TextInput
         label="Password"
         left={<TextInput.Icon icon="lock" />}
@@ -112,25 +127,33 @@ export default function Auth() {
       {passwordError ? (
         <HelperText type="error">{passwordError}</HelperText>
       ) : null}
-
       <Button
         mode="contained"
-        disabled={isSigningIn || isSigningUp}
+        disabled={signIn.isPending || signUp.isPending}
         onPress={handleSignIn}
-        loading={isSigningIn}
-        style={{ marginTop: 16 }}
+        loading={signIn.isPending}
       >
         Sign in
       </Button>
       <Button
         mode="contained"
-        disabled={isSigningIn || isSigningUp}
+        disabled={signIn.isPending || signUp.isPending}
         onPress={handleSignUp}
-        loading={isSigningUp}
-        style={{ marginTop: 8 }}
+        loading={signUp.isPending}
       >
         Sign up
       </Button>
-    </AppScreen>
+      <Snackbar
+        visible={snackbarVisible}
+        onDismiss={() => setSnackbarVisible(false)}
+        duration={3000}
+        action={{
+          label: "Close",
+          onPress: () => setSnackbarVisible(false),
+        }}
+      >
+        {snackbarMessage}
+      </Snackbar>
+    </View>
   );
 }

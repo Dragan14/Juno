@@ -10,7 +10,7 @@ import {
   ActivityIndicator,
 } from "react-native-paper";
 import { junoteLightTheme, junoteDarkTheme } from "../themes/junote-theme";
-import Auth from "../components/Authentication";
+import Authentication from "../components/Authentication";
 import { useSession, useAuthStateChange } from "../hooks/useAuth";
 import { AppState } from "react-native";
 import { supabase } from "../lib/supabase";
@@ -70,7 +70,9 @@ function AppContent() {
           <Stack.Screen name="+not-found" options={{ headerShown: false }} />
         </Stack>
       ) : (
-        <Auth />
+        <AppScreen>
+          <Authentication />
+        </AppScreen>
       )}
     </PaperProvider>
   );

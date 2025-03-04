@@ -1,5 +1,6 @@
 import AppScreen from "../../components/AppScreen";
 import Account from "../../components/Account";
+import { ScrollView } from "react-native";
 
 export default function Index() {
   return (
@@ -10,7 +11,9 @@ export default function Index() {
         gap: 20,
       }}
     >
-      <Account />
+      <ScrollView>
+        <Account />
+      </ScrollView>
     </AppScreen>
   );
 }

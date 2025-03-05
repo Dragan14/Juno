@@ -1,6 +1,5 @@
 import { Tabs } from "expo-router";
-import Ionicons from "@expo/vector-icons/Ionicons";
-import { useTheme } from "react-native-paper";
+import { useTheme, Icon } from "react-native-paper";
 
 export default function RootLayout() {
   const theme = useTheme();
@@ -24,10 +23,10 @@ export default function RootLayout() {
         options={{
           title: "Home",
           tabBarIcon: ({ color, focused }) => (
-            <Ionicons
-              name={focused ? "home-sharp" : "home-outline"}
+            <Icon
+              source={focused ? "home" : "home-outline"}
               color={color}
-              size={24}
+              size={30}
             />
           ),
         }}

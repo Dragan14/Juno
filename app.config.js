@@ -1,25 +1,25 @@
 const VARIANTS = {
   development: {
-    name: "Junote Dev",
+    name: "Juno Dev",
     bundleId: {
-      ios: "com.vodno.junote.dev",
-      android: "com.vodno.junote.dev",
+      ios: "com.vodno.juno.dev",
+      android: "com.vodno.juno.dev",
     },
     environment: "development",
   },
   staging: {
-    name: "Junote Staging",
+    name: "Juno Staging",
     bundleId: {
-      ios: "com.vodno.junote.staging",
-      android: "com.vodno.junote.staging",
+      ios: "com.vodno.juno.staging",
+      android: "com.vodno.juno.staging",
     },
     environment: "staging",
   },
   production: {
-    name: "Junote",
+    name: "Juno",
     bundleId: {
-      ios: "com.vodno.junote",
-      android: "com.vodno.junote",
+      ios: "com.vodno.juno",
+      android: "com.vodno.juno",
     },
     environment: "production",
   },
@@ -51,7 +51,7 @@ module.exports = {
     version: "1.0.0",
     orientation: "portrait",
     icon: "./assets/images/icon.png",
-    scheme: "junote",
+    scheme: "juno",
     userInterfaceStyle: "automatic",
     owner: "dragan14",
     newArchEnabled: true,

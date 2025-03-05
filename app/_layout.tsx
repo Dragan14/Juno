@@ -9,7 +9,7 @@ import {
   Provider as PaperProvider,
   ActivityIndicator,
 } from "react-native-paper";
-import { junoteLightTheme, junoteDarkTheme } from "../themes/junote-theme";
+import { junoLightTheme, junoDarkTheme } from "../themes/juno-theme";
 import Authentication from "../components/Authentication";
 import { useSession, useAuthStateChange } from "../hooks/useAuth";
 import { AppState } from "react-native";
@@ -22,8 +22,7 @@ function AppContent() {
   useReactQueryDevTools(queryClient);
 
   const colorScheme = useColorScheme();
-  const paperTheme =
-    colorScheme === "dark" ? junoteDarkTheme : junoteLightTheme;
+  const paperTheme = colorScheme === "dark" ? junoDarkTheme : junoLightTheme;
 
   // Get the current session
   const { data: session, isLoading } = useSession();

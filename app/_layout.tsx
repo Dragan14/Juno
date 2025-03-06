@@ -8,8 +8,10 @@ import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
 import {
   Provider as PaperProvider,
   ActivityIndicator,
+  MD3DarkTheme,
+  MD3LightTheme,
 } from "react-native-paper";
-import { junoLightTheme, junoDarkTheme } from "../themes/juno-theme";
+// import { junoLightTheme, junoDarkTheme } from "../themes/juno-theme";
 import { useSession, useAuthStateChange } from "../hooks/useAuth";
 import { AppState } from "react-native";
 import { supabase } from "../lib/supabase";
@@ -21,7 +23,8 @@ function AppContent() {
   useReactQueryDevTools(queryClient);
 
   const colorScheme = useColorScheme();
-  const paperTheme = colorScheme === "dark" ? junoDarkTheme : junoLightTheme;
+  // const paperTheme = colorScheme === "dark" ? junoDarkTheme : junoLightTheme;
+  const paperTheme = colorScheme === "dark" ? MD3DarkTheme : MD3LightTheme;
 
   // Get the current session
   const { data: session, isLoading } = useSession();

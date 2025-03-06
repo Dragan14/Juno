@@ -4,8 +4,8 @@ import { supabase } from "../lib/supabase";
 // Profile interface
 export interface Profile {
   id: string;
-  username: string | null;
-  full_name: string | null;
+  name: string | null;
+  created_at: string | null;
   updated_at: string | null;
 }
 

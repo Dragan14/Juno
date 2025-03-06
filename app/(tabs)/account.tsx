@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Keyboard } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { usernameSchema } from "../../schemas/validationSchemas";
+import { nameSchema } from "../../schemas/validationSchemas";
 import { useUser, useSignOut } from "../../hooks/useAuth";
 import {
   useProfile,
@@ -31,44 +31,44 @@ export default function Account() {
   const clearProfile = useClearProfile();
 
   // Form state
-  const [username, setUsername] = useState("");
-  const [errors, setErrors] = useState({ username: "" });
+  const [name, setName] = useState("");
+  const [errors, setErrors] = useState({ name: "" });
   const [isEditing, setIsEditing] = useState(false);
   const [snackbarVisible, setSnackbarVisible] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
 
-  // Load the initial username when profile data is available
+  // Load the initial name when profile data is available
   useEffect(() => {
     if (profile.data) {
-      setUsername(profile.data.username || "");
+      setName(profile.data.name || "");
     }
   }, [profile.data]);
 
-  // Validate the username
-  const validateUsername = () => {
+  // Validate the name
+  const validateName = () => {
     try {
-      usernameSchema.parse(username);
-      setErrors((prev) => ({ ...prev, username: "" }));
+      nameSchema.parse(name);
+      setErrors((prev) => ({ ...prev, name: "" }));
       return true;
     } catch (error) {
       if (error instanceof z.ZodError) {
-        setErrors((prev) => ({ ...prev, username: error.errors[0].message }));
+        setErrors((prev) => ({ ...prev, name: error.errors[0].message }));
       }
       return false;
     }
   };
 
-  // Handle saving the updated username
+  // Handle saving the updated name
   const handleSave = async () => {
     Keyboard.dismiss();
-    if (validateUsername()) {
+    if (validateName()) {
       try {
-        await updateProfile.mutateAsync({ username });
+        await updateProfile.mutateAsync({ name });
         setIsEditing(false);
-        setSnackbarMessage("Username updated successfully");
+        setSnackbarMessage("Name updated successfully");
         setSnackbarVisible(true);
       } catch {
-        setSnackbarMessage("Failed to update username");
+        setSnackbarMessage("Failed to update name");
         setSnackbarVisible(true);
       }
     }
@@ -77,10 +77,10 @@ export default function Account() {
   // Handle canceling edits
   const handleCancel = () => {
     if (profile.data) {
-      setUsername(profile.data.username || "");
+      setName(profile.data.name || "");
     }
     setIsEditing(false);
-    setErrors((prev) => ({ ...prev, username: "" }));
+    setErrors((prev) => ({ ...prev, name: "" }));
   };
 
   // Handle sign out
@@ -146,18 +146,18 @@ export default function Account() {
       <Text>Account</Text>
       <Text>Email</Text>
       <Text>{user.data?.email || "No email available"}</Text>
-      <Text>Username</Text>
+      <Text>Name</Text>
       <TextInput
-        value={username}
-        onChangeText={setUsername}
+        value={name}
+        onChangeText={setName}
         disabled={!isEditing || signOut.isPending}
-        error={!!errors.username}
+        error={!!errors.name}
         mode="outlined"
         autoCapitalize="none"
       />
-      {errors.username && (
-        <HelperText type="error" visible={!!errors.username}>
-          {errors.username}
+      {errors.name && (
+        <HelperText type="error" visible={!!errors.name}>
+          {errors.name}
         </HelperText>
       )}
       {isEditing ? (
@@ -184,7 +184,7 @@ export default function Account() {
           onPress={() => setIsEditing(true)}
           disabled={signOut.isPending || updateProfile.isPending}
         >
-          Edit Username
+          Edit Name
         </Button>
       )}
       <Button

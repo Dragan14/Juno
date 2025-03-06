@@ -1,6 +1,10 @@
 import { useState, useCallback } from "react";
 import { View, Keyboard } from "react-native";
-import { emailSchema, passwordSchema } from "../schemas/validationSchemas";
+import {
+  emailSchema,
+  passwordSchema,
+  nameSchema,
+} from "../schemas/validationSchemas";
 import { useSignUp } from "../hooks/useAuth";
 import { Button, TextInput, HelperText } from "react-native-paper";
 import { z } from "zod";
@@ -14,15 +18,30 @@ export default function SignUpForm({ onSuccess, onError }: SignUpFormProps) {
   const signUp = useSignUp();
 
   // Form state
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [errors, setErrors] = useState({ email: "", password: "" });
+  const [errors, setErrors] = useState({ name: "", email: "", password: "" });
   const [passwordVisible, setPasswordVisible] = useState(false);
 
   // Toggle password visibility
   const togglePasswordVisibility = () => {
     setPasswordVisible((prev) => !prev);
   };
+
+  // Validate name input
+  const validateName = useCallback(() => {
+    try {
+      nameSchema.parse(name);
+      setErrors((prev) => ({ ...prev, name: "" }));
+      return true;
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        setErrors((prev) => ({ ...prev, name: error.errors[0].message }));
+      }
+      return false;
+    }
+  }, [name]);
 
   // Validate email input
   const validateEmail = useCallback(() => {
@@ -54,22 +73,24 @@ export default function SignUpForm({ onSuccess, onError }: SignUpFormProps) {
 
   // Validate all inputs
   const validateForm = useCallback(() => {
+    const isNameValid = validateName();
     const isEmailValid = validateEmail();
     const isPasswordValid = validatePassword();
-    return isEmailValid && isPasswordValid;
-  }, [validateEmail, validatePassword]);
+    return isNameValid && isEmailValid && isPasswordValid;
+  }, [validateName, validateEmail, validatePassword]);
 
   // Handle sign up
   const handleSignUp = async () => {
     Keyboard.dismiss();
     if (validateForm()) {
       try {
-        await signUp.mutateAsync({ email, password });
+        await signUp.mutateAsync({ email, password, name });
         onSuccess("Signed up successfully");
         // Reset form
+        setName("");
         setEmail("");
         setPassword("");
-        setErrors({ email: "", password: "" });
+        setErrors({ name: "", email: "", password: "" });
       } catch {
         onError("Failed to sign up");
       }
@@ -78,6 +99,19 @@ export default function SignUpForm({ onSuccess, onError }: SignUpFormProps) {
 
   return (
     <View>
+      <TextInput
+        label="Name"
+        left={<TextInput.Icon icon="account" />}
+        onChangeText={setName}
+        onBlur={validateName}
+        value={name}
+        placeholder="Name"
+        autoCapitalize="words"
+        mode="outlined"
+        error={!!errors.name}
+        autoComplete="name"
+      />
+      {errors.name ? <HelperText type="error">{errors.name}</HelperText> : null}
       <TextInput
         label="Email"
         left={<TextInput.Icon icon="email" />}

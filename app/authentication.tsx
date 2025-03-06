@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { SafeAreaView, StyleSheet, View } from "react-native";
+import { SafeAreaView } from "react-native";
 import { useTheme, SegmentedButtons, Snackbar } from "react-native-paper";
 import SignInForm from "../components/SignInForm";
 import SignUpForm from "../components/SignUpForm";

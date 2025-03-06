@@ -1,11 +1,21 @@
 import { useState, useCallback } from "react";
-import { View, Keyboard } from "react-native";
+import { Keyboard } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { emailSchema, passwordSchema } from "../schemas/validationSchemas";
 import { useSignIn, useSignUp } from "../hooks/useAuth";
-import { Button, TextInput, HelperText, Snackbar } from "react-native-paper";
+import {
+  Button,
+  TextInput,
+  HelperText,
+  Snackbar,
+  useTheme,
+} from "react-native-paper";
 import { z } from "zod";
 
 export default function Authentication() {
+  // Theme
+  const theme = useTheme();
+
   // Auth hooks
   const signIn = useSignIn();
   const signUp = useSignUp();
@@ -89,7 +99,12 @@ export default function Authentication() {
   };
 
   return (
-    <View>
+    <SafeAreaView
+      style={{
+        flex: 1,
+        backgroundColor: theme.colors.background,
+      }}
+    >
       <TextInput
         label="Email"
         left={<TextInput.Icon icon="email" />}
@@ -155,6 +170,6 @@ export default function Authentication() {
       >
         {snackbarMessage}
       </Snackbar>
-    </View>
+    </SafeAreaView>
   );
 }

@@ -10,7 +10,6 @@ import {
   ActivityIndicator,
 } from "react-native-paper";
 import { junoLightTheme, junoDarkTheme } from "../themes/juno-theme";
-import Authentication from "../components/Authentication";
 import { useSession, useAuthStateChange } from "../hooks/useAuth";
 import { AppState } from "react-native";
 import { supabase } from "../lib/supabase";
@@ -64,17 +63,20 @@ function AppContent() {
             color={paperTheme.colors.primary}
           />
         </SafeAreaView>
-      ) : session && session.user ? (
-        <Stack>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="+not-found" options={{ headerShown: false }} />
-        </Stack>
       ) : (
-        <SafeAreaView
-          style={{ flex: 1, backgroundColor: paperTheme.colors.background }}
-        >
-          <Authentication />
-        </SafeAreaView>
+        <Stack screenOptions={{ headerShown: false }}>
+          <Stack.Screen
+            name="(tabs)"
+            options={{ headerShown: false }}
+            redirect={!session || !session.user}
+          />
+          <Stack.Screen
+            name="authentication"
+            options={{ headerShown: false }}
+            redirect={!!(session && session.user)}
+          />
+          <Stack.Screen name="index" redirect={true} />
+        </Stack>
       )}
     </PaperProvider>
   );

@@ -21,12 +21,26 @@ export default function SignUpForm({ onSuccess, onError }: SignUpFormProps) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [errors, setErrors] = useState({ name: "", email: "", password: "" });
-  const [passwordVisible, setPasswordVisible] = useState(false);
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [errors, setErrors] = useState({
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
+
+  // Password visibility state
+  const [passwordVisibility, setPasswordVisibility] = useState({
+    password: false,
+    confirmPassword: false,
+  });
 
   // Toggle password visibility
-  const togglePasswordVisibility = () => {
-    setPasswordVisible((prev) => !prev);
+  const togglePasswordVisibility = (field: "password" | "confirmPassword") => {
+    setPasswordVisibility((prev) => ({
+      ...prev,
+      [field]: !prev[field],
+    }));
   };
 
   // Validate name input
@@ -71,13 +85,29 @@ export default function SignUpForm({ onSuccess, onError }: SignUpFormProps) {
     }
   }, [password]);
 
+  // Validate confirm password input
+  const validateConfirmPassword = useCallback(() => {
+    if (confirmPassword !== password) {
+      setErrors((prev) => ({
+        ...prev,
+        confirmPassword: "Passwords do not match",
+      }));
+      return false;
+    }
+    setErrors((prev) => ({ ...prev, confirmPassword: "" }));
+    return true;
+  }, [confirmPassword, password]);
+
   // Validate all inputs
   const validateForm = useCallback(() => {
     const isNameValid = validateName();
     const isEmailValid = validateEmail();
     const isPasswordValid = validatePassword();
-    return isNameValid && isEmailValid && isPasswordValid;
-  }, [validateName, validateEmail, validatePassword]);
+    const isConfirmPasswordValid = validateConfirmPassword();
+    return (
+      isNameValid && isEmailValid && isPasswordValid && isConfirmPasswordValid
+    );
+  }, [validateName, validateEmail, validatePassword, validateConfirmPassword]);
 
   // Handle sign up
   const handleSignUp = async () => {
@@ -90,7 +120,8 @@ export default function SignUpForm({ onSuccess, onError }: SignUpFormProps) {
         setName("");
         setEmail("");
         setPassword("");
-        setErrors({ name: "", email: "", password: "" });
+        setConfirmPassword("");
+        setErrors({ name: "", email: "", password: "", confirmPassword: "" });
       } catch {
         onError("Failed to sign up");
       }
@@ -133,14 +164,14 @@ export default function SignUpForm({ onSuccess, onError }: SignUpFormProps) {
         left={<TextInput.Icon icon="lock" />}
         right={
           <TextInput.Icon
-            icon={passwordVisible ? "eye" : "eye-off"}
-            onPress={togglePasswordVisibility}
+            icon={passwordVisibility.password ? "eye" : "eye-off"}
+            onPress={() => togglePasswordVisibility("password")}
           />
         }
         onChangeText={setPassword}
         onBlur={validatePassword}
         value={password}
-        secureTextEntry={!passwordVisible}
+        secureTextEntry={!passwordVisibility.password}
         placeholder="Password"
         autoCapitalize="none"
         mode="outlined"
@@ -149,6 +180,28 @@ export default function SignUpForm({ onSuccess, onError }: SignUpFormProps) {
       />
       {errors.password ? (
         <HelperText type="error">{errors.password}</HelperText>
+      ) : null}
+      <TextInput
+        label="Confirm Password"
+        left={<TextInput.Icon icon="lock-check" />}
+        right={
+          <TextInput.Icon
+            icon={passwordVisibility.confirmPassword ? "eye" : "eye-off"}
+            onPress={() => togglePasswordVisibility("confirmPassword")}
+          />
+        }
+        onChangeText={setConfirmPassword}
+        onBlur={validateConfirmPassword}
+        value={confirmPassword}
+        secureTextEntry={!passwordVisibility.confirmPassword}
+        placeholder="Confirm Password"
+        autoCapitalize="none"
+        mode="outlined"
+        error={!!errors.confirmPassword}
+        autoComplete="password"
+      />
+      {errors.confirmPassword ? (
+        <HelperText type="error">{errors.confirmPassword}</HelperText>
       ) : null}
       <Button
         mode="contained"

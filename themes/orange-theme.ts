@@ -2,7 +2,7 @@ import { MD3DarkTheme, MD3LightTheme } from "react-native-paper";
 import { MD3Theme } from "react-native-paper/lib/typescript/types";
 
 // Define custom light theme colors
-const junoLight = {
+const orangeLight = {
   colors: {
     primary: "rgb(230, 130, 20)", // Orange
     onPrimary: "rgb(255, 255, 255)",
@@ -48,7 +48,7 @@ const junoLight = {
 };
 
 // Define custom dark theme colors
-const junoDark = {
+const orangeDark = {
   colors: {
     primary: "rgb(255, 200, 120)", // Light orange
     onPrimary: "rgb(122, 65, 0)", // Dark orange
@@ -94,12 +94,12 @@ const junoDark = {
 };
 
 // Create a theme object
-export const junoLightTheme: MD3Theme = {
+export const orangeLightTheme: MD3Theme = {
   ...MD3LightTheme,
-  ...junoLight,
+  ...orangeLight,
 };
 
-export const junoDarkTheme: MD3Theme = {
+export const orangeDarkTheme: MD3Theme = {
   ...MD3DarkTheme,
-  ...junoDark,
+  ...orangeDark,
 };

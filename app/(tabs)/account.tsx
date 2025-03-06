@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Keyboard } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { nameSchema } from "../../schemas/validationSchemas";
+import { nameSchema } from "../../schemas/auth-schemas";
 import { useUser, useSignOut } from "../../hooks/useAuth";
 import {
   useProfile,

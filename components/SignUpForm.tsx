@@ -4,7 +4,7 @@ import {
   emailSchema,
   passwordSchema,
   nameSchema,
-} from "../schemas/validationSchemas";
+} from "../schemas/auth-schemas";
 import { useSignUp } from "../hooks/useAuth";
 import { Button, TextInput, HelperText } from "react-native-paper";
 import { z } from "zod";

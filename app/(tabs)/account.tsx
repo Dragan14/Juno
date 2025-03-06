@@ -96,16 +96,26 @@ export default function Account() {
   // Loading state
   if (profile.isLoading || user.isLoading) {
     return (
-      <View>
+      <SafeAreaView
+        style={{
+          flex: 1,
+          backgroundColor: theme.colors.background,
+        }}
+      >
         <Text>Loading profile...</Text>
-      </View>
+      </SafeAreaView>
     );
   }
 
   // Error state
   if (profile.isError || user.isError) {
     return (
-      <View>
+      <SafeAreaView
+        style={{
+          flex: 1,
+          backgroundColor: theme.colors.background,
+        }}
+      >
         <Text>Error loading profile. Please try again.</Text>
         <Button
           mode="contained"
@@ -116,7 +126,7 @@ export default function Account() {
         >
           Retry
         </Button>
-      </View>
+      </SafeAreaView>
     );
   }
 

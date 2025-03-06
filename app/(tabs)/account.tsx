@@ -15,6 +15,7 @@ import {
   Text,
   Snackbar,
   useTheme,
+  ActivityIndicator,
 } from "react-native-paper";
 import { z } from "zod";
 
@@ -99,10 +100,13 @@ export default function Account() {
       <SafeAreaView
         style={{
           flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
           backgroundColor: theme.colors.background,
         }}
       >
-        <Text>Loading profile...</Text>
+        <Text>Loading Profile...</Text>
+        <ActivityIndicator animating={true} size="large" />
       </SafeAreaView>
     );
   }
@@ -113,6 +117,8 @@ export default function Account() {
       <SafeAreaView
         style={{
           flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
           backgroundColor: theme.colors.background,
         }}
       >

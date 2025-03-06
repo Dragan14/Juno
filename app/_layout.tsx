@@ -55,13 +55,14 @@ function AppContent() {
       />
       {isLoading ? (
         <SafeAreaView
-          style={{ flex: 1, backgroundColor: paperTheme.colors.background }}
+          style={{
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: paperTheme.colors.background,
+          }}
         >
-          <ActivityIndicator
-            animating={true}
-            size="large"
-            color={paperTheme.colors.primary}
-          />
+          <ActivityIndicator animating={true} size="large" />
         </SafeAreaView>
       ) : (
         <Stack screenOptions={{ headerShown: false }}>
@@ -75,7 +76,6 @@ function AppContent() {
             options={{ headerShown: false }}
             redirect={!!(session && session.user)}
           />
-          <Stack.Screen name="index" redirect={true} />
         </Stack>
       )}
     </PaperProvider>

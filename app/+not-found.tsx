@@ -8,6 +8,7 @@ export default function NotFoundScreen() {
   return (
     <SafeAreaView
       style={{
+        flex: 1,
         justifyContent: "center",
         alignItems: "center",
         gap: 20,

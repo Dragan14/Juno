@@ -1,22 +1,27 @@
 import { useState, useEffect } from "react";
 import { View, Keyboard } from "react-native";
-import { usernameSchema } from "../schemas/validationSchemas";
-import { useUser, useSignOut } from "../hooks/useAuth";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { usernameSchema } from "../../schemas/validationSchemas";
+import { useUser, useSignOut } from "../../hooks/useAuth";
 import {
   useProfile,
   useUpdateProfile,
   useClearProfile,
-} from "../hooks/useProfile";
+} from "../../hooks/useProfile";
 import {
   Button,
   TextInput,
   HelperText,
   Text,
   Snackbar,
+  useTheme,
 } from "react-native-paper";
 import { z } from "zod";
 
 export default function Account() {
+  // Theme
+  const theme = useTheme();
+
   // User and profile state
   const user = useUser();
   const signOut = useSignOut();
@@ -116,7 +121,12 @@ export default function Account() {
   }
 
   return (
-    <View>
+    <SafeAreaView
+      style={{
+        flex: 1,
+        backgroundColor: theme.colors.background,
+      }}
+    >
       <Text>Account</Text>
       <Text>Email</Text>
       <Text>{user.data?.email || "No email available"}</Text>
@@ -180,6 +190,6 @@ export default function Account() {
       >
         {snackbarMessage}
       </Snackbar>
-    </View>
+    </SafeAreaView>
   );
 }

@@ -31,6 +31,19 @@ export default function RootLayout() {
           ),
         }}
       />
+      <Tabs.Screen
+        name="account"
+        options={{
+          title: "Account",
+          tabBarIcon: ({ color, focused }) => (
+            <Icon
+              source={focused ? "account" : "account-outline"}
+              color={color}
+              size={30}
+            />
+          ),
+        }}
+      />
     </Tabs>
   );
 }

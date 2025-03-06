@@ -1,6 +1,4 @@
-import Account from "../../components/Account";
-import { ScrollView } from "react-native";
-import { useTheme } from "react-native-paper";
+import { Text, useTheme } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Index() {
@@ -12,12 +10,9 @@ export default function Index() {
         backgroundColor: theme.colors.background,
         justifyContent: "center",
         alignItems: "center",
-        gap: 20,
       }}
     >
-      <ScrollView>
-        <Account />
-      </ScrollView>
+      <Text>This is the home page</Text>
     </SafeAreaView>
   );
 }

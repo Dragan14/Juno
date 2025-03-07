@@ -122,8 +122,9 @@ export default function SignUpForm({ onSuccess, onError }: SignUpFormProps) {
         setPassword("");
         setConfirmPassword("");
         setErrors({ name: "", email: "", password: "", confirmPassword: "" });
-      } catch {
-        onError("Failed to sign up");
+      } catch (error) {
+        const err = error as Error;
+        onError(err.message || "Failed to sign up");
       }
     }
   };

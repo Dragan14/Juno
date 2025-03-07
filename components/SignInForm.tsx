@@ -30,8 +30,9 @@ export default function SignInForm({ onSuccess, onError }: SignInFormProps) {
       // Reset form
       setEmail("");
       setPassword("");
-    } catch {
-      onError("Failed to sign in");
+    } catch (error) {
+      const err = error as Error;
+      onError(err.message || "Failed to sign in");
     }
   };
 

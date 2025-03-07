@@ -67,8 +67,9 @@ export default function Account() {
         setIsEditing(false);
         setSnackbarMessage("Name updated successfully");
         setSnackbarVisible(true);
-      } catch {
-        setSnackbarMessage("Failed to update name");
+      } catch (error) {
+        const err = error as Error;
+        setSnackbarMessage(err.message || "Failed to update name");
         setSnackbarVisible(true);
       }
     }
@@ -88,8 +89,9 @@ export default function Account() {
     try {
       await signOut.mutateAsync();
       clearProfile();
-    } catch {
-      setSnackbarMessage("Failed to sign out");
+    } catch (error) {
+      const err = error as Error;
+      setSnackbarMessage(err.message || "Failed to sign out");
       setSnackbarVisible(true);
     }
   };

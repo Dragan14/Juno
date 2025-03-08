@@ -6,6 +6,7 @@ const VARIANTS = {
       android: "com.vodno.juno.dev",
     },
     environment: "development",
+    scheme: "juno-dev",
   },
   staging: {
     name: "Juno Staging",
@@ -14,6 +15,7 @@ const VARIANTS = {
       android: "com.vodno.juno.staging",
     },
     environment: "staging",
+    scheme: "juno-staging",
   },
   production: {
     name: "Juno",
@@ -22,6 +24,7 @@ const VARIANTS = {
       android: "com.vodno.juno",
     },
     environment: "production",
+    scheme: "juno",
   },
 };
 
@@ -29,16 +32,6 @@ const VARIANTS = {
 const getVariant = () => {
   const variantName = process.env.APP_VARIANT || "production";
   const selectedVariant = VARIANTS[variantName] || VARIANTS.production;
-
-  // console.log(`
-  //   === BUILDING APP VARIANT ===
-  //   Variant: ${variantName}
-  //   App Name: ${selectedVariant.name}
-  //   Bundle ID (iOS): ${selectedVariant.bundleId.ios}
-  //   Bundle ID (Android): ${selectedVariant.bundleId.android}
-  //   Environment: ${selectedVariant.environment}
-  //   ========================`);
-
   return selectedVariant;
 };
 
@@ -51,7 +44,7 @@ module.exports = {
     version: "1.0.0",
     orientation: "portrait",
     icon: "./assets/images/icon.png",
-    scheme: "juno",
+    scheme: variant.scheme,
     userInterfaceStyle: "automatic",
     owner: "dragan14",
     newArchEnabled: true,

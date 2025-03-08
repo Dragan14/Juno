@@ -100,6 +100,13 @@ export const useSignUp = () => {
         throw error;
       }
 
+      // Check if email confirmation is needed
+      if (!data.session) {
+        throw new Error(
+          "Email confirmation required. Please check your inbox.",
+        );
+      }
+
       return data;
     },
     onSuccess: (data) => {

@@ -77,6 +77,8 @@ function AppContent() {
             options={{ headerShown: false }}
             redirect={!!(session && session.user)}
           />
+          <Stack.Screen name="confirm-email" options={{ headerShown: false }} />
+          <Stack.Screen name="auth-callback" options={{ headerShown: false }} />
         </Stack>
       )}
     </PaperProvider>

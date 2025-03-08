@@ -1,11 +1,25 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "../lib/supabase";
 import { useEffect } from "react";
+import { useRouter } from "expo-router";
+import { Platform } from "react-native";
+import Constants from "expo-constants";
 
 // Query keys
 const authKeys = {
   session: ["session"],
   user: ["user"],
+};
+
+// Helper to get the proper auth callback URL
+const getAuthCallbackUrl = () => {
+  const scheme = Constants.expoConfig?.extra?.scheme || "juno";
+
+  if (Platform.OS === "web") {
+    return `${window.location.origin}/auth-callback`;
+  } else {
+    return `${scheme}://auth-callback`;
+  }
 };
 
 // Hook for getting the current session
@@ -75,6 +89,7 @@ export const useSignIn = () => {
 // Hook for sign up functionality
 export const useSignUp = () => {
   const queryClient = useQueryClient();
+  const router = useRouter();
 
   return useMutation({
     mutationFn: async ({
@@ -93,18 +108,12 @@ export const useSignUp = () => {
           data: {
             name,
           },
+          emailRedirectTo: getAuthCallbackUrl(),
         },
       });
 
       if (error) {
         throw error;
-      }
-
-      // Check if email confirmation is needed
-      if (!data.session) {
-        throw new Error(
-          "Email confirmation required. Please check your inbox.",
-        );
       }
 
       return data;
@@ -113,6 +122,8 @@ export const useSignUp = () => {
       if (data.session) {
         queryClient.setQueryData(authKeys.session, data.session);
         queryClient.setQueryData(authKeys.user, data.user);
+      } else {
+        router.replace("/confirm-email");
       }
     },
   });

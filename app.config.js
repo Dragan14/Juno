@@ -56,9 +56,6 @@ module.exports = {
       config: {
         usesNonExemptEncryption: false,
       },
-      infoPlist: {
-        CFBundleDisplayName: variant.name,
-      },
     },
     android: {
       package: variant.bundleId.android,
@@ -97,6 +94,7 @@ module.exports = {
     },
     extra: {
       environment: variant.environment,
+      scheme: variant.scheme,
     },
   },
 };

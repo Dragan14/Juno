@@ -20,7 +20,6 @@ import {
 import { z } from "zod";
 
 export default function Account() {
-  // Theme
   const theme = useTheme();
 
   // User and profile state
@@ -113,8 +112,11 @@ export default function Account() {
     );
   }
 
-  // Error state
-  if (profile.isError || user.isError) {
+  if (
+    (profile.isError || user.isError) &&
+    !profile.isLoading &&
+    !user.isLoading
+  ) {
     return (
       <SafeAreaView
         style={{

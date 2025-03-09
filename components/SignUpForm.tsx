@@ -5,6 +5,7 @@ import {
   passwordSchema,
   nameSchema,
 } from "../schemas/auth-schemas";
+import { useRouter } from "expo-router";
 import { useSignUp } from "../hooks/useAuth";
 import { Button, TextInput, HelperText } from "react-native-paper";
 import { z } from "zod";
@@ -16,6 +17,7 @@ interface SignUpFormProps {
 
 export default function SignUpForm({ onSuccess, onError }: SignUpFormProps) {
   const signUp = useSignUp();
+  const router = useRouter();
 
   // Form state
   const [name, setName] = useState("");
@@ -114,7 +116,7 @@ export default function SignUpForm({ onSuccess, onError }: SignUpFormProps) {
     Keyboard.dismiss();
     if (validateForm()) {
       try {
-        await signUp.mutateAsync({ email, password, name });
+        const { session } = await signUp.mutateAsync({ email, password, name });
         onSuccess("Signed up successfully");
         // Reset form
         setName("");
@@ -122,6 +124,10 @@ export default function SignUpForm({ onSuccess, onError }: SignUpFormProps) {
         setPassword("");
         setConfirmPassword("");
         setErrors({ name: "", email: "", password: "", confirmPassword: "" });
+        // Redirect to confirm email screen
+        if (!session) {
+          router.replace("/confirm-email");
+        }
       } catch (error) {
         const err = error as Error;
         onError(err.message || "Failed to sign up");

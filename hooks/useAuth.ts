@@ -1,7 +1,7 @@
+import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "../lib/supabase";
 import { useEffect } from "react";
-import { useRouter } from "expo-router";
 import { Platform } from "react-native";
 import Constants from "expo-constants";
 
@@ -36,6 +36,37 @@ export const useSession = () => {
       return data.session;
     },
     refetchOnWindowFocus: true,
+  });
+};
+
+// Hook for setting the session with tokens
+export const useSetSession = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      accessToken,
+      refreshToken,
+    }: {
+      accessToken: string;
+      refreshToken: string;
+    }) => {
+      const { data, error } = await supabase.auth.setSession({
+        access_token: accessToken,
+        refresh_token: refreshToken,
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      return data;
+    },
+    onSuccess: (data) => {
+      // Update the session and user queries with the new data
+      queryClient.setQueryData(authKeys.session, data.session);
+      queryClient.setQueryData(authKeys.user, data.user);
+    },
   });
 };
 
@@ -89,7 +120,6 @@ export const useSignIn = () => {
 // Hook for sign up functionality
 export const useSignUp = () => {
   const queryClient = useQueryClient();
-  const router = useRouter();
 
   return useMutation({
     mutationFn: async ({
@@ -122,8 +152,6 @@ export const useSignUp = () => {
       if (data.session) {
         queryClient.setQueryData(authKeys.session, data.session);
         queryClient.setQueryData(authKeys.user, data.user);
-      } else {
-        router.replace("/confirm-email");
       }
     },
   });
@@ -152,8 +180,16 @@ export const useSignOut = () => {
 };
 
 // Hook to listen for auth state changes from other tabs or external sources
+// Define the type for auth events
+type AuthEvent = {
+  type: string;
+  user?: any;
+  session?: any;
+} | null;
+
 export const useAuthStateChange = () => {
   const queryClient = useQueryClient();
+  const [authEvent, setAuthEvent] = useState<AuthEvent>(null);
 
   useEffect(() => {
     const {
@@ -163,12 +199,19 @@ export const useAuthStateChange = () => {
         // Invalidate session and user data
         queryClient.setQueryData(authKeys.session, null);
         queryClient.setQueryData(authKeys.user, null);
+        // Clear all queries to prevent stale data
+        queryClient.clear();
+        // Emit the auth event
+        setAuthEvent({ type: event });
       } else if ("USER_UPDATED" === event) {
         // Fetch and update user data
         queryClient.setQueryData(authKeys.user, session?.user || null);
-      } else {
+        setAuthEvent({ type: event, user: session?.user });
+      } else if (["SIGNED_IN", "TOKEN_REFRESHED"].includes(event)) {
         // Fetch and update session data
         queryClient.setQueryData(authKeys.session, session);
+        queryClient.setQueryData(authKeys.user, session?.user || null);
+        setAuthEvent({ type: event, session });
       }
     });
 
@@ -177,4 +220,6 @@ export const useAuthStateChange = () => {
       subscription.unsubscribe();
     };
   }, [queryClient]);
+
+  return { authEvent };
 };

@@ -3,14 +3,13 @@ import { View, Platform } from "react-native";
 import { Text, ActivityIndicator, useTheme } from "react-native-paper";
 import { useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { supabase } from "../lib/supabase";
-import { useQueryClient } from "@tanstack/react-query";
+import { useSetSession } from "../hooks/useAuth";
 import * as Linking from "expo-linking";
 
 export default function AuthCallback() {
   const router = useRouter();
   const theme = useTheme();
-  const queryClient = useQueryClient();
+  const setSession = useSetSession();
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -18,7 +17,7 @@ export default function AuthCallback() {
     const handleAuthCallback = async () => {
       try {
         if (Platform.OS === "web") {
-          // For web, we need to get URL parameters from the hash fragment
+          // For web get URL parameters from the hash fragment
           if (
             window.location.hash &&
             window.location.hash.includes("access_token")
@@ -37,10 +36,9 @@ export default function AuthCallback() {
             }
           }
         } else {
-          // For native, we need to get URL parameters from the deep link
+          // For native get URL parameters from the deep link
           const url = await Linking.getInitialURL();
           if (url) {
-            console.log("Found deep link URL:", url);
             const parsedUrl = Linking.parse(url);
 
             let accessToken = parsedUrl.queryParams?.access_token;
@@ -61,42 +59,23 @@ export default function AuthCallback() {
       }
     };
 
-    // Improve the processTokens function
     const processTokens = async (accessToken: string, refreshToken: string) => {
       try {
-        // Set the session with the provided tokens
-        const { data, error: sessionError } = await supabase.auth.setSession({
-          access_token: accessToken,
-          refresh_token: refreshToken,
+        await setSession.mutateAsync({
+          accessToken,
+          refreshToken,
         });
-
-        if (sessionError) {
-          setError(sessionError.message);
-          router.replace("/authentication");
-          return;
-        }
-
-        // If we successfully set the session, update React Query cache and navigate
-        if (data?.session) {
-          queryClient.setQueryData(["session"], data.session);
-          queryClient.setQueryData(["user"], data.user);
-
-          // Add a small timeout to ensure state updates complete before navigation
-          setTimeout(() => {
-            router.replace("/(tabs)");
-          }, 100);
-        } else {
-          setError("Failed to create session from tokens");
-          router.replace("/authentication");
-        }
-      } catch {
-        setError("Error processing authentication");
+        setTimeout(() => {
+          router.replace("/");
+        }, 100);
+      } catch (error: any) {
+        setError(error?.message || "Error processing authentication");
         router.replace("/authentication");
       }
     };
 
     handleAuthCallback();
-  }, [router, queryClient]);
+  }, [router, setSession]);
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: theme.colors.background }}>

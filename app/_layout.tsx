@@ -1,6 +1,7 @@
 import { Stack } from "expo-router";
 import { useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
+import { useRouter } from "expo-router";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useReactQueryDevTools } from "@dev-plugins/react-query";
 import { useColorScheme } from "react-native";
@@ -20,15 +21,35 @@ const queryClient = new QueryClient({});
 // Create a separate component for content that uses React Query hooks
 function AppContent() {
   useReactQueryDevTools(queryClient);
+  const router = useRouter();
 
   const colorScheme = useColorScheme();
   const paperTheme = colorScheme === "dark" ? MD3DarkTheme : MD3LightTheme;
 
   // Get the current session
-  const { data: session, isLoading } = useSession();
+  const { data: session, isLoading } = useSession(); // Assuming useSession returns session data
+
+  const { authEvent } = useAuthStateChange();
 
   // Handle auth state changes
-  useAuthStateChange();
+  useEffect(() => {
+    if (authEvent?.type === "SIGNED_OUT") {
+      router.replace("/authentication");
+    } else if (authEvent?.type === "SIGNED_IN") {
+      router.replace("/");
+    }
+  }, [authEvent, router]);
+
+  // Add initial routing based on session existence
+  useEffect(() => {
+    if (!isLoading) {
+      if (session) {
+        router.replace("/");
+      } else {
+        router.replace("/authentication");
+      }
+    }
+  }, [isLoading, session, router]);
 
   useEffect(() => {
     // Handle app state changes for auto-refresh
@@ -67,15 +88,10 @@ function AppContent() {
         </SafeAreaView>
       ) : (
         <Stack screenOptions={{ headerShown: false }}>
-          <Stack.Screen
-            name="(tabs)"
-            options={{ headerShown: false }}
-            redirect={!session || !session.user}
-          />
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
           <Stack.Screen
             name="authentication"
             options={{ headerShown: false }}
-            redirect={!!(session && session.user)}
           />
           <Stack.Screen name="confirm-email" options={{ headerShown: false }} />
           <Stack.Screen name="auth-callback" options={{ headerShown: false }} />

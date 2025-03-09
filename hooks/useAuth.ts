@@ -131,6 +131,22 @@ export const useSignUp = () => {
       password: string;
       name: string;
     }) => {
+      // Check if user with this email already exists
+      // If user exists, sign in with OTP
+      const { error: checkError } = await supabase.auth.signInWithOtp({
+        email,
+        options: {
+          shouldCreateUser: false,
+          emailRedirectTo: getAuthCallbackUrl(),
+        },
+      });
+      // If no error was returned it means the user exists
+      if (!checkError) {
+        throw new Error(
+          "User with this email already exists. Please check your email to sign in.",
+        );
+      }
+      // Proceed with sign up if user doesn't exist
       const { data, error } = await supabase.auth.signUp({
         email,
         password,

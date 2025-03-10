@@ -1,14 +1,13 @@
 import { View } from "react-native";
 import { Text, Button, useTheme } from "react-native-paper";
 import { useRouter } from "expo-router";
-import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function ConfirmEmail() {
   const router = useRouter();
   const theme = useTheme();
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: theme.colors.background }}>
+    <View style={{ flex: 1, backgroundColor: theme.colors.background }}>
       <View>
         <Text variant="headlineMedium">Check your email</Text>
         <Text variant="bodyLarge">
@@ -25,6 +24,6 @@ export default function ConfirmEmail() {
           Back to Sign In
         </Button>
       </View>
-    </SafeAreaView>
+    </View>
   );
 }

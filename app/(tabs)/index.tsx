@@ -1,10 +1,10 @@
 import { Text, useTheme } from "react-native-paper";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { View } from "react-native";
 
 export default function Index() {
   const theme = useTheme();
   return (
-    <SafeAreaView
+    <View
       style={{
         flex: 1,
         backgroundColor: theme.colors.background,
@@ -13,6 +13,6 @@ export default function Index() {
       }}
     >
       <Text>This is the home page</Text>
-    </SafeAreaView>
+    </View>
   );
 }

@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
-import { Keyboard } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { View, Keyboard } from "react-native";
 import { nameSchema } from "../../schemas/auth-schemas";
 import { useUser, useSignOut } from "../../hooks/useAuth";
 import {
@@ -98,7 +97,7 @@ export default function Account() {
   // Loading state
   if (profile.isLoading || user.isLoading) {
     return (
-      <SafeAreaView
+      <View
         style={{
           flex: 1,
           justifyContent: "center",
@@ -108,7 +107,7 @@ export default function Account() {
       >
         <Text>Loading Profile...</Text>
         <ActivityIndicator animating={true} size="large" />
-      </SafeAreaView>
+      </View>
     );
   }
 
@@ -118,7 +117,7 @@ export default function Account() {
     !user.isLoading
   ) {
     return (
-      <SafeAreaView
+      <View
         style={{
           flex: 1,
           justifyContent: "center",
@@ -136,12 +135,12 @@ export default function Account() {
         >
           Retry
         </Button>
-      </SafeAreaView>
+      </View>
     );
   }
 
   return (
-    <SafeAreaView
+    <View
       style={{
         flex: 1,
         backgroundColor: theme.colors.background,
@@ -210,6 +209,6 @@ export default function Account() {
       >
         {snackbarMessage}
       </Snackbar>
-    </SafeAreaView>
+    </View>
   );
 }

@@ -69,7 +69,7 @@ function AppContent() {
     <PaperProvider theme={paperTheme}>
       <StatusBar
         style={colorScheme === "dark" ? "light" : "dark"}
-        backgroundColor="transparent"
+        backgroundColor={paperTheme.colors.background}
       />
       {isLoading ? (
         <SafeAreaView
@@ -83,15 +83,23 @@ function AppContent() {
           <ActivityIndicator animating={true} size="large" />
         </SafeAreaView>
       ) : (
-        <Stack screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen
-            name="authentication"
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen name="confirm-email" options={{ headerShown: false }} />
-          <Stack.Screen name="auth-callback" options={{ headerShown: false }} />
-        </Stack>
+        <SafeAreaView style={{ flex: 1 }}>
+          <Stack screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen
+              name="authentication"
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="confirm-email"
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="auth-callback"
+              options={{ headerShown: false }}
+            />
+          </Stack>
+        </SafeAreaView>
       )}
     </PaperProvider>
   );

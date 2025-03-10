@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { SafeAreaView } from "react-native";
+import { View } from "react-native";
 import { useTheme, SegmentedButtons, Snackbar } from "react-native-paper";
 import SignInForm from "../components/SignInForm";
 import SignUpForm from "../components/SignUpForm";
@@ -30,7 +30,7 @@ export default function Authentication() {
   };
 
   return (
-    <SafeAreaView
+    <View
       style={{
         flex: 1,
         backgroundColor: theme.colors.background,
@@ -70,6 +70,6 @@ export default function Authentication() {
       >
         {snackbarMessage}
       </Snackbar>
-    </SafeAreaView>
+    </View>
   );
 }

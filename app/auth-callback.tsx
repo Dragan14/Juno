@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { View, Platform } from "react-native";
 import { Text, ActivityIndicator, useTheme } from "react-native-paper";
 import { useRouter } from "expo-router";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { useSetSession } from "../hooks/useAuth";
 import * as Linking from "expo-linking";
 
@@ -78,7 +77,7 @@ export default function AuthCallback() {
   }, [router, setSession]);
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: theme.colors.background }}>
+    <View style={{ flex: 1, backgroundColor: theme.colors.background }}>
       <View
         style={{
           flex: 1,
@@ -100,6 +99,6 @@ export default function AuthCallback() {
           </>
         )}
       </View>
-    </SafeAreaView>
+    </View>
   );
 }

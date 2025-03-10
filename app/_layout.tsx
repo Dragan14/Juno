@@ -27,29 +27,25 @@ function AppContent() {
   const paperTheme = colorScheme === "dark" ? MD3DarkTheme : MD3LightTheme;
 
   // Get the current session
-  const { data: session, isLoading } = useSession(); // Assuming useSession returns session data
+  const { data: session, isLoading } = useSession();
 
   const { authEvent } = useAuthStateChange();
 
-  // Handle auth state changes
   useEffect(() => {
+    if (isLoading) return;
+
+    if (session) {
+      router.replace("/");
+      return;
+    }
+
+    // Handle authentication state changes
     if (authEvent?.type === "SIGNED_OUT") {
       router.replace("/authentication");
-    } else if (authEvent?.type === "SIGNED_IN") {
-      router.replace("/");
+    } else if (!session) {
+      router.replace("/authentication");
     }
-  }, [authEvent, router]);
-
-  // Add initial routing based on session existence
-  useEffect(() => {
-    if (!isLoading) {
-      if (session) {
-        router.replace("/");
-      } else {
-        router.replace("/authentication");
-      }
-    }
-  }, [isLoading, session, router]);
+  }, [isLoading, session, authEvent, router]);
 
   useEffect(() => {
     // Handle app state changes for auto-refresh
@@ -73,7 +69,7 @@ function AppContent() {
     <PaperProvider theme={paperTheme}>
       <StatusBar
         style={colorScheme === "dark" ? "light" : "dark"}
-        backgroundColor={paperTheme.colors.background}
+        backgroundColor="transparent"
       />
       {isLoading ? (
         <SafeAreaView

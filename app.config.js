@@ -65,7 +65,8 @@ module.exports = {
         backgroundColor: "#ffffff",
       },
       androidStatusBar: {
-        translucent: false,
+        translucent: true,
+        backgroundColor: "#00000000",
       },
     },
     web: {

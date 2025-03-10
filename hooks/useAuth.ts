@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "../lib/supabase";
-import { useEffect } from "react";
+import { MMKV } from "react-native-mmkv";
 import { Platform } from "react-native";
 import Constants from "expo-constants";
 
@@ -10,6 +10,17 @@ const authKeys = {
   session: ["session"],
   user: ["user"],
 };
+
+// Define the type for auth events
+type AuthEvent = {
+  type: string;
+  user?: any;
+  session?: any;
+} | null;
+
+// Initialize MMKV storage
+const storage = new MMKV();
+const LAST_OTP_REQUEST_KEY = "lastOtpRequestTimestamp";
 
 // Helper to get the proper auth callback URL
 const getAuthCallbackUrl = () => {
@@ -131,6 +142,22 @@ export const useSignUp = () => {
       password: string;
       name: string;
     }) => {
+      // Get the last OTP request timestamp from MMKV storage
+      const lastOtpRequest = storage.getNumber(LAST_OTP_REQUEST_KEY) || 0;
+      const currentTime = Date.now();
+      const timeSinceLastRequest = currentTime - lastOtpRequest;
+
+      if (lastOtpRequest > 0 && timeSinceLastRequest < 60000) {
+        // Calculate remaining cooldown time in seconds
+        const remainingTime = Math.ceil((60000 - timeSinceLastRequest) / 1000);
+        throw new Error(
+          `Please wait ${remainingTime} seconds before requesting another verification code.`,
+        );
+      }
+
+      // Update the last request timestamp in MMKV storage
+      storage.set(LAST_OTP_REQUEST_KEY, currentTime);
+
       // Check if user with this email already exists
       // If user exists, sign in with OTP
       const { error: checkError } = await supabase.auth.signInWithOtp({
@@ -140,6 +167,7 @@ export const useSignUp = () => {
           emailRedirectTo: getAuthCallbackUrl(),
         },
       });
+
       // If no error was returned it means the user exists
       if (!checkError) {
         throw new Error(
@@ -196,13 +224,6 @@ export const useSignOut = () => {
 };
 
 // Hook to listen for auth state changes from other tabs or external sources
-// Define the type for auth events
-type AuthEvent = {
-  type: string;
-  user?: any;
-  session?: any;
-} | null;
-
 export const useAuthStateChange = () => {
   const queryClient = useQueryClient();
   const [authEvent, setAuthEvent] = useState<AuthEvent>(null);

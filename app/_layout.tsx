@@ -88,14 +88,6 @@ function AppContent() {
               name="authentication"
               options={{ headerShown: false }}
             />
-            <Stack.Screen
-              name="confirm-email"
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen
-              name="auth-callback"
-              options={{ headerShown: false }}
-            />
           </Stack>
         </SafeAreaView>
       )}

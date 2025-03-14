@@ -5,10 +5,10 @@ import {
   passwordSchema,
   nameSchema,
 } from "../schemas/auth-schemas";
-import { useRouter } from "expo-router";
 import { useSignUp } from "../hooks/useAuth";
 import { Button, TextInput, HelperText } from "react-native-paper";
 import { z } from "zod";
+import EmailVerificationModal from "./VerifyEmailModal";
 
 interface SignUpFormProps {
   onSuccess: (message?: string) => void;
@@ -17,7 +17,6 @@ interface SignUpFormProps {
 
 export default function SignUpForm({ onSuccess, onError }: SignUpFormProps) {
   const signUp = useSignUp();
-  const router = useRouter();
 
   // Form state
   const [name, setName] = useState("");
@@ -30,6 +29,10 @@ export default function SignUpForm({ onSuccess, onError }: SignUpFormProps) {
     password: "",
     confirmPassword: "",
   });
+
+  // Email verification modal state
+  const [verificationModalVisible, setVerificationModalVisible] =
+    useState(false);
 
   // Password visibility state
   const [passwordVisibility, setPasswordVisibility] = useState({
@@ -117,16 +120,17 @@ export default function SignUpForm({ onSuccess, onError }: SignUpFormProps) {
     if (validateForm()) {
       try {
         const { session } = await signUp.mutateAsync({ email, password, name });
-        onSuccess("Signed up successfully");
         // Reset form
         setName("");
         setEmail("");
         setPassword("");
         setConfirmPassword("");
         setErrors({ name: "", email: "", password: "", confirmPassword: "" });
-        // Redirect to confirm email screen
+        // Show verification modal if no session is returned
         if (!session) {
-          router.replace("/confirm-email");
+          setVerificationModalVisible(true);
+        } else {
+          onSuccess("Signed up successfully");
         }
       } catch (error) {
         const err = error as Error;
@@ -218,6 +222,11 @@ export default function SignUpForm({ onSuccess, onError }: SignUpFormProps) {
       >
         Sign up
       </Button>
+
+      <EmailVerificationModal
+        visible={verificationModalVisible}
+        onDismiss={() => setVerificationModalVisible(false)}
+      />
     </View>
   );
 }

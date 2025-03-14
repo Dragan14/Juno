@@ -8,13 +8,13 @@ import { useColorScheme } from "react-native";
 import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
 import {
   Provider as PaperProvider,
-  ActivityIndicator,
   MD3DarkTheme,
   MD3LightTheme,
 } from "react-native-paper";
 import { useSession, useAuthStateChange } from "../hooks/useAuth";
 import { AppState } from "react-native";
 import { supabase } from "../utils/supabase";
+import LoadingScreen from "../components/LoadingScreen";
 
 const queryClient = new QueryClient({});
 
@@ -72,15 +72,8 @@ function AppContent() {
         backgroundColor={paperTheme.colors.background}
       />
       {isLoading ? (
-        <SafeAreaView
-          style={{
-            flex: 1,
-            justifyContent: "center",
-            alignItems: "center",
-            backgroundColor: paperTheme.colors.background,
-          }}
-        >
-          <ActivityIndicator animating={true} size="large" />
+        <SafeAreaView>
+          <LoadingScreen text="Loading app..." />
         </SafeAreaView>
       ) : (
         <SafeAreaView style={{ flex: 1 }}>

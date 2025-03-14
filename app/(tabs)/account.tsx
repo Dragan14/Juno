@@ -7,6 +7,8 @@ import {
   useUpdateProfile,
   useClearProfile,
 } from "../../hooks/useProfile";
+import LoadingScreen from "../../components/LoadingScreen";
+import ErrorScreen from "../../components/ErrorScreen";
 import {
   Button,
   TextInput,
@@ -14,7 +16,6 @@ import {
   Text,
   Snackbar,
   useTheme,
-  ActivityIndicator,
 } from "react-native-paper";
 import { z } from "zod";
 
@@ -96,46 +97,23 @@ export default function Account() {
 
   // Loading state
   if (profile.isLoading || user.isLoading) {
-    return (
-      <View
-        style={{
-          flex: 1,
-          justifyContent: "center",
-          alignItems: "center",
-          backgroundColor: theme.colors.background,
-        }}
-      >
-        <Text>Loading Profile...</Text>
-        <ActivityIndicator animating={true} size="large" />
-      </View>
-    );
+    return <LoadingScreen text="Loading profile..." />;
   }
 
+  // Error state
   if (
     (profile.isError || user.isError) &&
     !profile.isLoading &&
     !user.isLoading
   ) {
     return (
-      <View
-        style={{
-          flex: 1,
-          justifyContent: "center",
-          alignItems: "center",
-          backgroundColor: theme.colors.background,
+      <ErrorScreen
+        text="Error loading profile. Please try again."
+        onPress={() => {
+          if (profile.isError) profile.refetch();
+          if (user.isError) user.refetch();
         }}
-      >
-        <Text>Error loading profile. Please try again.</Text>
-        <Button
-          mode="contained"
-          onPress={() => {
-            if (profile.isError) profile.refetch();
-            if (user.isError) user.refetch();
-          }}
-        >
-          Retry
-        </Button>
-      </View>
+      />
     );
   }
 
@@ -201,7 +179,7 @@ export default function Account() {
       <Snackbar
         visible={snackbarVisible}
         onDismiss={() => setSnackbarVisible(false)}
-        duration={3000}
+        duration={7000}
         action={{
           label: "Close",
           onPress: () => setSnackbarVisible(false),

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { View, Platform } from "react-native";
 import { Text, ActivityIndicator, useTheme } from "react-native-paper";
 import { useRouter } from "expo-router";
-import { useSetSession } from "../hooks/useAuth";
+import { useSetSession } from "../hooks/useSession";
 import * as Linking from "expo-linking";
 
 export default function AuthCallback() {

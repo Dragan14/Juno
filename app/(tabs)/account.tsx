@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
 import { View, Keyboard } from "react-native";
 import { nameSchema } from "../../schemas/auth-schemas";
-import { useUser, useSignOut } from "../../hooks/useAuth";
+import { useSignOut } from "../../hooks/useAuth";
+import { useGetUser } from "../../hooks/useUser";
 import {
-  useProfile,
+  useGetProfile,
   useUpdateProfile,
   useClearProfile,
 } from "../../hooks/useProfile";
@@ -23,9 +24,9 @@ export default function Account() {
   const theme = useTheme();
 
   // User and profile state
-  const user = useUser();
+  const user = useGetUser();
   const signOut = useSignOut();
-  const profile = useProfile();
+  const profile = useGetProfile();
   const updateProfile = useUpdateProfile();
   const clearProfile = useClearProfile();
 

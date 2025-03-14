@@ -11,7 +11,8 @@ import {
   MD3DarkTheme,
   MD3LightTheme,
 } from "react-native-paper";
-import { useSession, useAuthStateChange } from "../hooks/useAuth";
+import { useAuthStateChange } from "../hooks/useAuth";
+import { useGetSession } from "../hooks/useSession";
 import { AppState } from "react-native";
 import { supabase } from "../utils/supabase";
 import LoadingScreen from "../components/LoadingScreen";
@@ -27,7 +28,7 @@ function AppContent() {
   const paperTheme = colorScheme === "dark" ? MD3DarkTheme : MD3LightTheme;
 
   // Get the current session
-  const { data: session, isLoading } = useSession();
+  const { data: session, isLoading } = useGetSession();
 
   const { authEvent } = useAuthStateChange();
 
@@ -72,11 +73,15 @@ function AppContent() {
         backgroundColor={paperTheme.colors.background}
       />
       {isLoading ? (
-        <SafeAreaView>
+        <SafeAreaView
+          style={{ flex: 1, backgroundColor: paperTheme.colors.background }}
+        >
           <LoadingScreen text="Loading app..." />
         </SafeAreaView>
       ) : (
-        <SafeAreaView style={{ flex: 1 }}>
+        <SafeAreaView
+          style={{ flex: 1, backgroundColor: paperTheme.colors.background }}
+        >
           <Stack screenOptions={{ headerShown: false }}>
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
             <Stack.Screen

@@ -62,7 +62,7 @@ export default function Authentication() {
       <Snackbar
         visible={snackbarVisible}
         onDismiss={() => setSnackbarVisible(false)}
-        duration={7000}
+        duration={5000}
         action={{
           label: "Close",
           onPress: () => setSnackbarVisible(false),

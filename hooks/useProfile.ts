@@ -1,39 +1,25 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { supabase } from "../lib/supabase";
-
-// Profile interface
-export interface Profile {
-  id: string;
-  name: string | null;
-  created_at: string | null;
-  updated_at: string | null;
-}
-
-// Query keys
-const profileKeys = {
-  profile: ["profile"],
-};
+import { supabase } from "../utils/supabase";
+import { Profile } from "../types/profileTypes";
+import { PROFILE_KEYS } from "../constants/queryKeys";
+import { useUser } from "./useAuth";
 
 // Hook for getting the user profile
 export const useProfile = () => {
+  const { data: user } = useUser();
+
   return useQuery({
-    queryKey: profileKeys.profile,
+    queryKey: PROFILE_KEYS.profile,
     queryFn: async () => {
-      const { data: userData, error: userError } =
-        await supabase.auth.getUser();
-
-      if (userError) {
-        throw userError;
-      }
-
-      if (!userData.user) {
+      // Return null if no user is logged in
+      if (!user) {
         return null;
       }
 
       const { data, error } = await supabase
         .from("profiles")
         .select("*")
-        .eq("id", userData.user.id)
+        .eq("id", user.id)
         .single();
 
       if (error) {
@@ -42,6 +28,8 @@ export const useProfile = () => {
 
       return data as Profile;
     },
+    // Only run the query if we have a user
+    enabled: !!user,
     refetchOnWindowFocus: true,
   });
 };
@@ -49,24 +37,18 @@ export const useProfile = () => {
 // Hook for updating the user profile
 export const useUpdateProfile = () => {
   const queryClient = useQueryClient();
+  const { data: user } = useUser();
 
   return useMutation({
     mutationFn: async (updates: Partial<Profile>) => {
-      const { data: userData, error: userError } =
-        await supabase.auth.getUser();
-
-      if (userError) {
-        throw userError;
-      }
-
-      if (!userData.user) {
+      if (!user) {
         throw new Error("No user logged in");
       }
 
       const { data, error } = await supabase
         .from("profiles")
         .update(updates)
-        .eq("id", userData.user.id)
+        .eq("id", user.id)
         .select()
         .single();
 
@@ -78,7 +60,7 @@ export const useUpdateProfile = () => {
     },
     onSuccess: (data) => {
       // Update the profile query with the new data
-      queryClient.setQueryData(profileKeys.profile, data);
+      queryClient.setQueryData(PROFILE_KEYS.profile, data);
     },
   });
 };
@@ -88,6 +70,6 @@ export const useClearProfile = () => {
   const queryClient = useQueryClient();
 
   return () => {
-    queryClient.setQueryData(profileKeys.profile, null);
+    queryClient.setQueryData(PROFILE_KEYS.profile, null);
   };
 };

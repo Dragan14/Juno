@@ -14,7 +14,7 @@ import {
 } from "react-native-paper";
 import { useSession, useAuthStateChange } from "../hooks/useAuth";
 import { AppState } from "react-native";
-import { supabase } from "../lib/supabase";
+import { supabase } from "../utils/supabase";
 
 const queryClient = new QueryClient({});
 

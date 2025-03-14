@@ -1,42 +1,19 @@
 import { useState, useEffect } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { supabase } from "../lib/supabase";
-import { MMKV } from "react-native-mmkv";
-import { Platform } from "react-native";
-import Constants from "expo-constants";
-
-// Query keys
-const authKeys = {
-  session: ["session"],
-  user: ["user"],
-};
-
-// Define the type for auth events
-type AuthEvent = {
-  type: string;
-  user?: any;
-  session?: any;
-} | null;
-
-// Initialize MMKV storage
-const storage = new MMKV();
-const LAST_OTP_REQUEST_KEY = "lastOtpRequestTimestamp";
-
-// Helper to get the proper auth callback URL
-const getAuthCallbackUrl = () => {
-  const scheme = Constants.expoConfig?.extra?.scheme || "juno";
-
-  if (Platform.OS === "web") {
-    return `${window.location.origin}/auth-callback`;
-  } else {
-    return `${scheme}://auth-callback`;
-  }
-};
+import { supabase } from "../utils/supabase";
+import { AUTH_KEYS } from "../constants/queryKeys";
+import { getAuthCallbackUrl } from "../constants/urlConstants";
+import { validateOtpCooldown } from "../utils/auth";
+import type {
+  AuthEvent,
+  SignInCredentials,
+  SignUpCredentials,
+} from "../types/authTypes";
 
 // Hook for getting the current session
 export const useSession = () => {
   return useQuery({
-    queryKey: authKeys.session,
+    queryKey: AUTH_KEYS.session,
     queryFn: async () => {
       const { data, error } = await supabase.auth.getSession();
 
@@ -66,17 +43,12 @@ export const useSetSession = () => {
         access_token: accessToken,
         refresh_token: refreshToken,
       });
-
-      if (error) {
-        throw error;
-      }
-
+      if (error) throw error;
       return data;
     },
     onSuccess: (data) => {
-      // Update the session and user queries with the new data
-      queryClient.setQueryData(authKeys.session, data.session);
-      queryClient.setQueryData(authKeys.user, data.user);
+      queryClient.setQueryData(AUTH_KEYS.session, data.session);
+      queryClient.setQueryData(AUTH_KEYS.user, data.user);
     },
   });
 };
@@ -84,14 +56,10 @@ export const useSetSession = () => {
 // Hook to get the current user
 export const useUser = () => {
   return useQuery({
-    queryKey: authKeys.user,
+    queryKey: AUTH_KEYS.user,
     queryFn: async () => {
       const { data, error } = await supabase.auth.getUser();
-
-      if (error) {
-        throw error;
-      }
-
+      if (error) throw error;
       return data.user;
     },
   });
@@ -102,28 +70,17 @@ export const useSignIn = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({
-      email,
-      password,
-    }: {
-      email: string;
-      password: string;
-    }) => {
+    mutationFn: async ({ email, password }: SignInCredentials) => {
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
-
-      if (error) {
-        throw error;
-      }
-
+      if (error) throw error;
       return data;
     },
     onSuccess: (data) => {
-      // Update the session and user queries with the new data
-      queryClient.setQueryData(authKeys.session, data.session);
-      queryClient.setQueryData(authKeys.user, data.user);
+      queryClient.setQueryData(AUTH_KEYS.session, data.session);
+      queryClient.setQueryData(AUTH_KEYS.user, data.user);
     },
   });
 };
@@ -133,33 +90,9 @@ export const useSignUp = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({
-      email,
-      password,
-      name,
-    }: {
-      email: string;
-      password: string;
-      name: string;
-    }) => {
-      // Get the last OTP request timestamp from MMKV storage
-      const lastOtpRequest = storage.getNumber(LAST_OTP_REQUEST_KEY) || 0;
-      const currentTime = Date.now();
-      const timeSinceLastRequest = currentTime - lastOtpRequest;
+    mutationFn: async ({ email, password, name }: SignUpCredentials) => {
+      validateOtpCooldown();
 
-      if (lastOtpRequest > 0 && timeSinceLastRequest < 60000) {
-        // Calculate remaining cooldown time in seconds
-        const remainingTime = Math.ceil((60000 - timeSinceLastRequest) / 1000);
-        throw new Error(
-          `Please wait ${remainingTime} seconds before requesting another verification code.`,
-        );
-      }
-
-      // Update the last request timestamp in MMKV storage
-      storage.set(LAST_OTP_REQUEST_KEY, currentTime);
-
-      // Check if user with this email already exists
-      // If user exists, sign in with OTP
       const { error: checkError } = await supabase.auth.signInWithOtp({
         email,
         options: {
@@ -174,28 +107,23 @@ export const useSignUp = () => {
           "User with this email already exists. Please check your email to sign in.",
         );
       }
-      // Proceed with sign up if user doesn't exist
+
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
-          data: {
-            name,
-          },
+          data: { name },
           emailRedirectTo: getAuthCallbackUrl(),
         },
       });
 
-      if (error) {
-        throw error;
-      }
-
+      if (error) throw error;
       return data;
     },
     onSuccess: (data) => {
       if (data.session) {
-        queryClient.setQueryData(authKeys.session, data.session);
-        queryClient.setQueryData(authKeys.user, data.user);
+        queryClient.setQueryData(AUTH_KEYS.session, data.session);
+        queryClient.setQueryData(AUTH_KEYS.user, data.user);
       }
     },
   });
@@ -208,17 +136,12 @@ export const useSignOut = () => {
   return useMutation({
     mutationFn: async () => {
       const { error } = await supabase.auth.signOut();
-
-      if (error) {
-        throw error;
-      }
-
+      if (error) throw error;
       return null;
     },
     onSuccess: () => {
-      // Clear the session and user data from cache
-      queryClient.setQueryData(authKeys.session, null);
-      queryClient.setQueryData(authKeys.user, null);
+      queryClient.setQueryData(AUTH_KEYS.session, null);
+      queryClient.setQueryData(AUTH_KEYS.user, null);
     },
   });
 };
@@ -232,27 +155,28 @@ export const useAuthStateChange = () => {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((event, session) => {
-      if (["SIGNED_OUT"].includes(event)) {
-        // Invalidate session and user data
-        queryClient.setQueryData(authKeys.session, null);
-        queryClient.setQueryData(authKeys.user, null);
-        // Clear all queries to prevent stale data
-        queryClient.clear();
-        // Emit the auth event
-        setAuthEvent({ type: event });
-      } else if ("USER_UPDATED" === event) {
-        // Fetch and update user data
-        queryClient.setQueryData(authKeys.user, session?.user || null);
-        setAuthEvent({ type: event, user: session?.user });
-      } else if (["SIGNED_IN", "TOKEN_REFRESHED"].includes(event)) {
-        // Fetch and update session data
-        queryClient.setQueryData(authKeys.session, session);
-        queryClient.setQueryData(authKeys.user, session?.user || null);
-        setAuthEvent({ type: event, session });
+      switch (event) {
+        case "SIGNED_OUT":
+          queryClient.setQueryData(AUTH_KEYS.session, null);
+          queryClient.setQueryData(AUTH_KEYS.user, null);
+          queryClient.clear();
+          setAuthEvent({ type: event });
+          break;
+
+        case "USER_UPDATED":
+          queryClient.setQueryData(AUTH_KEYS.user, session?.user || null);
+          setAuthEvent({ type: event, user: session?.user });
+          break;
+
+        case "SIGNED_IN":
+        case "TOKEN_REFRESHED":
+          queryClient.setQueryData(AUTH_KEYS.session, session);
+          queryClient.setQueryData(AUTH_KEYS.user, session?.user || null);
+          setAuthEvent({ type: event, session });
+          break;
       }
     });
 
-    // Clean up subscription on unmount
     return () => {
       subscription.unsubscribe();
     };

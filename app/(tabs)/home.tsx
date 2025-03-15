@@ -1,7 +1,7 @@
 import { Text, useTheme } from "react-native-paper";
 import { View } from "react-native";
 
-export default function Index() {
+export default function Home() {
   const theme = useTheme();
   return (
     <View

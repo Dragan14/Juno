@@ -60,8 +60,6 @@ function AppContent() {
       >
         <LoadingScreen text="Loading app..." />
       </SafeAreaView>
-      // TODO splash screen instead of loading screen
-      // Maybe use slot
     );
   }
 

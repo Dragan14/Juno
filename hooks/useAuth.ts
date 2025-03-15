@@ -1,14 +1,9 @@
-import { useState, useEffect } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "../utils/supabase";
 import { AUTH_KEYS } from "../constants/queryKeys";
-import { getAuthCallbackUrl } from "../constants/urlConstants";
-import { validateOtpCooldown } from "../utils/auth";
-import type {
-  AuthEvent,
-  SignInCredentials,
-  SignUpCredentials,
-} from "../types/authTypes";
+import { getAuthCallbackUrl } from "../utils/urlUtils";
+import { validateOtpCooldown } from "../utils/validateOtpCoolDown";
+import type { SignInCredentials, SignUpCredentials } from "../types/authTypes";
 
 // Hook for sign in functionality
 export const useSignIn = () => {
@@ -85,40 +80,4 @@ export const useSignOut = () => {
       queryClient.setQueryData(AUTH_KEYS.user, null);
     },
   });
-};
-
-// Hook to listen for auth state changes from other tabs or external sources
-export const useAuthStateChange = () => {
-  const queryClient = useQueryClient();
-  const [authEvent, setAuthEvent] = useState<AuthEvent>(null);
-
-  useEffect(() => {
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((event, session) => {
-      switch (event) {
-        case "SIGNED_OUT":
-          queryClient.setQueryData(AUTH_KEYS.session, null);
-          queryClient.setQueryData(AUTH_KEYS.user, null);
-          queryClient.clear();
-          setAuthEvent({ type: event });
-          break;
-        case "USER_UPDATED":
-          queryClient.setQueryData(AUTH_KEYS.user, session?.user || null);
-          setAuthEvent({ type: event, user: session?.user });
-          break;
-        case "SIGNED_IN":
-        case "TOKEN_REFRESHED":
-          queryClient.setQueryData(AUTH_KEYS.session, session);
-          queryClient.setQueryData(AUTH_KEYS.user, session?.user || null);
-          setAuthEvent({ type: event, session });
-          break;
-      }
-    });
-    return () => {
-      subscription.unsubscribe();
-    };
-  }, [queryClient]);
-
-  return { authEvent };
 };

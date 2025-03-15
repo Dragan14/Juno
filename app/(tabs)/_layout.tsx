@@ -1,8 +1,23 @@
 import { Tabs } from "expo-router";
 import { useTheme, Icon } from "react-native-paper";
+import { useGetSession } from "../../hooks/useSession";
+import { useRouter } from "expo-router";
 
-export default function RootLayout() {
+export default function TabsLayout() {
   const theme = useTheme();
+  const router = useRouter();
+  const { data: session, isLoading } = useGetSession();
+
+  if (isLoading) {
+    return null;
+  }
+
+  // If not authenticated, redirect to authentication screen
+  if (!session) {
+    router.replace("/authentication");
+    return null;
+  }
+
   return (
     <Tabs
       screenOptions={{
@@ -19,7 +34,7 @@ export default function RootLayout() {
       }}
     >
       <Tabs.Screen
-        name="home"
+        name="index"
         options={{
           title: "Home",
           tabBarIcon: ({ color, focused }) => (

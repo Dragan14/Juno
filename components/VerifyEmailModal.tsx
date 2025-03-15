@@ -27,8 +27,7 @@ export default function EmailVerificationModal({
             Check your email
           </Text>
           <Text variant="bodyLarge" style={styles.message}>
-            We've sent you an email with a verification link. Please check your
-            inbox and click the link to verify your account.
+            We've sent you an email with a verification link.
           </Text>
           <Text variant="bodyMedium" style={styles.subMessage}>
             If you don't see the email, check your spam folder.

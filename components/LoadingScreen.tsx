@@ -1,13 +1,7 @@
-import { View } from "react-native";
-import { useTheme, ActivityIndicator, Text } from "react-native-paper";
+import { View, Image } from "react-native";
+import { useTheme } from "react-native-paper";
 
-interface LoadingScreenProps {
-  text?: string;
-}
-
-export default function LoadingScreen({
-  text = "Loading...",
-}: LoadingScreenProps) {
+export default function LoadingScreen() {
   const theme = useTheme();
   return (
     <View
@@ -18,10 +12,14 @@ export default function LoadingScreen({
         backgroundColor: theme.colors.background,
       }}
     >
-      <ActivityIndicator animating={true} size="large" />
-      <Text style={{ marginTop: 16, color: theme.colors.onBackground }}>
-        {text}
-      </Text>
+      <Image
+        source={require("../assets/images/icon.png")}
+        style={{
+          width: 200,
+          height: 200,
+        }}
+        resizeMode="contain"
+      />
     </View>
   );
 }

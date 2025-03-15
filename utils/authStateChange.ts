@@ -18,7 +18,7 @@ export const useAuthStateChange = () => {
           queryClient.setQueryData(AUTH_KEYS.session, null);
           queryClient.setQueryData(AUTH_KEYS.user, null);
           queryClient.clear();
-          router.replace("/authentication");
+          router.replace("/(auth)/authentication");
           break;
         case "USER_UPDATED":
           queryClient.setQueryData(AUTH_KEYS.user, session?.user || null);
@@ -26,7 +26,7 @@ export const useAuthStateChange = () => {
         case "SIGNED_IN":
           queryClient.setQueryData(AUTH_KEYS.session, session);
           queryClient.setQueryData(AUTH_KEYS.user, session?.user || null);
-          router.replace("/(tabs)/home");
+          router.replace("/(tabs)");
           break;
         case "TOKEN_REFRESHED":
           queryClient.setQueryData(AUTH_KEYS.session, session);

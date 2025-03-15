@@ -98,7 +98,7 @@ export default function Account() {
 
   // Loading state
   if (profile.isLoading || user.isLoading) {
-    return <LoadingScreen text="Loading profile..." />;
+    return <LoadingScreen />;
   }
 
   // Error state

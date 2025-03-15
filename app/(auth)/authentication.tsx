@@ -1,13 +1,12 @@
 import { useState } from "react";
 import { View } from "react-native";
 import { useTheme, SegmentedButtons, Snackbar } from "react-native-paper";
-import SignInForm from "../components/SignInForm";
-import SignUpForm from "../components/SignUpForm";
+import SignInForm from "../../components/SignInForm";
+import SignUpForm from "../../components/SignUpForm";
 
 type AuthMode = "signIn" | "signUp";
 
 export default function Authentication() {
-  // Theme
   const theme = useTheme();
 
   // Auth mode state

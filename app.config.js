@@ -80,9 +80,9 @@ module.exports = {
         "expo-splash-screen",
         {
           image: "./assets/images/icon.png",
-          backgroundColor: "#ffffff",
+          backgroundColor: "#fffbff",
           dark: {
-            backgroundColor: "#232323",
+            backgroundColor: "#1d1b1e",
           },
           imageWidth: 200,
           resizeMode: "contain",

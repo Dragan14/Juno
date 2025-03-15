@@ -19,7 +19,6 @@ import LoadingScreen from "../components/LoadingScreen";
 
 const queryClient = new QueryClient({});
 
-// Create a separate component for content that uses React Query hooks
 function AppContent() {
   useReactQueryDevTools(queryClient);
   const router = useRouter();
@@ -27,29 +26,18 @@ function AppContent() {
   const colorScheme = useColorScheme();
   const paperTheme = colorScheme === "dark" ? MD3DarkTheme : MD3LightTheme;
 
-  // Get the current session
   const { data: session, isLoading } = useGetSession();
-
   const { authEvent } = useAuthStateChange();
 
   useEffect(() => {
-    if (isLoading) return;
-
-    if (session) {
-      router.replace("/");
-      return;
-    }
-
-    // Handle authentication state changes
-    if (authEvent?.type === "SIGNED_OUT") {
-      router.replace("/authentication");
-    } else if (!session) {
-      router.replace("/authentication");
+    if (!isLoading) {
+      if (authEvent?.type === "SIGNED_OUT" || !session) {
+        router.replace("/authentication");
+      }
     }
   }, [isLoading, session, authEvent, router]);
 
   useEffect(() => {
-    // Handle app state changes for auto-refresh
     const appStateSubscription = AppState.addEventListener(
       "change",
       (state) => {
@@ -60,11 +48,22 @@ function AppContent() {
         }
       },
     );
-    // Return a cleanup function
     return () => {
       appStateSubscription.remove();
     };
   }, []);
+
+  if (isLoading) {
+    return (
+      <SafeAreaView
+        style={{ flex: 1, backgroundColor: paperTheme.colors.background }}
+      >
+        <LoadingScreen text="Loading app..." />
+      </SafeAreaView>
+      // TODO splash screen instead of loading screen
+      // Maybe use slot
+    );
+  }
 
   return (
     <PaperProvider theme={paperTheme}>
@@ -72,25 +71,26 @@ function AppContent() {
         style={colorScheme === "dark" ? "light" : "dark"}
         backgroundColor={paperTheme.colors.background}
       />
-      {isLoading ? (
-        <SafeAreaView
-          style={{ flex: 1, backgroundColor: paperTheme.colors.background }}
-        >
-          <LoadingScreen text="Loading app..." />
-        </SafeAreaView>
-      ) : (
-        <SafeAreaView
-          style={{ flex: 1, backgroundColor: paperTheme.colors.background }}
-        >
-          <Stack screenOptions={{ headerShown: false }}>
+      <SafeAreaView
+        style={{ flex: 1, backgroundColor: paperTheme.colors.background }}
+      >
+        <Stack screenOptions={{ headerShown: false }}>
+          {session ? (
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          ) : (
             <Stack.Screen
               name="authentication"
               options={{ headerShown: false }}
             />
-          </Stack>
-        </SafeAreaView>
-      )}
+          )}
+          <Stack.Screen
+            name="+not-found"
+            options={{
+              headerShown: false,
+            }}
+          />
+        </Stack>
+      </SafeAreaView>
     </PaperProvider>
   );
 }

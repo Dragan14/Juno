@@ -14,7 +14,7 @@ export default function TabsLayout() {
 
   // If not authenticated, redirect to authentication screen
   if (!session) {
-    router.replace("/authentication");
+    router.replace("/(auth)");
     return null;
   }
 

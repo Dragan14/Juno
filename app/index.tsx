@@ -18,7 +18,7 @@ export default function Index() {
       if (session) {
         router.replace("/(tabs)");
       } else {
-        router.replace("/(auth)/authentication");
+        router.replace("/(auth)");
       }
       // Hide the splash screen once navigation has been triggered
       SplashScreen.hideAsync();

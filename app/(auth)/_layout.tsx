@@ -24,7 +24,7 @@ export default function AuthLayout() {
       }}
     >
       <Stack.Screen
-        name="authentication"
+        name="index"
         options={{
           title: "Sign In / Sign Up",
           headerShown: false,

@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { View } from "react-native";
-import { useTheme, Snackbar } from "react-native-paper";
-import SegmentedControl from "@react-native-segmented-control/segmented-control";
+import { useTheme, SegmentedButtons, Snackbar } from "react-native-paper";
 import SignInForm from "../../components/SignInForm";
 import SignUpForm from "../../components/SignUpForm";
 
@@ -11,14 +10,6 @@ export default function Authentication() {
   const theme = useTheme();
 
   const [authMode, setAuthMode] = useState<AuthMode>("signIn");
-
-  const handleChange = (event: {
-    nativeEvent: { selectedSegmentIndex: number };
-  }) => {
-    setAuthMode(
-      event.nativeEvent.selectedSegmentIndex === 0 ? "signIn" : "signUp",
-    );
-  };
 
   // Snackbar state (shared between both forms)
   const [snackbarVisible, setSnackbarVisible] = useState(false);
@@ -43,10 +34,13 @@ export default function Authentication() {
         backgroundColor: theme.colors.background,
       }}
     >
-      <SegmentedControl
-        values={["Sign In", "Sign Up"]}
-        selectedIndex={authMode === "signIn" ? 0 : 1}
-        onChange={handleChange}
+      <SegmentedButtons
+        value={authMode}
+        onValueChange={(value) => setAuthMode(value as AuthMode)}
+        buttons={[
+          { value: "signIn", label: "Sign In" },
+          { value: "signUp", label: "Sign Up" },
+        ]}
       />
       {authMode === "signIn" ? (
         <SignInForm

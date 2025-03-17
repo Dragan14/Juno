@@ -1,5 +1,9 @@
+// metro.config.js
+const { getDefaultConfig } = require("expo/metro-config");
 const {
   wrapWithReanimatedMetroConfig,
 } = require("react-native-reanimated/metro-config");
 
-module.exports = wrapWithReanimatedMetroConfig({});
+const config = getDefaultConfig(__dirname);
+
+module.exports = wrapWithReanimatedMetroConfig(config);

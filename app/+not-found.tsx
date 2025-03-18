@@ -16,7 +16,7 @@ export default function NotFoundScreen() {
       }}
     >
       <Text variant="headlineSmall">Oops! This page does not exist.</Text>
-      <Link href="/(app)/(tabs)" asChild>
+      <Link href="/" asChild>
         <Button mode="contained">Go back to Home screen!</Button>
       </Link>
     </SafeAreaView>

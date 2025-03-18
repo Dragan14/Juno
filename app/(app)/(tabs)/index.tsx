@@ -18,7 +18,10 @@ export default function Home() {
     >
       <Text>This is the home page</Text>
       <Link href="/+not-found" asChild>
-        <Button mode="contained">Go back to the Not Found screen!</Button>
+        <Button mode="contained">Go to the Not Found screen!</Button>
+      </Link>
+      <Link href="/authentication" asChild>
+        <Button mode="contained">Go to the Authentication screen!</Button>
       </Link>
     </View>
   );

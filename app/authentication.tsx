@@ -5,8 +5,11 @@ import SignUpForm from "../components/SignUpForm";
 import { useGetSession } from "../hooks/useSession";
 import { useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
+import * as SplashScreen from "expo-splash-screen";
 
 type AuthMode = "signIn" | "signUp";
+
+SplashScreen.preventAutoHideAsync();
 
 export default function Authentication() {
   const theme = useTheme();
@@ -22,10 +25,18 @@ export default function Authentication() {
   const [snackbarMessage, setSnackbarMessage] = useState("");
 
   useEffect(() => {
-    if (!isLoading && session) {
-      router.replace("/(app)/(tabs)");
+    if (!isLoading) {
+      if (session) {
+        router.replace("/(app)");
+      } else {
+        SplashScreen.hideAsync();
+      }
     }
-  }, [session, isLoading, router]);
+  }, [isLoading, session, router]);
+
+  if (isLoading) {
+    return null;
+  }
 
   // Handle successful authentication
   const handleAuthSuccess = (message: string) => {

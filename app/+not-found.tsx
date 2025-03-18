@@ -1,12 +1,12 @@
 import { Button, Text, useTheme } from "react-native-paper";
 import { Link } from "expo-router";
-import { View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function NotFoundScreen() {
   const theme = useTheme();
 
   return (
-    <View
+    <SafeAreaView
       style={{
         flex: 1,
         justifyContent: "center",
@@ -16,9 +16,9 @@ export default function NotFoundScreen() {
       }}
     >
       <Text variant="headlineSmall">Oops! This page does not exist.</Text>
-      <Link href="/" asChild>
+      <Link href="/(app)/(tabs)" asChild>
         <Button mode="contained">Go back to Home screen!</Button>
       </Link>
-    </View>
+    </SafeAreaView>
   );
 }

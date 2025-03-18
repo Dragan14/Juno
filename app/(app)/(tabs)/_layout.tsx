@@ -1,22 +1,8 @@
 import { Tabs } from "expo-router";
 import { useTheme, Icon } from "react-native-paper";
-import { useGetSession } from "../../hooks/useSession";
-import { useRouter } from "expo-router";
 
 export default function TabsLayout() {
   const theme = useTheme();
-  const router = useRouter();
-  const { data: session, isLoading } = useGetSession();
-
-  if (isLoading) {
-    return null;
-  }
-
-  // If not authenticated, redirect to authentication screen
-  if (!session) {
-    router.replace("/(auth)");
-    return null;
-  }
 
   return (
     <Tabs

@@ -1,15 +1,15 @@
 import { useState, useEffect } from "react";
 import { View, Keyboard } from "react-native";
-import { nameSchema } from "../../schemas/auth-schemas";
-import { useSignOut } from "../../hooks/useAuth";
-import { useGetUser } from "../../hooks/useUser";
+import { nameSchema } from "../../../schemas/auth-schemas";
+import { useSignOut } from "../../../hooks/useAuth";
+import { useGetUser } from "../../../hooks/useUser";
 import {
   useGetProfile,
   useUpdateProfile,
   useClearProfile,
-} from "../../hooks/useProfile";
-import LoadingScreen from "../../components/LoadingScreen";
-import ErrorScreen from "../../components/ErrorScreen";
+} from "../../../hooks/useProfile";
+import LoadingScreen from "../../../components/LoadingScreen";
+import ErrorScreen from "../../../components/ErrorScreen";
 import {
   Button,
   TextInput,

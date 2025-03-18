@@ -1,19 +1,31 @@
-import { useState } from "react";
-import { View } from "react-native";
+import { useState, useEffect } from "react";
 import { useTheme, SegmentedButtons, Snackbar } from "react-native-paper";
-import SignInForm from "../../components/SignInForm";
-import SignUpForm from "../../components/SignUpForm";
+import SignInForm from "../components/SignInForm";
+import SignUpForm from "../components/SignUpForm";
+import { useGetSession } from "../hooks/useSession";
+import { useRouter } from "expo-router";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 type AuthMode = "signIn" | "signUp";
 
 export default function Authentication() {
   const theme = useTheme();
 
+  const router = useRouter();
+
+  const { data: session, isLoading } = useGetSession();
+
   const [authMode, setAuthMode] = useState<AuthMode>("signIn");
 
   // Snackbar state (shared between both forms)
   const [snackbarVisible, setSnackbarVisible] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
+
+  useEffect(() => {
+    if (!isLoading && session) {
+      router.replace("/(app)/(tabs)");
+    }
+  }, [session, isLoading, router]);
 
   // Handle successful authentication
   const handleAuthSuccess = (message: string) => {
@@ -28,7 +40,7 @@ export default function Authentication() {
   };
 
   return (
-    <View
+    <SafeAreaView
       style={{
         flex: 1,
         backgroundColor: theme.colors.background,
@@ -68,6 +80,6 @@ export default function Authentication() {
       >
         {snackbarMessage}
       </Snackbar>
-    </View>
+    </SafeAreaView>
   );
 }

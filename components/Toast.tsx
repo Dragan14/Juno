@@ -1,17 +1,17 @@
 import { Snackbar } from "react-native-paper";
 import { useToastStore } from "../stores/toastStore";
 
-export function ErrorSnackbar() {
-  const { message, visible, hideError } = useToastStore();
+export function Toast() {
+  const { message, visible, hideToast } = useToastStore();
 
   return (
     <Snackbar
       visible={visible}
-      onDismiss={hideError}
+      onDismiss={hideToast}
       duration={7000}
       action={{
         label: "Close",
-        onPress: hideError,
+        onPress: hideToast,
       }}
     >
       {message}

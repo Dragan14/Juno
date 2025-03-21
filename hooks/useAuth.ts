@@ -87,13 +87,13 @@ export const useSignOut = () => {
       if (error) throw error;
       return null;
     },
-    onSuccess: () => {
+    onError: (error) => {
+      showToast(error.message || "Failed to sign out");
+    },
+    onSettled: () => {
       queryClient.setQueryData(AUTH_KEYS.session, null);
       queryClient.setQueryData(AUTH_KEYS.user, null);
       clearProfile();
-    },
-    onError: (error) => {
-      showToast(error.message || "Failed to sign out");
     },
   });
 };

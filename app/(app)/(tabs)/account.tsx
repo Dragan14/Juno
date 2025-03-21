@@ -79,9 +79,9 @@ export default function Account() {
     return (
       <ErrorScreen
         text="Error loading profile. Please try again."
-        onPress={() => {
-          if (profile.isError) profile.refetch();
-          if (user.isError) user.refetch();
+        onPress={async () => {
+          if (profile.isError) await profile.refetch();
+          if (user.isError) await user.refetch();
         }}
       />
     );

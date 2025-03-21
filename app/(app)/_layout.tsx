@@ -3,29 +3,47 @@ import { useGetSession } from "../../hooks/useSession";
 import { useEffect } from "react";
 import * as SplashScreen from "expo-splash-screen";
 import { useAppStateRefresh } from "../../utils/appStateRefresh";
+import { useNetInfo } from "@react-native-community/netinfo";
+import NoConnection from "@/components/NoConnection";
+import ErrorScreen from "@/components/ErrorScreen";
 
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const router = useRouter();
-
-  const { data: session, isLoading } = useGetSession();
+  const netInfo = useNetInfo();
+  const session = useGetSession();
 
   // Refresh the access token when the app state changes
   useAppStateRefresh();
 
   useEffect(() => {
-    if (!isLoading) {
+    if (netInfo.isConnected === false) {
+      SplashScreen.hideAsync();
+    } else if (!session.isLoading) {
       if (!session) {
         router.replace("/authentication");
-      } else {
-        SplashScreen.hideAsync();
       }
+      SplashScreen.hideAsync();
     }
-  }, [isLoading, session, router]);
+  }, [netInfo.isConnected, session.isLoading, session, router]);
 
-  if (isLoading) {
+  // No internet connection
+  if (netInfo.isConnected === false) {
+    return <NoConnection />;
+  }
+
+  if (session.isLoading) {
     return null;
+  }
+
+  if (session.isError) {
+    return (
+      <ErrorScreen
+        text="Error loading session. Please try again."
+        onPress={session.refetch}
+      />
+    );
   }
 
   return (

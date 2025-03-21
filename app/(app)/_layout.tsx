@@ -19,12 +19,16 @@ export default function RootLayout() {
 
   useEffect(() => {
     if (netInfo.isConnected === false) {
-      SplashScreen.hideAsync();
+      setTimeout(() => {
+        SplashScreen.hideAsync();
+      }, 1000);
     } else if (!session.isLoading) {
       if (!session) {
         router.replace("/authentication");
       }
-      SplashScreen.hideAsync();
+      setTimeout(() => {
+        SplashScreen.hideAsync();
+      }, 1000);
     }
   }, [netInfo.isConnected, session.isLoading, session, router]);
 

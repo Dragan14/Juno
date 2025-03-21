@@ -3,11 +3,7 @@ import { View, Keyboard } from "react-native";
 import { useSignIn } from "../hooks/useAuth";
 import { Button, TextInput } from "react-native-paper";
 
-interface SignInFormProps {
-  onError: (message?: string) => void;
-}
-
-export default function SignInForm({ onError }: SignInFormProps) {
+export default function SignInForm() {
   const signIn = useSignIn();
 
   // Form state
@@ -23,15 +19,10 @@ export default function SignInForm({ onError }: SignInFormProps) {
   // Handle sign in
   const handleSignIn = async () => {
     Keyboard.dismiss();
-    try {
-      await signIn.mutateAsync({ email, password });
-      // Reset form
-      setEmail("");
-      setPassword("");
-    } catch (error) {
-      const err = error as Error;
-      onError(err.message || "Failed to sign in");
-    }
+    await signIn.mutateAsync({ email, password });
+    // Reset form
+    setEmail("");
+    setPassword("");
   };
 
   return (

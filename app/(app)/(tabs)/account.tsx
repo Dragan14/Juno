@@ -3,11 +3,7 @@ import { View, Keyboard } from "react-native";
 import { nameSchema } from "../../../schemas/auth-schemas";
 import { useSignOut } from "../../../hooks/useAuth";
 import { useGetUser } from "../../../hooks/useUser";
-import {
-  useGetProfile,
-  useUpdateProfile,
-  useClearProfile,
-} from "../../../hooks/useProfile";
+import { useGetProfile, useUpdateProfile } from "../../../hooks/useProfile";
 import LoadingScreen from "../../../components/LoadingScreen";
 import ErrorScreen from "../../../components/ErrorScreen";
 import {
@@ -18,18 +14,17 @@ import {
   useTheme,
 } from "react-native-paper";
 import { z } from "zod";
-import { useErrorStore } from "../../../stores/errorStore";
+import { useToastStore } from "../../../stores/toastStore";
 
 export default function Account() {
   const theme = useTheme();
-  const showError = useErrorStore((state) => state.showError);
+  const showToast = useToastStore((state) => state.showToast);
 
   // User and profile state
   const user = useGetUser();
   const signOut = useSignOut();
   const profile = useGetProfile();
   const updateProfile = useUpdateProfile();
-  const clearProfile = useClearProfile();
 
   // Form state
   const [name, setName] = useState("");
@@ -58,14 +53,9 @@ export default function Account() {
   const handleSave = async () => {
     Keyboard.dismiss();
     if (validateName()) {
-      try {
-        await updateProfile.mutateAsync({ name });
-        setIsEditing(false);
-        showError("Name updated successfully");
-      } catch (error) {
-        const err = error as Error;
-        showError(err.message || "Failed to update name");
-      }
+      await updateProfile.mutateAsync({ name });
+      setIsEditing(false);
+      showToast("Name updated successfully");
     }
   };
 
@@ -75,16 +65,6 @@ export default function Account() {
     }
     setIsEditing(false);
     setErrors((prev) => ({ ...prev, name: "" }));
-  };
-
-  const handleSignOut = async () => {
-    try {
-      await signOut.mutateAsync();
-      clearProfile();
-    } catch (error) {
-      const err = error as Error;
-      showError(err.message || "Failed to sign out");
-    }
   };
 
   if (profile.isLoading || user.isLoading) {
@@ -160,7 +140,9 @@ export default function Account() {
       )}
       <Button
         mode="outlined"
-        onPress={handleSignOut}
+        onPress={async () => {
+          await signOut.mutateAsync();
+        }}
         loading={signOut.isPending}
         disabled={signOut.isPending || updateProfile.isPending}
       >

@@ -10,11 +10,7 @@ import { Button, TextInput, HelperText } from "react-native-paper";
 import { z } from "zod";
 import EmailVerificationModal from "./VerifyEmailModal";
 
-interface SignUpFormProps {
-  onError: (message?: string) => void;
-}
-
-export default function SignUpForm({ onError }: SignUpFormProps) {
+export default function SignUpForm() {
   const signUp = useSignUp();
 
   // Form state
@@ -117,21 +113,16 @@ export default function SignUpForm({ onError }: SignUpFormProps) {
   const handleSignUp = async () => {
     Keyboard.dismiss();
     if (validateForm()) {
-      try {
-        const { session } = await signUp.mutateAsync({ email, password, name });
-        // Reset form
-        setName("");
-        setEmail("");
-        setPassword("");
-        setConfirmPassword("");
-        setErrors({ name: "", email: "", password: "", confirmPassword: "" });
-        // Show verification modal if no session is returned
-        if (!session) {
-          setVerificationModalVisible(true);
-        }
-      } catch (error) {
-        const err = error as Error;
-        onError(err.message || "Failed to sign up");
+      const { session } = await signUp.mutateAsync({ email, password, name });
+      // Reset form
+      setName("");
+      setEmail("");
+      setPassword("");
+      setConfirmPassword("");
+      setErrors({ name: "", email: "", password: "", confirmPassword: "" });
+      // Show verification modal if no session is returned
+      if (!session) {
+        setVerificationModalVisible(true);
       }
     }
   };

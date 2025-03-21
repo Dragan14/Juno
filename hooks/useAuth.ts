@@ -4,10 +4,13 @@ import { AUTH_KEYS } from "../constants/queryKeys";
 import { getAuthCallbackUrl } from "../utils/urlUtils";
 import { validateOtpCooldown } from "../utils/validateOtpCoolDown";
 import type { SignInCredentials, SignUpCredentials } from "../types/authTypes";
+import { useClearProfile } from "./useProfile";
+import { useToastStore } from "../stores/toastStore";
 
 // Hook for sign in functionality
 export const useSignIn = () => {
   const queryClient = useQueryClient();
+  const showToast = useToastStore((state) => state.showToast);
 
   return useMutation({
     mutationFn: async ({ email, password }: SignInCredentials) => {
@@ -22,12 +25,16 @@ export const useSignIn = () => {
       queryClient.setQueryData(AUTH_KEYS.session, data.session);
       queryClient.setQueryData(AUTH_KEYS.user, data.user);
     },
+    onError: (error) => {
+      showToast(error.message || "Failed to sign in");
+    },
   });
 };
 
 // Hook for sign up functionality
 export const useSignUp = () => {
   const queryClient = useQueryClient();
+  const showToast = useToastStore((state) => state.showToast);
 
   return useMutation({
     mutationFn: async ({ email, password, name }: SignUpCredentials) => {
@@ -62,12 +69,17 @@ export const useSignUp = () => {
         queryClient.setQueryData(AUTH_KEYS.user, data.user);
       }
     },
+    onError: (error) => {
+      showToast(error.message || "Failed to sign up");
+    },
   });
 };
 
 // Hook for sign out functionality
 export const useSignOut = () => {
   const queryClient = useQueryClient();
+  const clearProfile = useClearProfile();
+  const showToast = useToastStore((state) => state.showToast);
 
   return useMutation({
     mutationFn: async () => {
@@ -78,6 +90,10 @@ export const useSignOut = () => {
     onSuccess: () => {
       queryClient.setQueryData(AUTH_KEYS.session, null);
       queryClient.setQueryData(AUTH_KEYS.user, null);
+      clearProfile();
+    },
+    onError: (error) => {
+      showToast(error.message || "Failed to sign out");
     },
   });
 };

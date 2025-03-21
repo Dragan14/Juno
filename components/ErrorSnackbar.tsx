@@ -1,8 +1,8 @@
 import { Snackbar } from "react-native-paper";
-import { useErrorStore } from "../stores/errorStore";
+import { useToastStore } from "../stores/toastStore";
 
 export function ErrorSnackbar() {
-  const { message, visible, hideError } = useErrorStore();
+  const { message, visible, hideError } = useToastStore();
 
   return (
     <Snackbar

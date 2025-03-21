@@ -25,7 +25,7 @@ export const useAuthStateChange = () => {
         case "SIGNED_IN":
           queryClient.setQueryData(AUTH_KEYS.session, session);
           queryClient.setQueryData(AUTH_KEYS.user, session?.user || null);
-          router.replace("/(app)");
+          router.replace("/(app)/(tabs)");
           break;
         case "TOKEN_REFRESHED":
           queryClient.setQueryData(AUTH_KEYS.session, session);

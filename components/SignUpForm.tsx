@@ -11,11 +11,10 @@ import { z } from "zod";
 import EmailVerificationModal from "./VerifyEmailModal";
 
 interface SignUpFormProps {
-  onSuccess: (message?: string) => void;
   onError: (message?: string) => void;
 }
 
-export default function SignUpForm({ onSuccess, onError }: SignUpFormProps) {
+export default function SignUpForm({ onError }: SignUpFormProps) {
   const signUp = useSignUp();
 
   // Form state
@@ -129,8 +128,6 @@ export default function SignUpForm({ onSuccess, onError }: SignUpFormProps) {
         // Show verification modal if no session is returned
         if (!session) {
           setVerificationModalVisible(true);
-        } else {
-          onSuccess("Signed up successfully");
         }
       } catch (error) {
         const err = error as Error;

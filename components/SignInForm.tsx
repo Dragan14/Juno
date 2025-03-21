@@ -4,11 +4,10 @@ import { useSignIn } from "../hooks/useAuth";
 import { Button, TextInput } from "react-native-paper";
 
 interface SignInFormProps {
-  onSuccess: (message?: string) => void;
   onError: (message?: string) => void;
 }
 
-export default function SignInForm({ onSuccess, onError }: SignInFormProps) {
+export default function SignInForm({ onError }: SignInFormProps) {
   const signIn = useSignIn();
 
   // Form state
@@ -26,7 +25,6 @@ export default function SignInForm({ onSuccess, onError }: SignInFormProps) {
     Keyboard.dismiss();
     try {
       await signIn.mutateAsync({ email, password });
-      onSuccess("Signed in successfully");
       // Reset form
       setEmail("");
       setPassword("");

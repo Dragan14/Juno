@@ -1,11 +1,10 @@
-import { useState, useEffect } from "react";
-import { useTheme, SegmentedButtons, Snackbar } from "react-native-paper";
+import { useState } from "react";
+import { useTheme, SegmentedButtons } from "react-native-paper";
 import SignInForm from "../components/SignInForm";
 import SignUpForm from "../components/SignUpForm";
-import { useGetSession } from "../hooks/useSession";
-import { useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import * as SplashScreen from "expo-splash-screen";
+import { useErrorStore } from "../stores/errorStore";
 
 type AuthMode = "signIn" | "signUp";
 
@@ -13,41 +12,13 @@ SplashScreen.preventAutoHideAsync();
 
 export default function Authentication() {
   const theme = useTheme();
-
-  const router = useRouter();
-
-  const { data: session, isLoading } = useGetSession();
+  const showError = useErrorStore((state) => state.showError);
 
   const [authMode, setAuthMode] = useState<AuthMode>("signIn");
 
-  // Snackbar state (shared between both forms)
-  const [snackbarVisible, setSnackbarVisible] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState("");
-
-  useEffect(() => {
-    if (!isLoading) {
-      if (session) {
-        router.replace("/(app)");
-      } else {
-        SplashScreen.hideAsync();
-      }
-    }
-  }, [isLoading, session, router]);
-
-  if (isLoading) {
-    return null;
-  }
-
-  // Handle successful authentication
-  const handleAuthSuccess = (message: string) => {
-    setSnackbarMessage(message);
-    setSnackbarVisible(true);
-  };
-
   // Handle authentication error
   const handleAuthError = (message: string) => {
-    setSnackbarMessage(message);
-    setSnackbarVisible(true);
+    showError(message);
   };
 
   return (
@@ -67,30 +38,13 @@ export default function Authentication() {
       />
       {authMode === "signIn" ? (
         <SignInForm
-          onSuccess={(message) =>
-            handleAuthSuccess(message || "Signed in successfully")
-          }
           onError={(message) => handleAuthError(message || "Failed to sign in")}
         />
       ) : (
         <SignUpForm
-          onSuccess={(message) =>
-            handleAuthSuccess(message || "Signed up successfully")
-          }
           onError={(message) => handleAuthError(message || "Failed to sign up")}
         />
       )}
-      <Snackbar
-        visible={snackbarVisible}
-        onDismiss={() => setSnackbarVisible(false)}
-        duration={5000}
-        action={{
-          label: "Close",
-          onPress: () => setSnackbarVisible(false),
-        }}
-      >
-        {snackbarMessage}
-      </Snackbar>
     </SafeAreaView>
   );
 }

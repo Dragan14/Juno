@@ -9,6 +9,7 @@ import {
 import { useColorScheme } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { useAuthStateChange } from "../utils/authStateChange";
+import { ErrorSnackbar } from "../components/ErrorSnackbar";
 
 const queryClient = new QueryClient({});
 
@@ -27,6 +28,7 @@ function AppLayout() {
           backgroundColor={paperTheme.colors.background}
         />
         <Slot />
+        <ErrorSnackbar />
       </PaperProvider>
     </SafeAreaProvider>
   );

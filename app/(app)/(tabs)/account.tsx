@@ -15,13 +15,14 @@ import {
   TextInput,
   HelperText,
   Text,
-  Snackbar,
   useTheme,
 } from "react-native-paper";
 import { z } from "zod";
+import { useErrorStore } from "../../../stores/errorStore";
 
 export default function Account() {
   const theme = useTheme();
+  const showError = useErrorStore((state) => state.showError);
 
   // User and profile state
   const user = useGetUser();
@@ -34,17 +35,13 @@ export default function Account() {
   const [name, setName] = useState("");
   const [errors, setErrors] = useState({ name: "" });
   const [isEditing, setIsEditing] = useState(false);
-  const [snackbarVisible, setSnackbarVisible] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState("");
 
-  // Load the initial name when profile data is available
   useEffect(() => {
     if (profile.data) {
       setName(profile.data.name || "");
     }
   }, [profile.data]);
 
-  // Validate the name
   const validateName = () => {
     try {
       nameSchema.parse(name);
@@ -58,24 +55,20 @@ export default function Account() {
     }
   };
 
-  // Handle saving the updated name
   const handleSave = async () => {
     Keyboard.dismiss();
     if (validateName()) {
       try {
         await updateProfile.mutateAsync({ name });
         setIsEditing(false);
-        setSnackbarMessage("Name updated successfully");
-        setSnackbarVisible(true);
+        showError("Name updated successfully");
       } catch (error) {
         const err = error as Error;
-        setSnackbarMessage(err.message || "Failed to update name");
-        setSnackbarVisible(true);
+        showError(err.message || "Failed to update name");
       }
     }
   };
 
-  // Handle canceling edits
   const handleCancel = () => {
     if (profile.data) {
       setName(profile.data.name || "");
@@ -84,24 +77,20 @@ export default function Account() {
     setErrors((prev) => ({ ...prev, name: "" }));
   };
 
-  // Handle sign out
   const handleSignOut = async () => {
     try {
       await signOut.mutateAsync();
       clearProfile();
     } catch (error) {
       const err = error as Error;
-      setSnackbarMessage(err.message || "Failed to sign out");
-      setSnackbarVisible(true);
+      showError(err.message || "Failed to sign out");
     }
   };
 
-  // Loading state
   if (profile.isLoading || user.isLoading) {
     return <LoadingScreen />;
   }
 
-  // Error state
   if (
     (profile.isError || user.isError) &&
     !profile.isLoading &&
@@ -177,17 +166,6 @@ export default function Account() {
       >
         Sign Out
       </Button>
-      <Snackbar
-        visible={snackbarVisible}
-        onDismiss={() => setSnackbarVisible(false)}
-        duration={5000}
-        action={{
-          label: "Close",
-          onPress: () => setSnackbarVisible(false),
-        }}
-      >
-        {snackbarMessage}
-      </Snackbar>
     </View>
   );
 }

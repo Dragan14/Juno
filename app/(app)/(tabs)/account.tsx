@@ -6,18 +6,13 @@ import { useGetUser } from "../../../hooks/useUser";
 import { useGetProfile, useUpdateProfile } from "../../../hooks/useProfile";
 import LoadingScreen from "../../../components/LoadingScreen";
 import ErrorScreen from "../../../components/ErrorScreen";
-import {
-  Button,
-  TextInput,
-  HelperText,
-  Text,
-  useTheme,
-} from "react-native-paper";
+import { Button, TextInput, HelperText, Text } from "react-native-paper";
 import { z } from "zod";
 import { useToastStore } from "../../../stores/toastStore";
+import { useThemeStore } from "@/stores/themeStore";
 
 export default function Account() {
-  const theme = useTheme();
+  const theme = useThemeStore((state) => state.theme);
   const showToast = useToastStore((state) => state.showToast);
 
   // User and profile state

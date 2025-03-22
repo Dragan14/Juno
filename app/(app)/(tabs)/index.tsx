@@ -1,11 +1,12 @@
 import "../../../wdyr";
-import { Text, useTheme } from "react-native-paper";
+import { Text } from "react-native-paper";
 import { View } from "react-native";
 import { Button } from "react-native-paper";
 import { Link } from "expo-router";
+import { useThemeStore } from "@/stores/themeStore";
 
 export default function Home() {
-  const theme = useTheme();
+  const theme = useThemeStore((state) => state.theme);
 
   return (
     <View

@@ -1,12 +1,13 @@
 import "../wdyr";
-import { Button, Text, useTheme } from "react-native-paper";
+import { Button, Text } from "react-native-paper";
 import { Link } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useEffect } from "react";
 import * as SplashScreen from "expo-splash-screen";
+import { useThemeStore } from "@/stores/themeStore";
 
 export default function NotFoundScreen() {
-  const theme = useTheme();
+  const theme = useThemeStore((state) => state.theme);
 
   useEffect(() => {
     const timer = setTimeout(() => {

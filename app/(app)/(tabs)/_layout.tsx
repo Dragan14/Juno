@@ -1,8 +1,9 @@
 import { Tabs } from "expo-router";
-import { useTheme, Icon } from "react-native-paper";
+import { Icon } from "react-native-paper";
+import { useThemeStore } from "@/stores/themeStore";
 
 export default function TabsLayout() {
-  const theme = useTheme();
+  const theme = useThemeStore((state) => state.theme);
 
   return (
     <Tabs

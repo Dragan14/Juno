@@ -1,8 +1,8 @@
 import { View, Image } from "react-native";
-import { useTheme } from "react-native-paper";
+import { useThemeStore } from "@/stores/themeStore";
 
 export default function LoadingScreen() {
-  const theme = useTheme();
+  const theme = useThemeStore((state) => state.theme);
   return (
     <View
       style={{

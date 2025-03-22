@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { View } from "react-native";
-import { useTheme, Button, Text } from "react-native-paper";
+import { Button, Text } from "react-native-paper";
 import { useSignOut } from "@/hooks/useAuth";
+import { useThemeStore } from "@/stores/themeStore";
 
 interface ErrorScreenProps {
   text?: string;
@@ -12,7 +13,7 @@ export default function ErrorScreen({
   text = "Error Loading...",
   onPress = async () => {},
 }: ErrorScreenProps) {
-  const theme = useTheme();
+  const theme = useThemeStore((state) => state.theme);
   const signOut = useSignOut();
   const [isRetrying, setIsRetrying] = useState(false);
 

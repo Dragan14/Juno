@@ -1,5 +1,6 @@
 import { View, StyleSheet } from "react-native";
-import { Modal, Portal, Text, Button, useTheme } from "react-native-paper";
+import { Modal, Portal, Text, Button } from "react-native-paper";
+import { useThemeStore } from "@/stores/themeStore";
 
 interface EmailVerificationModalProps {
   visible: boolean;
@@ -10,7 +11,7 @@ export default function EmailVerificationModal({
   visible,
   onDismiss,
 }: EmailVerificationModalProps) {
-  const theme = useTheme();
+  const theme = useThemeStore((state) => state.theme);
 
   return (
     <Portal>

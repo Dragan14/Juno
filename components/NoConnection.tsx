@@ -1,8 +1,9 @@
 import { View } from "react-native";
-import { useTheme, Text } from "react-native-paper";
+import { Text } from "react-native-paper";
+import { useThemeStore } from "@/stores/themeStore";
 
 export default function NoConnection() {
-  const theme = useTheme();
+  const theme = useThemeStore((state) => state.theme);
 
   return (
     <View

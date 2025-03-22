@@ -1,3 +1,4 @@
+import "../../../wdyr";
 import { Text, useTheme } from "react-native-paper";
 import { View } from "react-native";
 import { Button } from "react-native-paper";

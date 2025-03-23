@@ -23,7 +23,7 @@ export default function RootLayout() {
         SplashScreen.hideAsync();
       }, 1000);
     } else if (!session.isLoading) {
-      if (!session) {
+      if (!session || !session.data) {
         router.replace("/authentication");
       }
       setTimeout(() => {

@@ -7,13 +7,23 @@ import { StatusBar } from "expo-status-bar";
 import { useAuthStateChange } from "../utils/authStateChange";
 import { Toast } from "../components/Toast";
 import { useThemeStore } from "@/stores/themeStore";
+import { useColorScheme } from "react-native";
+import { useEffect } from "react";
 
 const queryClient = new QueryClient({});
 
 function AppLayout() {
   /// Hook to listen for auth state changes, update the query cache accordingly and redirect the user
   useAuthStateChange();
-  const { theme, colorScheme } = useThemeStore();
+
+  const colorScheme = useColorScheme();
+  const { theme, setTheme } = useThemeStore();
+
+  useEffect(() => {
+    if (colorScheme) {
+      setTheme(colorScheme === "dark" ? "dark" : "light");
+    }
+  }, [colorScheme, setTheme]);
 
   return (
     <SafeAreaProvider>

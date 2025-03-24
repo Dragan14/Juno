@@ -1,33 +1,43 @@
 import { Stack, useRouter } from "expo-router";
 import { useGetSession } from "../../hooks/useSession";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { Platform } from "react-native";
 import * as SplashScreen from "expo-splash-screen";
 import { useAppStateRefresh } from "../../utils/appStateRefresh";
 import { useNetInfo } from "@react-native-community/netinfo";
 import NoConnection from "@/components/NoConnection";
 import ErrorScreen from "@/components/ErrorScreen";
+import LoadingScreen from "@/components/LoadingScreen";
 
 export default function RootLayout() {
   const router = useRouter();
   const netInfo = useNetInfo();
   const session = useGetSession();
+  const [isLoading, setIsLoading] = useState(true);
 
   // Refresh the access token when the app state changes
   useAppStateRefresh();
 
   useEffect(() => {
     if (netInfo.isConnected === false) {
-      setTimeout(() => {
-        SplashScreen.hideAsync();
-      }, 1000);
+      if (Platform.OS === "web") {
+        setIsLoading(false);
+      } else {
+        setTimeout(() => {
+          SplashScreen.hideAsync();
+        }, 1000);
+      }
     } else if (!session.isLoading && netInfo.isConnected != null) {
-      console.log("redirect");
       if (!session.data) {
         router.replace("/authentication");
       }
-      setTimeout(() => {
-        SplashScreen.hideAsync();
-      }, 1000);
+      if (Platform.OS === "web") {
+        setIsLoading(false);
+      } else {
+        setTimeout(() => {
+          SplashScreen.hideAsync();
+        }, 1000);
+      }
     }
   }, [netInfo.isConnected, session.isLoading, session.data, router]);
 
@@ -36,7 +46,14 @@ export default function RootLayout() {
     return <NoConnection />;
   }
 
+  if (Platform.OS === "web" && isLoading) {
+    return <LoadingScreen />;
+  }
+
   if (session.isLoading) {
+    if (Platform.OS === "web") {
+      return <LoadingScreen />;
+    }
     return null;
   }
 

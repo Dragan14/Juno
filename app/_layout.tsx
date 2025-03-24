@@ -9,8 +9,11 @@ import { Toast } from "../components/Toast";
 import { useThemeStore } from "@/stores/themeStore";
 import { useColorScheme } from "react-native";
 import { useEffect } from "react";
+import * as SplashScreen from "expo-splash-screen";
 
 const queryClient = new QueryClient({});
+
+SplashScreen.preventAutoHideAsync();
 
 function AppLayout() {
   /// Hook to listen for auth state changes, update the query cache accordingly and redirect the user

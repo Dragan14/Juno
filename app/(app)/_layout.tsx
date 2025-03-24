@@ -7,8 +7,6 @@ import { useNetInfo } from "@react-native-community/netinfo";
 import NoConnection from "@/components/NoConnection";
 import ErrorScreen from "@/components/ErrorScreen";
 
-SplashScreen.preventAutoHideAsync();
-
 export default function RootLayout() {
   const router = useRouter();
   const netInfo = useNetInfo();
@@ -22,7 +20,7 @@ export default function RootLayout() {
       setTimeout(() => {
         SplashScreen.hideAsync();
       }, 1000);
-    } else if (!session.isLoading) {
+    } else if (!session.isLoading && netInfo.isConnected != null) {
       if (!session || !session.data) {
         router.replace("/authentication");
       }

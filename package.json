@@ -78,7 +78,6 @@
     "@types/jest": "^29.5.12",
     "@types/react": "~18.3.12",
     "@types/react-test-renderer": "^18.3.0",
-    "@welldone-software/why-did-you-render": "^8.0.3",
     "eslint": "^8.57.0",
     "eslint-config-expo": "~8.0.1",
     "eslint-config-prettier": "^10.0.1",

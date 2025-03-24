@@ -4,8 +4,7 @@
     "strict": true,
     "paths": {
       "@/*": ["./*"]
-    },
-    "types": ["@welldone-software/why-did-you-render"]
+    }
   },
   "include": ["**/*.ts", "**/*.tsx", ".expo/types/**/*.ts", "expo-env.d.ts"]
 }

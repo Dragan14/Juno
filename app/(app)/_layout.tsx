@@ -21,14 +21,15 @@ export default function RootLayout() {
         SplashScreen.hideAsync();
       }, 1000);
     } else if (!session.isLoading && netInfo.isConnected != null) {
-      if (!session || !session.data) {
+      console.log("redirect");
+      if (!session.data) {
         router.replace("/authentication");
       }
       setTimeout(() => {
         SplashScreen.hideAsync();
       }, 1000);
     }
-  }, [netInfo.isConnected, session.isLoading, session, router]);
+  }, [netInfo.isConnected, session.isLoading, session.data, router]);
 
   // No internet connection
   if (netInfo.isConnected === false) {

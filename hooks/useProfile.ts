@@ -28,6 +28,7 @@ export const useGetProfile = () => {
       }
       return data as Profile;
     },
+    retry: false,
     // Only run the query if we have a user
     enabled: !!user,
     refetchOnWindowFocus: true,
@@ -54,6 +55,7 @@ export const useUpdateProfile = () => {
       if (error) throw error;
       return data as Profile;
     },
+    retry: false,
     onSuccess: (data) => {
       // Update the profile query with the new data
       queryClient.setQueryData(PROFILE_KEYS.profile, data);

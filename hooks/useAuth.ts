@@ -21,6 +21,7 @@ export const useSignIn = () => {
       if (error) throw error;
       return data;
     },
+    retry: false,
     onSuccess: (data) => {
       queryClient.setQueryData(AUTH_KEYS.session, data.session);
       queryClient.setQueryData(AUTH_KEYS.user, data.user);
@@ -63,6 +64,7 @@ export const useSignUp = () => {
       if (error) throw error;
       return data;
     },
+    retry: false,
     onSuccess: (data) => {
       if (data.session) {
         queryClient.setQueryData(AUTH_KEYS.session, data.session);
@@ -87,6 +89,7 @@ export const useSignOut = () => {
       if (error) throw error;
       return null;
     },
+    retry: false,
     onError: (error) => {
       showToast(error.message || "Failed to sign out");
     },

@@ -11,6 +11,7 @@ export const useGetSession = () => {
       if (error) throw error;
       return data.session;
     },
+    retry: false,
     refetchOnWindowFocus: true,
   });
 };
@@ -34,6 +35,7 @@ export const useSetSession = () => {
       if (error) throw error;
       return data;
     },
+    retry: false,
     onSuccess: (data) => {
       queryClient.setQueryData(AUTH_KEYS.session, data.session);
       queryClient.setQueryData(AUTH_KEYS.user, data.user);

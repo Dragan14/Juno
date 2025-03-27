@@ -2,13 +2,10 @@ import { useState } from "react";
 import { SegmentedButtons } from "react-native-paper";
 import SignInForm from "@/components/SignInForm";
 import SignUpForm from "@/components/SignUpForm";
-import { SafeAreaView } from "react-native-safe-area-context";
-import * as SplashScreen from "expo-splash-screen";
 import { useThemeStore } from "@/stores/themeStore";
+import { View } from "react-native";
 
 type AuthMode = "signIn" | "signUp";
-
-SplashScreen.preventAutoHideAsync();
 
 export default function Authentication() {
   const theme = useThemeStore((state) => state.theme);
@@ -16,7 +13,7 @@ export default function Authentication() {
   const [authMode, setAuthMode] = useState<AuthMode>("signIn");
 
   return (
-    <SafeAreaView
+    <View
       style={{
         flex: 1,
         backgroundColor: theme.colors.background,
@@ -31,6 +28,6 @@ export default function Authentication() {
         ]}
       />
       {authMode === "signIn" ? <SignInForm /> : <SignUpForm />}
-    </SafeAreaView>
+    </View>
   );
 }

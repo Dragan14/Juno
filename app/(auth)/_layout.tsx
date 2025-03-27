@@ -3,7 +3,6 @@ import { useGetSession } from "@/hooks/useSession";
 import { useEffect, useState } from "react";
 import { Platform } from "react-native";
 import * as SplashScreen from "expo-splash-screen";
-import { useAppStateRefresh } from "@/utils/appStateRefresh";
 import { useNetInfo } from "@react-native-community/netinfo";
 import NoConnection from "@/components/NoConnection";
 import ErrorScreen from "@/components/ErrorScreen";
@@ -15,9 +14,6 @@ export default function RootLayout() {
   const session = useGetSession();
   const [isLoading, setIsLoading] = useState(true);
 
-  // Refresh the access token when the app state changes
-  useAppStateRefresh();
-
   useEffect(() => {
     if (netInfo.isConnected === false) {
       if (Platform.OS === "web") {
@@ -28,8 +24,8 @@ export default function RootLayout() {
         }, 1000);
       }
     } else if (!session.isLoading && netInfo.isConnected !== null) {
-      if (!session.data) {
-        router.replace("/(auth)/authentication");
+      if (session.data) {
+        router.replace("/(app)/(tabs)");
       }
       if (Platform.OS === "web") {
         setIsLoading(false);
@@ -72,7 +68,7 @@ export default function RootLayout() {
         headerShown: false,
       }}
     >
-      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      <Stack.Screen name="authentication" options={{ headerShown: false }} />
     </Stack>
   );
 }

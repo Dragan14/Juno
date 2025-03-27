@@ -1,11 +1,11 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { supabase } from "../utils/supabase";
-import { AUTH_KEYS } from "../constants/queryKeys";
-import { getAuthCallbackUrl } from "../utils/urlUtils";
-import { validateOtpCooldown } from "../utils/validateOtpCoolDown";
-import type { SignInCredentials, SignUpCredentials } from "../types/authTypes";
+import { supabase } from "@/utils/supabase";
+import { AUTH_KEYS } from "@/constants/queryKeys";
+import { getAuthCallbackUrl } from "@/utils/urlUtils";
+import { validateOtpCooldown } from "@/utils/validateOtpCoolDown";
+import type { SignInCredentials, SignUpCredentials } from "@/types/authTypes";
 import { useClearProfile } from "./useProfile";
-import { useToastStore } from "../stores/toastStore";
+import { useToastStore } from "@/stores/toastStore";
 
 // Hook for sign in functionality
 export const useSignIn = () => {

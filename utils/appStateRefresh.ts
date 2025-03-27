@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { AppState } from "react-native";
-import { supabase } from "../utils/supabase";
+import { supabase } from "@/utils/supabase";
 
 export function useAppStateRefresh() {
   useEffect(() => {

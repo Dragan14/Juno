@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { purpleLight, purpleDark } from "../themes/purple-theme";
+import { purpleLight, purpleDark } from "@/themes/purple-theme";
 import { Appearance } from "react-native";
 
 type Theme = typeof purpleLight;

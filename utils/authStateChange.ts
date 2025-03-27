@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { supabase } from "./supabase";
-import { AUTH_KEYS } from "../constants/queryKeys";
+import { AUTH_KEYS } from "@/constants/queryKeys";
 import { router } from "expo-router";
 
 // Hook to listen for auth state changes and update the query cache accordingly and redirect the user

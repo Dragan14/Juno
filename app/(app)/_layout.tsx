@@ -1,9 +1,9 @@
 import { Stack, useRouter } from "expo-router";
-import { useGetSession } from "../../hooks/useSession";
+import { useGetSession } from "@/hooks/useSession";
 import { useEffect, useState } from "react";
 import { Platform } from "react-native";
 import * as SplashScreen from "expo-splash-screen";
-import { useAppStateRefresh } from "../../utils/appStateRefresh";
+import { useAppStateRefresh } from "@/utils/appStateRefresh";
 import { useNetInfo } from "@react-native-community/netinfo";
 import NoConnection from "@/components/NoConnection";
 import ErrorScreen from "@/components/ErrorScreen";

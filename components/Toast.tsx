@@ -1,5 +1,5 @@
 import { Snackbar } from "react-native-paper";
-import { useToastStore } from "../stores/toastStore";
+import { useToastStore } from "@/stores/toastStore";
 
 export function Toast() {
   const { message, visible, hideToast } = useToastStore();

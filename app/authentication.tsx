@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { SegmentedButtons } from "react-native-paper";
-import SignInForm from "../components/SignInForm";
-import SignUpForm from "../components/SignUpForm";
+import SignInForm from "@/components/SignInForm";
+import SignUpForm from "@/components/SignUpForm";
 import { SafeAreaView } from "react-native-safe-area-context";
 import * as SplashScreen from "expo-splash-screen";
 import { useThemeStore } from "@/stores/themeStore";

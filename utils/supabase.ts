@@ -1,7 +1,7 @@
 import "react-native-url-polyfill/auto";
 import { createClient } from "@supabase/supabase-js";
 import { Platform } from "react-native";
-import { storage } from "../constants/localStorage";
+import { storage } from "@/constants/localStorage";
 
 // Create MMKV storage adapter for Supabase
 const MMKVStorageAdapter = {

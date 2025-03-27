@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { supabase } from "../utils/supabase";
-import { AUTH_KEYS } from "../constants/queryKeys";
+import { supabase } from "@/utils/supabase";
+import { AUTH_KEYS } from "@/constants/queryKeys";
 
 // Hook for getting the current session
 export const useGetSession = () => {

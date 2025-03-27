@@ -1,4 +1,4 @@
-import { storage, LAST_OTP_REQUEST_KEY } from "../constants/localStorage";
+import { storage, LAST_OTP_REQUEST_KEY } from "@/constants/localStorage";
 
 export const validateOtpCooldown = () => {
   const lastOtpRequest = storage.getNumber(LAST_OTP_REQUEST_KEY) || 0;

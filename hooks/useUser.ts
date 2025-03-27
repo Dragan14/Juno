@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "../utils/supabase";
-import { AUTH_KEYS } from "../constants/queryKeys";
-import { useToastStore } from "../stores/toastStore";
+import { supabase } from "@/utils/supabase";
+import { AUTH_KEYS } from "@/constants/queryKeys";
+import { useToastStore } from "@/stores/toastStore";
 
 // Hook to get the current user
 export const useGetUser = () => {

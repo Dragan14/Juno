@@ -1,9 +1,9 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { supabase } from "../utils/supabase";
-import { Profile } from "../types/profileTypes";
-import { PROFILE_KEYS } from "../constants/queryKeys";
+import { supabase } from "@/utils/supabase";
+import { Profile } from "@/types/profileTypes";
+import { PROFILE_KEYS } from "@/constants/queryKeys";
 import { useGetUser } from "./useUser";
-import { useToastStore } from "../stores/toastStore";
+import { useToastStore } from "@/stores/toastStore";
 
 // Hook for getting the user profile
 export const useGetProfile = () => {

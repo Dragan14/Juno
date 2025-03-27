@@ -15,7 +15,7 @@ export default function NotFoundScreen() {
     setTimeout(() => {
       setIsWebLoading(false);
       SplashScreen.hideAsync();
-    }, 5000);
+    }, 1500);
   }, []);
 
   if (isWebLoading) {

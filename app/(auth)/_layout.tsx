@@ -19,7 +19,7 @@ export default function RootLayout() {
       setTimeout(() => {
         setIsWebLoading(false);
         SplashScreen.hideAsync();
-      }, 5000);
+      }, 1500);
     } else if (!session.isLoading && netInfo.isConnected !== null) {
       if (session.data) {
         router.replace("/(app)/(tabs)");
@@ -27,7 +27,7 @@ export default function RootLayout() {
       setTimeout(() => {
         setIsWebLoading(false);
         SplashScreen.hideAsync();
-      }, 5000);
+      }, 1500);
     }
   }, [netInfo.isConnected, session.isLoading, session.data, router]);
 
@@ -59,7 +59,7 @@ export default function RootLayout() {
         headerShown: false,
       }}
     >
-      <Stack.Screen name="authentication" options={{ headerShown: false }} />
+      <Stack.Screen name="index" options={{ headerShown: false }} />
     </Stack>
   );
 }

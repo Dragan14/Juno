@@ -19,15 +19,15 @@ export default function RootLayout() {
       setTimeout(() => {
         setIsWebLoading(false);
         SplashScreen.hideAsync();
-      }, 5000);
+      }, 1500);
     } else if (!session.isLoading && netInfo.isConnected !== null) {
       if (!session.data) {
-        router.replace("/(auth)/authentication");
+        router.replace("/(auth)");
       }
       setTimeout(() => {
         setIsWebLoading(false);
         SplashScreen.hideAsync();
-      }, 5000);
+      }, 1500);
     }
   }, [netInfo.isConnected, session.isLoading, session.data, router]);
 

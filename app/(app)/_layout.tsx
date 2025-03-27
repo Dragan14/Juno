@@ -3,7 +3,6 @@ import { useGetSession } from "@/hooks/useSession";
 import { useEffect, useState } from "react";
 import { Platform } from "react-native";
 import * as SplashScreen from "expo-splash-screen";
-import { useAppStateRefresh } from "@/utils/appStateRefresh";
 import { useNetInfo } from "@react-native-community/netinfo";
 import NoConnection from "@/components/NoConnection";
 import ErrorScreen from "@/components/ErrorScreen";
@@ -13,47 +12,34 @@ export default function RootLayout() {
   const router = useRouter();
   const netInfo = useNetInfo();
   const session = useGetSession();
-  const [isLoading, setIsLoading] = useState(true);
-
-  // Refresh the access token when the app state changes
-  useAppStateRefresh();
+  const [isWebLoading, setIsWebLoading] = useState(Platform.OS === "web");
 
   useEffect(() => {
     if (netInfo.isConnected === false) {
-      if (Platform.OS === "web") {
-        setIsLoading(false);
-      } else {
-        setTimeout(() => {
-          SplashScreen.hideAsync();
-        }, 1000);
-      }
+      setTimeout(() => {
+        setIsWebLoading(false);
+        SplashScreen.hideAsync();
+      }, 5000);
     } else if (!session.isLoading && netInfo.isConnected !== null) {
       if (!session.data) {
         router.replace("/(auth)/authentication");
       }
-      if (Platform.OS === "web") {
-        setIsLoading(false);
-      } else {
-        setTimeout(() => {
-          SplashScreen.hideAsync();
-        }, 1000);
-      }
+      setTimeout(() => {
+        setIsWebLoading(false);
+        SplashScreen.hideAsync();
+      }, 5000);
     }
   }, [netInfo.isConnected, session.isLoading, session.data, router]);
 
-  // No internet connection
   if (netInfo.isConnected === false) {
     return <NoConnection />;
   }
 
-  if (Platform.OS === "web" && isLoading) {
+  if (isWebLoading) {
     return <LoadingScreen />;
   }
 
   if (session.isLoading) {
-    if (Platform.OS === "web") {
-      return <LoadingScreen />;
-    }
     return null;
   }
 

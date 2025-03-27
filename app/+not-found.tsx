@@ -9,20 +9,16 @@ import { Platform } from "react-native";
 
 export default function NotFoundScreen() {
   const theme = useThemeStore((state) => state.theme);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isWebLoading, setIsWebLoading] = useState(Platform.OS === "web");
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      if (Platform.OS === "web") {
-        setIsLoading(false);
-      } else {
-        SplashScreen.hideAsync();
-      }
-    }, 1000);
-    return () => clearTimeout(timer);
+    setTimeout(() => {
+      setIsWebLoading(false);
+      SplashScreen.hideAsync();
+    }, 5000);
   }, []);
 
-  if (Platform.OS === "web" && isLoading) {
+  if (isWebLoading) {
     return <LoadingScreen />;
   }
 

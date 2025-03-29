@@ -4,7 +4,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Provider as PaperProvider } from "react-native-paper";
 import { StatusBar } from "expo-status-bar";
 import { useAuthStateChange } from "@/utils/authStateChange";
-import { Toast } from "@/components/Toast";
+import { Toast } from "@/components/ui/Toast";
 import { useThemeStore } from "@/stores/themeStore";
 import { useColorScheme } from "react-native";
 import { useEffect } from "react";

@@ -9,6 +9,7 @@ import { useThemeStore } from "@/stores/themeStore";
 import { useColorScheme } from "react-native";
 import { useEffect } from "react";
 import * as SplashScreen from "expo-splash-screen";
+import { useDeepLinks } from "@/utils/useDeepLinks";
 
 const queryClient = new QueryClient({});
 
@@ -17,6 +18,8 @@ SplashScreen.preventAutoHideAsync();
 function AppLayout() {
   /// Hook to listen for auth state changes, update the query cache accordingly and redirect the user
   useAuthStateChange();
+  // Hook to handle deep links
+  useDeepLinks();
 
   const colorScheme = useColorScheme();
   const { theme, setTheme } = useThemeStore();

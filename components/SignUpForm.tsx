@@ -11,6 +11,7 @@ import { z } from "zod";
 import EmailVerificationModal from "./VerifyEmailModal";
 
 export default function SignUpForm() {
+  console.log("Sign Up Form rendered");
   const signUp = useSignUp();
 
   // Form state

@@ -16,6 +16,7 @@ const queryClient = new QueryClient({});
 SplashScreen.preventAutoHideAsync();
 
 function AppLayout() {
+  console.log("Root layout rendered");
   /// Hook to listen for auth state changes, update the query cache accordingly and redirect the user
   useAuthStateChange();
   // Hook to handle deep links

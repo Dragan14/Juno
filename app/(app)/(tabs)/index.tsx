@@ -5,6 +5,7 @@ import { Link } from "expo-router";
 import { useThemeStore } from "@/stores/themeStore";
 
 export default function Home() {
+  console.log("Home screen rendered");
   const theme = useThemeStore((state) => state.theme);
 
   return (

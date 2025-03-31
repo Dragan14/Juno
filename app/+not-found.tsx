@@ -8,6 +8,7 @@ import LoadingScreen from "@/components/LoadingScreen";
 import { Platform } from "react-native";
 
 export default function NotFoundScreen() {
+  console.log("Not Found screen rendered");
   const theme = useThemeStore((state) => state.theme);
   const [isWebLoading, setIsWebLoading] = useState(Platform.OS === "web");
 

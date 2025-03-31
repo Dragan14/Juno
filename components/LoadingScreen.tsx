@@ -2,6 +2,7 @@ import { View, Image } from "react-native";
 import { useThemeStore } from "@/stores/themeStore";
 
 export default function LoadingScreen() {
+  console.log("Loading screen rendered");
   const theme = useThemeStore((state) => state.theme);
   return (
     <View

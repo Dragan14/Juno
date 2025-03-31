@@ -12,6 +12,7 @@ import { useToastStore } from "@/stores/toastStore";
 import { useThemeStore } from "@/stores/themeStore";
 
 export default function Account() {
+  console.log("Account screen rendered");
   const theme = useThemeStore((state) => state.theme);
   const showToast = useToastStore((state) => state.showToast);
 

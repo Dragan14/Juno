@@ -9,6 +9,7 @@ import ErrorScreen from "@/components/ErrorScreen";
 import LoadingScreen from "@/components/LoadingScreen";
 
 export default function RootLayout() {
+  console.log("App layout rendered");
   const router = useRouter();
   const netInfo = useNetInfo();
   const session = useGetSession();

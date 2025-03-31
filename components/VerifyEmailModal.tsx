@@ -11,6 +11,7 @@ export default function EmailVerificationModal({
   visible,
   onDismiss,
 }: EmailVerificationModalProps) {
+  console.log("Email verification modal rendered");
   const theme = useThemeStore((state) => state.theme);
 
   return (

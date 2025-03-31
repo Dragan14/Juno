@@ -3,6 +3,7 @@ import { Icon } from "react-native-paper";
 import { useThemeStore } from "@/stores/themeStore";
 
 export default function TabsLayout() {
+  console.log("Tabs layout rendered");
   const theme = useThemeStore((state) => state.theme);
 
   return (

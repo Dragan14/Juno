@@ -8,6 +8,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 type AuthMode = "signIn" | "signUp";
 
 export default function Authentication() {
+  console.log("Authentication screen rendered");
   const theme = useThemeStore((state) => state.theme);
 
   const [authMode, setAuthMode] = useState<AuthMode>("signIn");

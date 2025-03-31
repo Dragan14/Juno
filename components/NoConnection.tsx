@@ -3,6 +3,7 @@ import { Text } from "react-native-paper";
 import { useThemeStore } from "@/stores/themeStore";
 
 export default function NoConnection() {
+  console.log("No connection screen rendered");
   const theme = useThemeStore((state) => state.theme);
 
   return (

@@ -3,7 +3,7 @@ import { SegmentedButtons } from "react-native-paper";
 import SignInForm from "@/components/SignInForm";
 import SignUpForm from "@/components/SignUpForm";
 import { useThemeStore } from "@/stores/themeStore";
-import { View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 type AuthMode = "signIn" | "signUp";
 
@@ -13,7 +13,7 @@ export default function Authentication() {
   const [authMode, setAuthMode] = useState<AuthMode>("signIn");
 
   return (
-    <View
+    <SafeAreaView
       style={{
         flex: 1,
         backgroundColor: theme.colors.background,
@@ -28,6 +28,6 @@ export default function Authentication() {
         ]}
       />
       {authMode === "signIn" ? <SignInForm /> : <SignUpForm />}
-    </View>
+    </SafeAreaView>
   );
 }

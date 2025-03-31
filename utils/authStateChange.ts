@@ -23,6 +23,7 @@ export const useAuthStateChange = () => {
           queryClient.setQueryData(AUTH_KEYS.user, session?.user || null);
           break;
         case "SIGNED_IN":
+        case "INITIAL_SESSION":
           queryClient.setQueryData(AUTH_KEYS.session, session);
           queryClient.setQueryData(AUTH_KEYS.user, session?.user || null);
           router.replace("/(app)/(tabs)");

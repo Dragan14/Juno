@@ -13,10 +13,11 @@ export default function NotFoundScreen() {
   const [isWebLoading, setIsWebLoading] = useState(Platform.OS === "web");
 
   useEffect(() => {
-    setTimeout(() => {
+    const timer = setTimeout(() => {
       setIsWebLoading(false);
       SplashScreen.hideAsync();
     }, 1500);
+    return () => clearTimeout(timer);
   }, []);
 
   if (isWebLoading) {

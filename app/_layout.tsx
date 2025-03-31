@@ -10,26 +10,36 @@ import { useColorScheme } from "react-native";
 import { useEffect } from "react";
 import * as SplashScreen from "expo-splash-screen";
 import { useDeepLinks } from "@/utils/useDeepLinks";
+import { useNetInfo } from "@react-native-community/netinfo";
+import { renderNetworkStatus } from "@/utils/checkConnection";
 
 const queryClient = new QueryClient({});
-
 SplashScreen.preventAutoHideAsync();
 
 function AppLayout() {
   console.log("Root layout rendered");
-  /// Hook to listen for auth state changes, update the query cache accordingly and redirect the user
-  useAuthStateChange();
-  // Hook to handle deep links
-  useDeepLinks();
 
   const colorScheme = useColorScheme();
   const { theme, setTheme } = useThemeStore();
+  const netInfo = useNetInfo();
+
+  // Hook to listen for auth state changes, update the query cache accordingly and redirect the user
+  useAuthStateChange();
+
+  // Hook to handle deep links
+  useDeepLinks();
 
   useEffect(() => {
     if (colorScheme) {
       setTheme(colorScheme === "dark" ? "dark" : "light");
     }
   }, [colorScheme, setTheme]);
+
+  // Render no connection screen if the device is offline
+  const connectionStatus = renderNetworkStatus(netInfo);
+  if (connectionStatus) {
+    return connectionStatus;
+  }
 
   return (
     <SafeAreaProvider>

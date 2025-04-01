@@ -12,13 +12,16 @@ export function useProtectedRoute() {
     if (
       // If the user is not signed in and the initial segment is not anything in the auth group.
       !session.data &&
-      !inAuthGroup
+      !inAuthGroup &&
+      !session.isLoading
     ) {
+      console.log("Redirecting to auth page");
       // Redirect to the authentication page
       router.replace("/(auth)/authentication");
     } else if (session.data && inAuthGroup) {
+      console.log("Redirecting to main app");
       // Redirect to the main app
       router.replace("/(app)/(tabs)");
     }
-  }, [router, segments, session.data]);
+  }, [router, segments, session.data, session.isLoading]);
 }

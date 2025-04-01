@@ -12,6 +12,7 @@ import * as SplashScreen from "expo-splash-screen";
 import { useDeepLinks } from "@/hooks/useDeepLinks";
 import { useNetInfo } from "@react-native-community/netinfo";
 import { renderNetworkStatus } from "@/utils/checkConnection";
+import { useProtectedRoute } from "@/hooks/useProtectedRoutes";
 
 const queryClient = new QueryClient({});
 SplashScreen.preventAutoHideAsync();
@@ -28,6 +29,9 @@ function AppLayout() {
 
   // Hook to handle deep links
   useDeepLinks();
+
+  // Hook to handle protected routes
+  useProtectedRoute();
 
   useEffect(() => {
     if (colorScheme) {

@@ -10,9 +10,8 @@ import { useColorScheme } from "react-native";
 import { useEffect } from "react";
 import * as SplashScreen from "expo-splash-screen";
 import { useDeepLinks } from "@/hooks/useDeepLinks";
-import { useNetInfo } from "@react-native-community/netinfo";
-import { renderNetworkStatus } from "@/utils/checkConnection";
-import { useProtectedRoute } from "@/hooks/useProtectedRoutes";
+import { useProtectedRoutes } from "@/hooks/useProtectedRoutes";
+import { NetworkHandler } from "@/components/NetworkHandler";
 
 const queryClient = new QueryClient({});
 SplashScreen.preventAutoHideAsync();
@@ -22,7 +21,6 @@ function AppLayout() {
 
   const colorScheme = useColorScheme();
   const { theme, setTheme } = useThemeStore();
-  const netInfo = useNetInfo();
 
   // Hook to listen for auth state changes, update the query cache accordingly and redirect the user
   useAuthStateChange();
@@ -31,19 +29,13 @@ function AppLayout() {
   useDeepLinks();
 
   // Hook to handle protected routes
-  useProtectedRoute();
+  useProtectedRoutes();
 
   useEffect(() => {
     if (colorScheme) {
       setTheme(colorScheme === "dark" ? "dark" : "light");
     }
   }, [colorScheme, setTheme]);
-
-  // Render no connection screen if the device is offline
-  const connectionStatus = renderNetworkStatus(netInfo);
-  if (connectionStatus) {
-    return connectionStatus;
-  }
 
   return (
     <SafeAreaProvider>
@@ -52,7 +44,9 @@ function AppLayout() {
           style={colorScheme === "dark" ? "light" : "dark"}
           backgroundColor={theme.colors.background}
         />
-        <Slot />
+        <NetworkHandler>
+          <Slot />
+        </NetworkHandler>
         <Toast />
       </PaperProvider>
     </SafeAreaProvider>

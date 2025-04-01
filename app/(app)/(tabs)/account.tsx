@@ -4,7 +4,6 @@ import { nameSchema } from "@/schemas/auth-schemas";
 import { useSignOut } from "@/api/useAuth";
 import { useGetUser } from "@/api/useUser";
 import { useGetProfile, useUpdateProfile } from "@/api/useProfile";
-import LoadingScreen from "@/components/LoadingScreen";
 import ErrorScreen from "@/components/ErrorScreen";
 import { Button, TextInput, HelperText, Text } from "react-native-paper";
 import { z } from "zod";
@@ -64,7 +63,18 @@ export default function Account() {
   };
 
   if (profile.isLoading || user.isLoading) {
-    return <LoadingScreen />;
+    return (
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: theme.colors.background,
+        }}
+      >
+        <Text>Loading...</Text>
+      </View>
+    );
   }
 
   if (

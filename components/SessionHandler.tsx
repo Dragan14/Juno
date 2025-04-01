@@ -25,12 +25,10 @@ export function SessionHandler({ children }: SessionHandlerProps) {
 
   useEffect(() => {
     if (!isLoading) {
-      const timer = setTimeout(() => {
+      setTimeout(() => {
         SplashScreen.hideAsync();
         setIsWebLoading(false);
       }, 1500);
-
-      return () => clearTimeout(timer);
     }
   }, [isLoading]);
 

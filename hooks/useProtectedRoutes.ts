@@ -2,7 +2,7 @@ import { useRouter, useSegments } from "expo-router";
 import { useEffect } from "react";
 import { useGetSession } from "@/api/useSession";
 
-export function useProtectedRoute() {
+export function useProtectedRoutes() {
   const segments = useSegments();
   const router = useRouter();
   const session = useGetSession();

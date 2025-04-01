@@ -22,7 +22,7 @@ export default function Home() {
       <Link href="/+not-found" asChild>
         <Button mode="contained">Go to the Not Found screen!</Button>
       </Link>
-      <Link href="/(auth)" asChild>
+      <Link href="/(auth)/authentication" asChild>
         <Button mode="contained">Go to the Authentication screen!</Button>
       </Link>
     </View>

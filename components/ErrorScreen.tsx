@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { View } from "react-native";
 import { Button, Text } from "react-native-paper";
-import { useSignOut } from "@/hooks/useAuth";
+import { useSignOut } from "@/api/useAuth";
 import { useThemeStore } from "@/stores/themeStore";
 
 interface ErrorScreenProps {

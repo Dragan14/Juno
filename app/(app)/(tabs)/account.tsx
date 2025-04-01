@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { View, Keyboard } from "react-native";
 import { nameSchema } from "@/schemas/auth-schemas";
-import { useSignOut } from "@/hooks/useAuth";
-import { useGetUser } from "@/hooks/useUser";
-import { useGetProfile, useUpdateProfile } from "@/hooks/useProfile";
+import { useSignOut } from "@/api/useAuth";
+import { useGetUser } from "@/api/useUser";
+import { useGetProfile, useUpdateProfile } from "@/api/useProfile";
 import LoadingScreen from "@/components/LoadingScreen";
 import ErrorScreen from "@/components/ErrorScreen";
 import { Button, TextInput, HelperText, Text } from "react-native-paper";

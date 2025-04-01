@@ -1,5 +1,5 @@
 import { Stack, useRouter } from "expo-router";
-import { useGetSession } from "@/hooks/useSession";
+import { useGetSession } from "@/api/useSession";
 import { useEffect, useState } from "react";
 import { Platform } from "react-native";
 import * as SplashScreen from "expo-splash-screen";
@@ -47,7 +47,7 @@ export default function RootLayout() {
         navigationBarColor: theme.colors.background,
       }}
     >
-      <Stack.Screen name="index" options={{ headerShown: false }} />
+      <Stack.Screen name="authentication" options={{ headerShown: false }} />
     </Stack>
   );
 }

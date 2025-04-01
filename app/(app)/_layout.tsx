@@ -1,5 +1,5 @@
 import { Stack, useRouter } from "expo-router";
-import { useGetSession } from "@/hooks/useSession";
+import { useGetSession } from "@/api/useSession";
 import { useEffect, useState } from "react";
 import { Platform } from "react-native";
 import * as SplashScreen from "expo-splash-screen";
@@ -17,7 +17,7 @@ export default function RootLayout() {
   useEffect(() => {
     if (session.isLoading) return;
     if (!session.data) {
-      router.replace("/(auth)");
+      router.replace("/(auth)/authentication");
       return;
     }
     const timer = setTimeout(() => {

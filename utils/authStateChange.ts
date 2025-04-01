@@ -17,7 +17,7 @@ export const useAuthStateChange = () => {
           queryClient.setQueryData(AUTH_KEYS.session, null);
           queryClient.setQueryData(AUTH_KEYS.user, null);
           queryClient.clear();
-          router.replace("/(auth)");
+          router.replace("/(auth)/authentication");
           break;
         case "USER_UPDATED":
           queryClient.setQueryData(AUTH_KEYS.user, session?.user || null);

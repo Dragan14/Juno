@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { View, Keyboard } from "react-native";
-import { useSignIn } from "@/hooks/useAuth";
+import { useSignIn } from "@/api/useAuth";
 import { Button, TextInput } from "react-native-paper";
 
 export default function SignInForm() {

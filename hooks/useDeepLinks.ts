@@ -1,6 +1,6 @@
 import * as Linking from "expo-linking";
 import { useEffect } from "react";
-import { useSetSession } from "@/hooks/useSession";
+import { useSetSession } from "@/api/useSession";
 
 export function useDeepLinks() {
   const setSession = useSetSession();

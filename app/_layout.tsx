@@ -9,7 +9,7 @@ import { useThemeStore } from "@/stores/themeStore";
 import { useColorScheme } from "react-native";
 import { useEffect } from "react";
 import * as SplashScreen from "expo-splash-screen";
-import { useDeepLinks } from "@/utils/useDeepLinks";
+import { useDeepLinks } from "@/hooks/useDeepLinks";
 import { useNetInfo } from "@react-native-community/netinfo";
 import { renderNetworkStatus } from "@/utils/checkConnection";
 

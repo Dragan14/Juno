@@ -82,6 +82,7 @@ module.exports = {
           image: "./assets/images/icon.png",
           backgroundColor: "#fffbff",
           dark: {
+            image: "./assets/images/icon.png",
             backgroundColor: "#1d1b1e",
           },
           imageWidth: 200,

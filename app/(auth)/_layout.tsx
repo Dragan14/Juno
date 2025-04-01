@@ -5,11 +5,13 @@ import { Platform } from "react-native";
 import * as SplashScreen from "expo-splash-screen";
 import ErrorScreen from "@/components/ErrorScreen";
 import LoadingScreen from "@/components/LoadingScreen";
+import { useThemeStore } from "@/stores/themeStore";
 
 export default function RootLayout() {
   console.log("Auth layout rendered");
   const router = useRouter();
   const session = useGetSession();
+  const theme = useThemeStore((state) => state.theme);
   const [isWebLoading, setIsWebLoading] = useState(Platform.OS === "web");
 
   useEffect(() => {
@@ -42,6 +44,7 @@ export default function RootLayout() {
     <Stack
       screenOptions={{
         headerShown: false,
+        navigationBarColor: theme.colors.background,
       }}
     >
       <Stack.Screen name="index" options={{ headerShown: false }} />

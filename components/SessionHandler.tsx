@@ -41,16 +41,18 @@ export function SessionHandler({ children, currentPath }: SessionHandlerProps) {
     console.log("Session handler navigation useEffect");
     if (!session.isFetching) {
       if (!session.data && !inAuthGroup) {
+        console.log("User is not authenticated, redirecting to auth");
         router.replace("/(auth)/authentication");
       } else if (session.data && !inAppGroup) {
+        console.log("User is authenticated, redirecting to app");
         router.replace("/(app)/(tabs)");
       }
     }
   }, [session.isFetching, session.data, inAuthGroup, inAppGroup, router]);
 
-  if (isLoading) {
-    return Platform.OS === "web" && isWebLoading ? <LoadingScreen /> : null;
-  }
+  if (isWebLoading) return <LoadingScreen />;
+
+  if (isLoading) return null;
 
   if (session.isError) {
     return (

@@ -18,5 +18,6 @@ export const useGetUser = () => {
       return data.user;
     },
     retry: false,
+    refetchOnWindowFocus: true,
   });
 };

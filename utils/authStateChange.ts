@@ -12,6 +12,7 @@ export const useAuthStateChange = () => {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log("Auth state change event:", event);
       switch (event) {
         case "SIGNED_OUT":
           queryClient.setQueryData(AUTH_KEYS.session, null);
@@ -23,7 +24,6 @@ export const useAuthStateChange = () => {
           queryClient.setQueryData(AUTH_KEYS.user, session?.user || null);
           break;
         case "SIGNED_IN":
-        case "INITIAL_SESSION":
           queryClient.setQueryData(AUTH_KEYS.session, session);
           queryClient.setQueryData(AUTH_KEYS.user, session?.user || null);
           router.replace("/(app)/(tabs)");

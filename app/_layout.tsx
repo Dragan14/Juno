@@ -3,7 +3,6 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Provider as PaperProvider } from "react-native-paper";
 import { StatusBar } from "expo-status-bar";
-import { useAuthStateChange } from "@/utils/authStateChange";
 import { Toast } from "@/components/ui/Toast";
 import { useThemeStore } from "@/stores/themeStore";
 import { useColorScheme } from "react-native";
@@ -20,9 +19,6 @@ function AppLayout() {
 
   const colorScheme = useColorScheme();
   const { theme, setTheme } = useThemeStore();
-
-  // Hook to listen for auth state changes, update the query cache accordingly and redirect the user
-  useAuthStateChange();
 
   // Hook to handle deep links
   useDeepLinks();

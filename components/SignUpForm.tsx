@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState } from "react";
 import { View, Keyboard } from "react-native";
 import {
   emailSchema,
@@ -45,7 +45,7 @@ export default function SignUpForm() {
   };
 
   // Validate name input
-  const validateName = useCallback(() => {
+  const validateName = () => {
     try {
       nameSchema.parse(name);
       setErrors((prev) => ({ ...prev, name: "" }));
@@ -56,10 +56,10 @@ export default function SignUpForm() {
       }
       return false;
     }
-  }, [name]);
+  };
 
   // Validate email input
-  const validateEmail = useCallback(() => {
+  const validateEmail = () => {
     try {
       emailSchema.parse(email);
       setErrors((prev) => ({ ...prev, email: "" }));
@@ -70,10 +70,10 @@ export default function SignUpForm() {
       }
       return false;
     }
-  }, [email]);
+  };
 
   // Validate password input
-  const validatePassword = useCallback(() => {
+  const validatePassword = () => {
     try {
       passwordSchema.parse(password);
       setErrors((prev) => ({ ...prev, password: "" }));
@@ -84,10 +84,10 @@ export default function SignUpForm() {
       }
       return false;
     }
-  }, [password]);
+  };
 
   // Validate confirm password input
-  const validateConfirmPassword = useCallback(() => {
+  const validateConfirmPassword = () => {
     if (confirmPassword !== password) {
       setErrors((prev) => ({
         ...prev,
@@ -97,10 +97,10 @@ export default function SignUpForm() {
     }
     setErrors((prev) => ({ ...prev, confirmPassword: "" }));
     return true;
-  }, [confirmPassword, password]);
+  };
 
   // Validate all inputs
-  const validateForm = useCallback(() => {
+  const validateForm = () => {
     const isNameValid = validateName();
     const isEmailValid = validateEmail();
     const isPasswordValid = validatePassword();
@@ -108,7 +108,7 @@ export default function SignUpForm() {
     return (
       isNameValid && isEmailValid && isPasswordValid && isConfirmPasswordValid
     );
-  }, [validateName, validateEmail, validatePassword, validateConfirmPassword]);
+  };
 
   // Handle sign up
   const handleSignUp = async () => {

@@ -5,25 +5,30 @@ import ErrorScreen from "@/components/ErrorScreen";
 import LoadingScreen from "@/components/LoadingScreen";
 import { Platform } from "react-native";
 import { useState } from "react";
-import { useSegments } from "expo-router";
+import { useRouter } from "expo-router";
 
 interface SessionHandlerProps {
   children: ReactNode;
+  currentPath: string;
 }
 
-export function SessionHandler({ children }: SessionHandlerProps) {
+export function SessionHandler({ children, currentPath }: SessionHandlerProps) {
+  console.log("Session handler rendered");
   const session = useGetSession();
   const [isWebLoading, setIsWebLoading] = useState(Platform.OS === "web");
-  const segments = useSegments();
+  const router = useRouter();
+  const inAuthGroup = currentPath === "auth";
+  const inAppGroup = currentPath === "app";
 
-  const inAuthGroup = segments[0] === "(auth)";
+  console.log("session", session);
 
   const isLoading =
-    session.isLoading ||
+    session.isPending ||
     (inAuthGroup && session.data) ||
-    (!inAuthGroup && !session.data);
+    (inAppGroup && !session.data);
 
   useEffect(() => {
+    console.log("Session handler isLoading useEffect");
     if (!isLoading) {
       setTimeout(() => {
         SplashScreen.hideAsync();
@@ -31,6 +36,17 @@ export function SessionHandler({ children }: SessionHandlerProps) {
       }, 1500);
     }
   }, [isLoading]);
+
+  useEffect(() => {
+    console.log("Session handler navigation useEffect");
+    if (!session.isFetching) {
+      if (!session.data && !inAuthGroup) {
+        router.replace("/(auth)/authentication");
+      } else if (session.data && !inAppGroup) {
+        router.replace("/(app)/(tabs)");
+      }
+    }
+  }, [session.isFetching, session.data, inAuthGroup, inAppGroup, router]);
 
   if (isLoading) {
     return Platform.OS === "web" && isWebLoading ? <LoadingScreen /> : null;

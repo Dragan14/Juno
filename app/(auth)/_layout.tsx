@@ -7,7 +7,7 @@ export default function AuthLayout() {
   const theme = useThemeStore((state) => state.theme);
 
   return (
-    <SessionHandler>
+    <SessionHandler currentPath="auth">
       <Stack
         screenOptions={{
           headerShown: false,

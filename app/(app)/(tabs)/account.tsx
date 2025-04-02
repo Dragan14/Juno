@@ -62,7 +62,7 @@ export default function Account() {
     setErrors((prev) => ({ ...prev, name: "" }));
   };
 
-  if (profile.isLoading || user.isLoading) {
+  if (profile.isPending || user.isPending) {
     return (
       <View
         style={{
@@ -79,8 +79,8 @@ export default function Account() {
 
   if (
     (profile.isError || user.isError) &&
-    !profile.isLoading &&
-    !user.isLoading
+    !profile.isPending &&
+    !user.isPending
   ) {
     return (
       <ErrorScreen

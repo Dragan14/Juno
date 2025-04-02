@@ -7,7 +7,7 @@ export default function AppLayout() {
   const theme = useThemeStore((state) => state.theme);
 
   return (
-    <SessionHandler>
+    <SessionHandler currentPath="app">
       <Stack
         screenOptions={{
           headerShown: false,

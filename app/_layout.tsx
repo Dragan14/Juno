@@ -10,7 +10,6 @@ import { useColorScheme } from "react-native";
 import { useEffect } from "react";
 import * as SplashScreen from "expo-splash-screen";
 import { useDeepLinks } from "@/hooks/useDeepLinks";
-import { useProtectedRoutes } from "@/hooks/useProtectedRoutes";
 import { NetworkHandler } from "@/components/NetworkHandler";
 
 const queryClient = new QueryClient({});
@@ -27,9 +26,6 @@ function AppLayout() {
 
   // Hook to handle deep links
   useDeepLinks();
-
-  // Hook to handle protected routes
-  useProtectedRoutes();
 
   useEffect(() => {
     if (colorScheme) {

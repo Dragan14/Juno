@@ -54,6 +54,8 @@ export const useSignUp = () => {
       if (data.session) {
         queryClient.setQueryData(AUTH_KEYS.session, data.session);
         queryClient.setQueryData(AUTH_KEYS.user, data.user);
+      } else if (data?.user && data.user?.identities?.length === 0) {
+        showToast("An account with this email already exists. Please sign in.");
       }
     },
     onError: (error) => {

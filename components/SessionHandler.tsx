@@ -20,15 +20,12 @@ export function SessionHandler({ children, currentPath }: SessionHandlerProps) {
   const inAuthGroup = currentPath === "auth";
   const inAppGroup = currentPath === "app";
 
-  console.log("session", session);
-
   const isLoading =
     session.isPending ||
     (inAuthGroup && session.data) ||
     (inAppGroup && !session.data);
 
   useEffect(() => {
-    console.log("Session handler isLoading useEffect");
     if (!isLoading) {
       setTimeout(() => {
         SplashScreen.hideAsync();
@@ -38,12 +35,11 @@ export function SessionHandler({ children, currentPath }: SessionHandlerProps) {
   }, [isLoading]);
 
   useEffect(() => {
-    console.log("Session handler navigation useEffect");
     if (!session.isFetching) {
-      if (!session.data && !inAuthGroup) {
+      if (!session.data && inAppGroup) {
         console.log("User is not authenticated, redirecting to auth");
         router.replace("/(auth)/authentication");
-      } else if (session.data && !inAppGroup) {
+      } else if (session.data && inAuthGroup) {
         console.log("User is authenticated, redirecting to app");
         router.replace("/(app)/(tabs)");
       }

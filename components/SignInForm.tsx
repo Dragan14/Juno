@@ -4,7 +4,6 @@ import { useSignIn } from "@/api/useAuth";
 import { Button, TextInput } from "react-native-paper";
 
 export default function SignInForm() {
-  console.log("Sign In Form rendered");
   const signIn = useSignIn();
 
   // Form state

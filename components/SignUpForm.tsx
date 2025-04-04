@@ -11,7 +11,6 @@ import { z } from "zod";
 import EmailVerificationModal from "./VerifyEmailModal";
 
 export default function SignUpForm() {
-  console.log("Sign Up Form rendered");
   const signUp = useSignUp();
 
   // Form state
@@ -114,15 +113,18 @@ export default function SignUpForm() {
   const handleSignUp = async () => {
     Keyboard.dismiss();
     if (validateForm()) {
-      const { session } = await signUp.mutateAsync({ email, password, name });
+      const { session, user } = await signUp.mutateAsync({
+        email,
+        password,
+        name,
+      });
       // Reset form
       setName("");
       setEmail("");
       setPassword("");
       setConfirmPassword("");
       setErrors({ name: "", email: "", password: "", confirmPassword: "" });
-      // Show verification modal if no session is returned
-      if (!session) {
+      if (!session && !(user && user?.identities?.length === 0)) {
         setVerificationModalVisible(true);
       }
     }

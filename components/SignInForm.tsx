@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { View, Keyboard } from "react-native";
+import { Keyboard } from "react-native";
 import { useSignIn } from "@/api/useAuth";
 import { Button, TextInput } from "react-native-paper";
 
@@ -26,8 +26,9 @@ export default function SignInForm() {
   };
 
   return (
-    <View>
+    <>
       <TextInput
+        style={{ marginBottom: 5 }}
         label="Email"
         left={<TextInput.Icon icon="email" />}
         onChangeText={setEmail}
@@ -39,6 +40,7 @@ export default function SignInForm() {
         autoComplete="email"
       />
       <TextInput
+        style={{ marginBottom: 12 }}
         label="Password"
         left={<TextInput.Icon icon="lock" />}
         right={
@@ -63,6 +65,6 @@ export default function SignInForm() {
       >
         Sign in
       </Button>
-    </View>
+    </>
   );
 }

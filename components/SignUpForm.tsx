@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { View, Keyboard } from "react-native";
+import { Keyboard } from "react-native";
 import {
   emailSchema,
   passwordSchema,
@@ -131,8 +131,9 @@ export default function SignUpForm() {
   };
 
   return (
-    <View>
+    <>
       <TextInput
+        style={{ marginBottom: 5 }}
         label="Name"
         left={<TextInput.Icon icon="account" />}
         onChangeText={setName}
@@ -146,6 +147,7 @@ export default function SignUpForm() {
       />
       {errors.name ? <HelperText type="error">{errors.name}</HelperText> : null}
       <TextInput
+        style={{ marginBottom: 5 }}
         label="Email"
         left={<TextInput.Icon icon="email" />}
         onChangeText={setEmail}
@@ -162,6 +164,7 @@ export default function SignUpForm() {
         <HelperText type="error">{errors.email}</HelperText>
       ) : null}
       <TextInput
+        style={{ marginBottom: 5 }}
         label="Password"
         left={<TextInput.Icon icon="lock" />}
         right={
@@ -184,6 +187,7 @@ export default function SignUpForm() {
         <HelperText type="error">{errors.password}</HelperText>
       ) : null}
       <TextInput
+        style={{ marginBottom: 12 }}
         label="Confirm Password"
         left={<TextInput.Icon icon="lock-check" />}
         right={
@@ -218,6 +222,6 @@ export default function SignUpForm() {
         visible={verificationModalVisible}
         onDismiss={() => setVerificationModalVisible(false)}
       />
-    </View>
+    </>
   );
 }

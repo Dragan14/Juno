@@ -16,10 +16,7 @@ export default function TabsLayout() {
         tabBarStyle: {
           backgroundColor: theme.colors.background,
         },
-        headerStyle: {
-          backgroundColor: theme.colors.background,
-        },
-        headerTintColor: theme.colors.onSurface,
+        headerShown: false,
       }}
     >
       <Tabs.Screen

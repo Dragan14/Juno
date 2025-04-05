@@ -21,15 +21,29 @@ export default function Authentication() {
         backgroundColor: theme.colors.background,
       }}
     >
-      <SegmentedButtons
-        value={authMode}
-        onValueChange={(value) => setAuthMode(value as AuthMode)}
-        buttons={[
-          { value: "signIn", label: "Sign In" },
-          { value: "signUp", label: "Sign Up" },
-        ]}
-      />
-      {authMode === "signIn" ? <SignInForm /> : <SignUpForm />}
+      <View
+        style={{
+          flex: 1,
+          width: "100%",
+          maxWidth: 650,
+          alignSelf: "center",
+          paddingHorizontal: 10,
+        }}
+      >
+        <SegmentedButtons
+          value={authMode}
+          onValueChange={(value) => setAuthMode(value as AuthMode)}
+          buttons={[
+            { value: "signIn", label: "Sign In" },
+            { value: "signUp", label: "Sign Up" },
+          ]}
+          style={{
+            marginTop: 10,
+            marginBottom: 15,
+          }}
+        />
+        {authMode === "signIn" ? <SignInForm /> : <SignUpForm />}
+      </View>
     </View>
   );
 }

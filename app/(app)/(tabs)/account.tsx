@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { View, Keyboard } from "react-native";
+import { Keyboard } from "react-native";
 import { nameSchema } from "@/schemas/auth-schemas";
 import { useSignOut } from "@/api/useAuth";
 import { useGetUser } from "@/api/useUser";
@@ -9,6 +9,7 @@ import { Button, TextInput, HelperText, Text } from "react-native-paper";
 import { z } from "zod";
 import { useToastStore } from "@/stores/toastStore";
 import { useThemeStore } from "@/stores/themeStore";
+import View from "@/components/ui/View";
 
 export default function Account() {
   console.log("Account screen rendered");
@@ -69,7 +70,6 @@ export default function Account() {
           flex: 1,
           justifyContent: "center",
           alignItems: "center",
-          backgroundColor: theme.colors.background,
         }}
       >
         <Text>Loading...</Text>
@@ -97,7 +97,6 @@ export default function Account() {
     <View
       style={{
         flex: 1,
-        backgroundColor: theme.colors.background,
       }}
     >
       <Text>Account</Text>

@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { View } from "react-native";
 import { Button, Text } from "react-native-paper";
 import { useSignOut } from "@/api/useAuth";
 import { useThemeStore } from "@/stores/themeStore";
+import View from "@/components/ui/View";
 
 interface ErrorScreenProps {
   text?: string;
@@ -24,12 +24,9 @@ export default function ErrorScreen({
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor: theme.colors.background,
       }}
     >
-      <Text style={{ marginTop: 16, color: theme.colors.onBackground }}>
-        {text}
-      </Text>
+      <Text style={{ marginTop: 16 }}>{text}</Text>
       <Button
         mode="contained"
         onPress={async () => {

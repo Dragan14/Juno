@@ -1,16 +1,14 @@
-import { View, Image } from "react-native";
-import { useThemeStore } from "@/stores/themeStore";
+import { Image } from "react-native";
+import View from "@/components/ui/View";
 
 export default function LoadingScreen() {
   console.log("Loading screen rendered");
-  const theme = useThemeStore((state) => state.theme);
   return (
     <View
       style={{
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor: theme.colors.background,
       }}
     >
       <Image

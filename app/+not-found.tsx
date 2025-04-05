@@ -1,15 +1,13 @@
-import { View } from "react-native";
 import { Button, Text } from "react-native-paper";
 import { Link } from "expo-router";
 import { useEffect, useState } from "react";
 import * as SplashScreen from "expo-splash-screen";
-import { useThemeStore } from "@/stores/themeStore";
 import LoadingScreen from "@/components/LoadingScreen";
 import { Platform } from "react-native";
+import View from "@/components/ui/View";
 
 export default function NotFoundScreen() {
   console.log("Not Found screen rendered");
-  const theme = useThemeStore((state) => state.theme);
   const [isWebLoading, setIsWebLoading] = useState(Platform.OS === "web");
 
   useEffect(() => {
@@ -30,7 +28,6 @@ export default function NotFoundScreen() {
         justifyContent: "center",
         alignItems: "center",
         gap: 20,
-        backgroundColor: theme.colors.background,
       }}
     >
       <Text variant="headlineSmall">Oops! This page does not exist.</Text>

@@ -1,12 +1,10 @@
 import { Text } from "react-native-paper";
-import { View } from "react-native";
 import { Button } from "react-native-paper";
 import { Link } from "expo-router";
-import { useThemeStore } from "@/stores/themeStore";
+import View from "@/components/ui/View";
 
 export default function Home() {
   console.log("Home screen rendered");
-  const theme = useThemeStore((state) => state.theme);
 
   return (
     <View
@@ -15,7 +13,6 @@ export default function Home() {
         justifyContent: "center",
         alignItems: "center",
         gap: 20,
-        backgroundColor: theme.colors.background,
       }}
     >
       <Text>This is the home page</Text>

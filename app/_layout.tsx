@@ -15,7 +15,7 @@ const queryClient = new QueryClient({});
 SplashScreen.preventAutoHideAsync();
 
 function AppLayout() {
-  console.log("Root layout rendered");
+  // console.log("Root layout rendered");
 
   const colorScheme = useColorScheme();
   const { theme, setTheme } = useThemeStore();

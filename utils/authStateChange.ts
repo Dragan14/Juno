@@ -12,7 +12,7 @@ export const useAuthStateChange = () => {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((event, session) => {
-      console.log("Auth state change event:", event);
+      // console.log("Auth state change event:", event);
       switch (event) {
         case "SIGNED_OUT":
           queryClient.setQueryData(AUTH_KEYS.session, null);

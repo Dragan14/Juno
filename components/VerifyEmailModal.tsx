@@ -1,5 +1,6 @@
 import { View, StyleSheet } from "react-native";
 import { Modal, Portal, Text, Button } from "react-native-paper";
+import { useThemeStore } from "@/stores/themeStore";
 
 interface EmailVerificationModalProps {
   visible: boolean;
@@ -10,19 +11,22 @@ export default function EmailVerificationModal({
   visible,
   onDismiss,
 }: EmailVerificationModalProps) {
+  const theme = useThemeStore((state) => state.theme);
+
   return (
     <Portal>
       <Modal
         visible={visible}
         onDismiss={onDismiss}
         contentContainerStyle={[styles.container]}
+        style={{ backgroundColor: theme.colors.background }}
       >
         <View style={styles.content}>
           <Text variant="headlineMedium" style={styles.title}>
             Check your email
           </Text>
           <Text variant="bodyLarge" style={styles.message}>
-            We've sent you an email with a verification link.
+            We sent you an email with a verification link.
           </Text>
           <Text variant="bodyMedium" style={styles.subMessage}>
             If you don't see the email, check your spam folder.

@@ -7,7 +7,7 @@ import { Platform } from "react-native";
 import View from "@/components/ui/View";
 
 export default function NotFoundScreen() {
-  console.log("Not Found screen rendered");
+  // console.log("Not Found screen rendered");
   const [isWebLoading, setIsWebLoading] = useState(Platform.OS === "web");
 
   useEffect(() => {

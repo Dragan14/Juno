@@ -13,7 +13,7 @@ interface SessionHandlerProps {
 }
 
 export function SessionHandler({ children, currentPath }: SessionHandlerProps) {
-  console.log("Session handler rendered");
+  // console.log("Session handler rendered");
   const session = useGetSession();
   const [isWebLoading, setIsWebLoading] = useState(Platform.OS === "web");
   const router = useRouter();
@@ -37,10 +37,10 @@ export function SessionHandler({ children, currentPath }: SessionHandlerProps) {
   useEffect(() => {
     if (!session.isFetching) {
       if (!session.data && inAppGroup) {
-        console.log("User is not authenticated, redirecting to auth");
+        // console.log("User is not authenticated, redirecting to auth");
         router.replace("/(auth)/authentication");
       } else if (session.data && inAuthGroup) {
-        console.log("User is authenticated, redirecting to app");
+        // console.log("User is authenticated, redirecting to app");
         router.replace("/(app)/(tabs)");
       }
     }

@@ -4,7 +4,7 @@ import { Link } from "expo-router";
 import View from "@/components/ui/View";
 
 export default function Home() {
-  console.log("Home screen rendered");
+  // console.log("Home screen rendered");
 
   return (
     <View

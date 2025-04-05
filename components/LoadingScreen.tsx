@@ -2,7 +2,7 @@ import { Image } from "react-native";
 import View from "@/components/ui/View";
 
 export default function LoadingScreen() {
-  console.log("Loading screen rendered");
+  // console.log("Loading screen rendered");
   return (
     <View
       style={{

@@ -5,7 +5,7 @@ import { useAppStateRefresh } from "@/utils/appStateRefresh";
 import { useAuthStateChange } from "@/utils/authStateChange";
 
 export default function AppLayout() {
-  console.log("App layout rendered");
+  // console.log("App layout rendered");
   const theme = useThemeStore((state) => state.theme);
 
   // Hook to listen for auth state changes, update the query cache accordingly and redirect the user

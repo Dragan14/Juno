@@ -12,7 +12,7 @@ import { useThemeStore } from "@/stores/themeStore";
 import View from "@/components/ui/View";
 
 export default function Account() {
-  console.log("Account screen rendered");
+  // console.log("Account screen rendered");
   const theme = useThemeStore((state) => state.theme);
   const showToast = useToastStore((state) => state.showToast);
 

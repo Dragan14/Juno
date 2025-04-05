@@ -13,7 +13,7 @@ export default function ErrorScreen({
   text = "Error Loading...",
   onPress = async () => {},
 }: ErrorScreenProps) {
-  console.log("Error screen rendered");
+  // console.log("Error screen rendered");
   const theme = useThemeStore((state) => state.theme);
   const signOut = useSignOut();
   const [isRetrying, setIsRetrying] = useState(false);

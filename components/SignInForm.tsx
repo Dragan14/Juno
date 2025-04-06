@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { Keyboard } from "react-native";
 import { useSignIn } from "@/api/useAuth";
-import { Button, TextInput } from "react-native-paper";
+import { Button } from "react-native-paper";
+import TextInput from "@/components/ui/TextInput";
+import Icon from "@/components/ui/Icon";
 
 export default function SignInForm() {
   const signIn = useSignIn();
@@ -28,24 +30,23 @@ export default function SignInForm() {
   return (
     <>
       <TextInput
-        style={{ marginBottom: 5 }}
         label="Email"
-        left={<TextInput.Icon icon="email" />}
+        leftIcon={<Icon name="mail" size={24} />}
         onChangeText={setEmail}
         value={email}
         placeholder="email@address.com"
         autoCapitalize="none"
         keyboardType="email-address"
-        mode="outlined"
         autoComplete="email"
+        outlined={true}
       />
       <TextInput
-        style={{ marginBottom: 12 }}
         label="Password"
-        left={<TextInput.Icon icon="lock" />}
-        right={
-          <TextInput.Icon
-            icon={passwordVisible ? "eye" : "eye-off"}
+        leftIcon={<Icon name="lock-closed" size={24} />}
+        rightIcon={
+          <Icon
+            name={passwordVisible ? "eye" : "eye-off"}
+            size={24}
             onPress={togglePasswordVisibility}
           />
         }
@@ -54,8 +55,7 @@ export default function SignInForm() {
         secureTextEntry={!passwordVisible}
         placeholder="Password"
         autoCapitalize="none"
-        mode="outlined"
-        autoComplete="password"
+        outlined={true}
       />
       <Button
         mode="contained"

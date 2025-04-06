@@ -6,9 +6,11 @@ import {
   nameSchema,
 } from "@/schemas/auth-schemas";
 import { useSignUp } from "@/api/useAuth";
-import { Button, TextInput, HelperText } from "react-native-paper";
+import { Button } from "react-native-paper";
 import { z } from "zod";
 import EmailVerificationModal from "./VerifyEmailModal";
+import TextInput from "@/components/ui/TextInput";
+import Icon from "@/components/ui/Icon";
 
 export default function SignUpForm() {
   const signUp = useSignUp();
@@ -133,43 +135,39 @@ export default function SignUpForm() {
   return (
     <>
       <TextInput
-        style={{ marginBottom: 5 }}
         label="Name"
-        left={<TextInput.Icon icon="account" />}
+        leftIcon={<Icon name="person" size={24} />}
         onChangeText={setName}
         onBlur={validateName}
         value={name}
         placeholder="Name"
         autoCapitalize="words"
-        mode="outlined"
+        outlined={true}
         error={!!errors.name}
+        errorMessage={errors.name}
         autoComplete="name"
       />
-      {errors.name ? <HelperText type="error">{errors.name}</HelperText> : null}
       <TextInput
-        style={{ marginBottom: 5 }}
         label="Email"
-        left={<TextInput.Icon icon="email" />}
+        leftIcon={<Icon name="mail" size={24} />}
         onChangeText={setEmail}
         onBlur={validateEmail}
         value={email}
         placeholder="email@address.com"
         autoCapitalize="none"
         keyboardType="email-address"
-        mode="outlined"
+        outlined={true}
         error={!!errors.email}
+        errorMessage={errors.email}
         autoComplete="email"
       />
-      {errors.email ? (
-        <HelperText type="error">{errors.email}</HelperText>
-      ) : null}
       <TextInput
-        style={{ marginBottom: 5 }}
         label="Password"
-        left={<TextInput.Icon icon="lock" />}
-        right={
-          <TextInput.Icon
-            icon={passwordVisibility.password ? "eye" : "eye-off"}
+        leftIcon={<Icon name="lock-closed" size={24} />}
+        rightIcon={
+          <Icon
+            name={passwordVisibility.password ? "eye" : "eye-off"}
+            size={24}
             onPress={() => togglePasswordVisibility("password")}
           />
         }
@@ -179,20 +177,18 @@ export default function SignUpForm() {
         secureTextEntry={!passwordVisibility.password}
         placeholder="Password"
         autoCapitalize="none"
-        mode="outlined"
+        outlined={true}
         error={!!errors.password}
+        errorMessage={errors.password}
         autoComplete="password"
       />
-      {errors.password ? (
-        <HelperText type="error">{errors.password}</HelperText>
-      ) : null}
       <TextInput
-        style={{ marginBottom: 12 }}
         label="Confirm Password"
-        left={<TextInput.Icon icon="lock-check" />}
-        right={
-          <TextInput.Icon
-            icon={passwordVisibility.confirmPassword ? "eye" : "eye-off"}
+        leftIcon={<Icon name="lock-closed" size={24} />}
+        rightIcon={
+          <Icon
+            name={passwordVisibility.confirmPassword ? "eye" : "eye-off"}
+            size={24}
             onPress={() => togglePasswordVisibility("confirmPassword")}
           />
         }
@@ -202,13 +198,11 @@ export default function SignUpForm() {
         secureTextEntry={!passwordVisibility.confirmPassword}
         placeholder="Confirm Password"
         autoCapitalize="none"
-        mode="outlined"
+        outlined={true}
         error={!!errors.confirmPassword}
+        errorMessage={errors.confirmPassword}
         autoComplete="password"
       />
-      {errors.confirmPassword ? (
-        <HelperText type="error">{errors.confirmPassword}</HelperText>
-      ) : null}
       <Button
         mode="contained"
         disabled={signUp.isPending}
@@ -217,7 +211,6 @@ export default function SignUpForm() {
       >
         Sign up
       </Button>
-
       <EmailVerificationModal
         visible={verificationModalVisible}
         onDismiss={() => setVerificationModalVisible(false)}

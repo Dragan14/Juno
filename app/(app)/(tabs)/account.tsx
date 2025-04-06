@@ -5,15 +5,14 @@ import { useSignOut } from "@/api/useAuth";
 import { useGetUser } from "@/api/useUser";
 import { useGetProfile, useUpdateProfile } from "@/api/useProfile";
 import ErrorScreen from "@/components/ErrorScreen";
-import { Button, TextInput, HelperText, Text } from "react-native-paper";
+import { Button, Text } from "react-native-paper";
 import { z } from "zod";
 import { useToastStore } from "@/stores/toastStore";
-import { useThemeStore } from "@/stores/themeStore";
 import View from "@/components/ui/View";
+import TextInput from "@/components/ui/TextInput";
 
 export default function Account() {
   // console.log("Account screen rendered");
-  const theme = useThemeStore((state) => state.theme);
   const showToast = useToastStore((state) => state.showToast);
 
   // User and profile state
@@ -104,18 +103,15 @@ export default function Account() {
       <Text>{user.data?.email || "No email available"}</Text>
       <Text>Name</Text>
       <TextInput
+        label="Name"
         value={name}
         onChangeText={setName}
         disabled={!isEditing || signOut.isPending}
-        error={!!errors.name}
-        mode="outlined"
+        outlined={true}
         autoCapitalize="none"
+        error={!!errors.name}
+        errorMessage={errors.name}
       />
-      {errors.name && (
-        <HelperText type="error" visible={!!errors.name}>
-          {errors.name}
-        </HelperText>
-      )}
       {isEditing ? (
         <>
           <Button

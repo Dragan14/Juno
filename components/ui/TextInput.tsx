@@ -1,0 +1,189 @@
+import React, { useRef, useState } from "react";
+import {
+  View,
+  ViewStyle,
+  Text,
+  TextInput,
+  StyleSheet,
+  StyleProp,
+  TextInputProps,
+  Pressable,
+} from "react-native";
+import { useThemeStore } from "@/stores/themeStore";
+
+interface CustomTextInputProps {
+  label?: string;
+  leftIcon?: React.ReactNode;
+  rightIcon?: React.ReactNode;
+  error?: boolean;
+  errorMessage?: string;
+  retainErrorMessageSpace?: boolean;
+  outlined?: boolean;
+  containerStyle?: StyleProp<ViewStyle>;
+  onBlur?: (e: any) => void;
+  onFocus?: () => void;
+  disabled?: boolean;
+}
+
+type MyTextInputProps = CustomTextInputProps & TextInputProps;
+
+export default function MyTextInput({
+  label,
+  leftIcon,
+  rightIcon,
+  error,
+  errorMessage,
+  retainErrorMessageSpace = true,
+  outlined,
+  containerStyle,
+  onBlur,
+  onFocus,
+  disabled,
+  ...props
+}: MyTextInputProps) {
+  const { theme } = useThemeStore();
+  const inputRef = useRef<TextInput>(null);
+  const [isFocused, setIsFocused] = useState(false);
+
+  const containerBorder = outlined
+    ? {
+        ...styles.outlinedBorder,
+        borderColor: error
+          ? theme.colors.error
+          : isFocused
+            ? theme.colors.primary
+            : theme.colors.onBackground,
+      }
+    : {
+        ...styles.standardBorder,
+        borderBottomColor: error
+          ? theme.colors.error
+          : isFocused
+            ? theme.colors.primary
+            : theme.colors.onBackground,
+      };
+
+  const labelStyleColor = {
+    color: disabled
+      ? theme.colors.onSurfaceDisabled
+      : error
+        ? theme.colors.error
+        : isFocused
+          ? theme.colors.primary
+          : theme.colors.onBackground,
+  };
+
+  const handlePress = () => {
+    if (!disabled) {
+      inputRef.current?.focus();
+    }
+  };
+
+  const handleBlur = (e: any) => {
+    setIsFocused(false);
+    onBlur && onBlur(e); // Call the passed onBlur if it exists
+  };
+
+  const handleFocus = () => {
+    setIsFocused(true);
+    onFocus && onFocus(); // Call the passed onFocus if it exists
+  };
+
+  return (
+    <View style={containerStyle}>
+      <Pressable onPress={handlePress} disabled={disabled}>
+        {label && (
+          <Text
+            style={[
+              styles.label,
+              {
+                backgroundColor: theme.colors.background,
+                color: labelStyleColor.color,
+              },
+            ]}
+          >
+            {label}
+          </Text>
+        )}
+        <View
+          style={[
+            styles.container,
+            containerBorder,
+            {
+              backgroundColor: theme.colors.background,
+              opacity: disabled ? 0.6 : 1,
+            },
+          ]}
+        >
+          {leftIcon && (
+            <View style={styles.icon} pointerEvents="none">
+              {leftIcon}
+            </View>
+          )}
+          <TextInput
+            ref={inputRef}
+            style={[styles.textInput, { color: theme.colors.onBackground }]}
+            placeholderTextColor={theme.colors.onSurfaceDisabled}
+            onFocus={handleFocus}
+            onBlur={handleBlur}
+            editable={!disabled}
+            {...props}
+          />
+          {rightIcon && <View style={styles.icon}>{rightIcon}</View>}
+        </View>
+      </Pressable>
+      {(error || retainErrorMessageSpace) && (
+        <View style={styles.errorContainer}>
+          {error ? (
+            <Text style={[styles.errorMessage, { color: theme.colors.error }]}>
+              {errorMessage}
+            </Text>
+          ) : (
+            <View style={styles.errorPlaceholder} />
+          )}
+        </View>
+      )}
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    height: 50,
+    flexDirection: "row",
+    alignItems: "center",
+    paddingLeft: 10,
+  },
+  label: {
+    position: "absolute",
+    top: -8,
+    left: 10,
+    paddingHorizontal: 4,
+    fontWeight: "500",
+    fontSize: 12,
+    zIndex: 1,
+  },
+  icon: {
+    paddingRight: 8,
+  },
+  textInput: {
+    flex: 1,
+    height: "100%",
+  },
+  outlinedBorder: {
+    borderRadius: 5,
+    borderWidth: 1,
+  },
+  standardBorder: {
+    borderBottomWidth: 1,
+  },
+  errorContainer: {
+    height: 23,
+  },
+  errorMessage: {
+    fontSize: 12,
+  },
+  errorPlaceholder: {
+    height: "100%",
+  },
+});

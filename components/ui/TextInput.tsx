@@ -8,6 +8,7 @@ import {
   StyleProp,
   TextInputProps,
   Pressable,
+  PixelRatio,
 } from "react-native";
 import { useThemeStore } from "@/stores/themeStore";
 
@@ -147,17 +148,21 @@ export default function MyTextInput({
   );
 }
 
+const scaledSize = (baseSize: number) => {
+  return Math.round(baseSize * PixelRatio.getFontScale());
+};
+
 const styles = StyleSheet.create({
   container: {
-    height: 50,
+    height: scaledSize(50),
     flexDirection: "row",
     alignItems: "center",
     paddingLeft: 10,
   },
   label: {
     position: "absolute",
-    top: -8,
-    left: 10,
+    top: scaledSize(-8),
+    left: scaledSize(10),
     paddingHorizontal: 4,
     fontWeight: "500",
     fontSize: 12,
@@ -178,7 +183,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
   },
   errorContainer: {
-    height: 23,
+    height: scaledSize(23),
   },
   errorMessage: {
     fontSize: 12,

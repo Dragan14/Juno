@@ -66,8 +66,8 @@ export default function Account() {
   if (profile.isPending || user.isPending) {
     return (
       <View
+        isSafeArea
         style={{
-          flex: 1,
           justifyContent: "center",
           alignItems: "center",
         }}
@@ -94,11 +94,7 @@ export default function Account() {
   }
 
   return (
-    <View
-      style={{
-        flex: 1,
-      }}
-    >
+    <View isSafeArea>
       <Text>Account</Text>
       <Text>Email</Text>
       <Text>{user.data?.email || "No email available"}</Text>

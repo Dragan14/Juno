@@ -6,8 +6,8 @@ export default function NoConnection() {
 
   return (
     <View
+      isSafeArea
       style={{
-        flex: 1,
         justifyContent: "center",
         alignItems: "center",
       }}

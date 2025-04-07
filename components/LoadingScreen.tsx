@@ -12,7 +12,7 @@ export default function LoadingScreen() {
       }}
     >
       <Image
-        source={require("@/assets/images/icon.png")}
+        source={require("@/assets/images/splash-icon.png")}
         style={{
           width: 200,
           height: 200,

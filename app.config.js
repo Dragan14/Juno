@@ -43,7 +43,7 @@ module.exports = {
     slug: variant.name,
     version: "1.0.0",
     orientation: "portrait",
-    icon: "./assets/images/icon.png",
+    icon: "./assets/images/app-icon.png",
     scheme: variant.scheme,
     userInterfaceStyle: "automatic",
     owner: "dragan14",
@@ -61,7 +61,7 @@ module.exports = {
       package: variant.bundleId.android,
       versionCode: 1,
       adaptiveIcon: {
-        foregroundImage: "./assets/images/icon.png",
+        foregroundImage: "./assets/images/app-icon.png",
         backgroundColor: "#ffffff",
       },
       androidStatusBar: {
@@ -72,18 +72,18 @@ module.exports = {
     web: {
       bundler: "metro",
       output: "static",
-      favicon: "./assets/images/icon.png",
+      favicon: "./assets/images/splash-icon.png",
     },
     plugins: [
       "expo-router",
       [
         "expo-splash-screen",
         {
-          image: "./assets/images/icon.png",
-          backgroundColor: "#fffbff",
+          image: "./assets/images/splash-icon.png",
+          backgroundColor: "#fbfcff",
           dark: {
-            image: "./assets/images/icon.png",
-            backgroundColor: "#1d1b1e",
+            image: "./assets/images/splash-icon.png",
+            backgroundColor: "#1a1c1e",
           },
           imageWidth: 200,
           resizeMode: "contain",

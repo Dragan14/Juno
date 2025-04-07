@@ -12,7 +12,12 @@ import { useDeepLinks } from "@/hooks/useDeepLinks";
 import { NetworkHandler } from "@/components/NetworkHandler";
 
 const queryClient = new QueryClient({});
+
 SplashScreen.preventAutoHideAsync();
+SplashScreen.setOptions({
+  duration: 500,
+  fade: true,
+});
 
 function AppLayout() {
   // console.log("Root layout rendered");

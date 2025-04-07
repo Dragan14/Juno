@@ -1,4 +1,4 @@
-import React from "react";
+import React, { forwardRef } from "react";
 import {
   Pressable,
   PressableProps,
@@ -32,98 +32,108 @@ type ButtonProps = {
     | "error";
 } & PressableProps;
 
-export default function Button({
-  children,
-  color,
-  textColor,
-  leftIcon,
-  rightIcon,
-  loading = false,
-  style,
-  textStyle,
-  disabled,
-  variant,
-  ...props
-}: ButtonProps) {
-  const theme = useThemeStore((state) => state.theme);
+const Button = forwardRef<View, ButtonProps>(
+  (
+    {
+      children,
+      color,
+      textColor,
+      leftIcon,
+      rightIcon,
+      loading = false,
+      style,
+      textStyle,
+      disabled,
+      variant,
+      ...props
+    },
+    ref,
+  ) => {
+    const theme = useThemeStore((state) => state.theme);
 
-  const backgroundColor = (() => {
-    if (disabled) return theme.colors.surfaceDisabled;
-    switch (variant) {
-      case "success":
-        return theme.colors.success;
-      case "error":
-        return theme.colors.error;
-      case "outlined":
-        return theme.colors.background;
-      case "primary":
-        return theme.colors.primary;
-      case "secondary":
-        return theme.colors.secondary;
-      case "tertiary":
-        return theme.colors.tertiary;
-      default:
-        return color ?? theme.colors.primary;
-    }
-  })();
+    const backgroundColor = (() => {
+      if (disabled) return theme.colors.surfaceDisabled;
+      switch (variant) {
+        case "success":
+          return theme.colors.success;
+        case "error":
+          return theme.colors.error;
+        case "outlined":
+          return theme.colors.background;
+        case "primary":
+          return theme.colors.primary;
+        case "secondary":
+          return theme.colors.secondary;
+        case "tertiary":
+          return theme.colors.tertiary;
+        default:
+          return color ?? theme.colors.primary;
+      }
+    })();
 
-  const contentColor = (() => {
-    if (disabled) return theme.colors.onSurfaceDisabled;
-    switch (variant) {
-      case "success":
-        return theme.colors.onSuccess;
-      case "error":
-        return theme.colors.onError;
-      case "outlined":
-        return theme.colors.onBackground;
-      case "primary":
-        return theme.colors.onPrimary;
-      case "secondary":
-        return theme.colors.onSecondary;
-      case "tertiary":
-        return theme.colors.onTertiary;
-      default:
-        return textColor ?? theme.colors.onPrimary;
-    }
-  })();
+    const contentColor = (() => {
+      if (disabled) return theme.colors.onSurfaceDisabled;
+      switch (variant) {
+        case "success":
+          return theme.colors.onSuccess;
+        case "error":
+          return theme.colors.onError;
+        case "outlined":
+          return theme.colors.onBackground;
+        case "primary":
+          return theme.colors.onPrimary;
+        case "secondary":
+          return theme.colors.onSecondary;
+        case "tertiary":
+          return theme.colors.onTertiary;
+        default:
+          return textColor ?? theme.colors.onPrimary;
+      }
+    })();
 
-  return (
-    <Pressable
-      style={({ pressed, hovered }) => [
-        styles.button,
-        { backgroundColor },
-        variant === "outlined" && {
-          borderWidth: 1,
-          borderColor: theme.colors.outline,
-        },
-        !disabled && hovered && styles.hovered,
-        !disabled && pressed && styles.pressed,
-        disabled && styles.disabled,
-        style,
-      ]}
-      disabled={disabled}
-      {...props}
-    >
-      <View style={styles.contentContainer}>
-        {loading ? (
-          <ActivityIndicator size="small" color={contentColor} />
-        ) : (
-          <>
-            {leftIcon && <View style={styles.iconSpacing}>{leftIcon}</View>}
-            <Text
-              style={[styles.text, { color: contentColor }, textStyle]}
-              numberOfLines={1}
-              ellipsizeMode="tail"
-            >
-              {children}
-            </Text>
-            {rightIcon && <View style={styles.iconSpacing}>{rightIcon}</View>}
-          </>
-        )}
-      </View>
-    </Pressable>
-  );
-}
+    return (
+      <Pressable
+        ref={ref}
+        style={({ pressed, hovered }) => [
+          styles.button,
+          { backgroundColor },
+          variant === "outlined" && {
+            borderWidth: 1,
+            borderColor: theme.colors.outline,
+          },
+          !disabled && hovered && styles.hovered,
+          !disabled && pressed && styles.pressed,
+          disabled && styles.disabled,
+          style,
+        ]}
+        disabled={disabled}
+        {...props}
+      >
+        <View style={styles.contentContainer}>
+          {loading ? (
+            <ActivityIndicator size="small" color={contentColor} />
+          ) : (
+            <>
+              {leftIcon && <View style={styles.iconSpacing}>{leftIcon}</View>}
+              <Text
+                style={[styles.text, { color: contentColor }, textStyle]}
+                numberOfLines={1}
+                ellipsizeMode="tail"
+              >
+                {children}
+              </Text>
+              {rightIcon && <View style={styles.iconSpacing}>{rightIcon}</View>}
+            </>
+          )}
+        </View>
+      </Pressable>
+    );
+  },
+);
+
+Button.displayName = "Button";
+
+export default Button;
 
 const scaledSize = (baseSize: number) => {
   return Math.round(baseSize * PixelRatio.getFontScale());

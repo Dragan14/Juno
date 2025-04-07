@@ -8,6 +8,7 @@ interface CustomViewProps extends ViewProps {
 
 export default function MyView({
   isSafeArea = false,
+  style,
   ...props
 }: CustomViewProps) {
   const theme = useThemeStore((state) => state.theme);
@@ -16,14 +17,14 @@ export default function MyView({
     return (
       <View
         {...props}
-        style={[{ backgroundColor: colors.background }, props.style]}
+        style={[{ backgroundColor: colors.background }, style]}
       />
     );
   }
   return (
     <SafeAreaView
       {...props}
-      style={[{ backgroundColor: colors.background, flex: 1 }, props.style]}
+      style={[{ backgroundColor: colors.background, flex: 1 }, style]}
     />
   );
 }

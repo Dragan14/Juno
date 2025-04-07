@@ -21,8 +21,6 @@ interface CustomTextInputProps {
   retainErrorMessageSpace?: boolean;
   outlined?: boolean;
   containerStyle?: StyleProp<ViewStyle>;
-  onBlur?: (e: any) => void;
-  onFocus?: () => void;
   disabled?: boolean;
 }
 
@@ -37,9 +35,9 @@ export default function MyTextInput({
   retainErrorMessageSpace = true,
   outlined,
   containerStyle,
+  disabled,
   onBlur,
   onFocus,
-  disabled,
   ...props
 }: MyTextInputProps) {
   const { theme } = useThemeStore();
@@ -74,25 +72,16 @@ export default function MyTextInput({
           : theme.colors.onBackground,
   };
 
-  const handlePress = () => {
-    if (!disabled) {
-      inputRef.current?.focus();
-    }
-  };
-
-  const handleBlur = (e: any) => {
-    setIsFocused(false);
-    onBlur && onBlur(e); // Call the passed onBlur if it exists
-  };
-
-  const handleFocus = () => {
-    setIsFocused(true);
-    onFocus && onFocus(); // Call the passed onFocus if it exists
-  };
-
   return (
     <View style={containerStyle}>
-      <Pressable onPress={handlePress} disabled={disabled}>
+      <Pressable
+        onPress={() => {
+          if (!disabled) {
+            inputRef.current?.focus();
+          }
+        }}
+        disabled={disabled}
+      >
         {label && (
           <Text
             style={[
@@ -125,8 +114,14 @@ export default function MyTextInput({
             ref={inputRef}
             style={[styles.textInput, { color: theme.colors.onBackground }]}
             placeholderTextColor={theme.colors.onSurfaceDisabled}
-            onFocus={handleFocus}
-            onBlur={handleBlur}
+            onBlur={(e) => {
+              setIsFocused(false);
+              onBlur && onBlur(e);
+            }}
+            onFocus={(e) => {
+              setIsFocused(true);
+              onFocus && onFocus(e);
+            }}
             editable={!disabled}
             {...props}
           />

@@ -4,6 +4,8 @@ import { useSignIn } from "@/api/useAuth";
 import { Button } from "react-native-paper";
 import TextInput from "@/components/ui/TextInput";
 import Icon from "@/components/ui/Icon";
+import { emailSchema } from "@/schemas/auth-schemas";
+import { z } from "zod";
 
 export default function SignInForm() {
   const signIn = useSignIn();
@@ -12,19 +14,39 @@ export default function SignInForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordVisible, setPasswordVisible] = useState(false);
+  const [errors, setErrors] = useState({
+    email: "",
+  });
 
   // Toggle password visibility
   const togglePasswordVisibility = () => {
     setPasswordVisible((prev) => !prev);
   };
 
+  // Validate email input
+  const validateEmail = () => {
+    try {
+      emailSchema.parse(email);
+      setErrors((prev) => ({ ...prev, email: "" }));
+      return true;
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        setErrors((prev) => ({ ...prev, email: error.errors[0].message }));
+      }
+      return false;
+    }
+  };
+
   // Handle sign in
   const handleSignIn = async () => {
     Keyboard.dismiss();
-    await signIn.mutateAsync({ email, password });
-    // Reset form
-    setEmail("");
-    setPassword("");
+    if (validateEmail()) {
+      await signIn.mutateAsync({ email, password });
+      // Reset form
+      setEmail("");
+      setPassword("");
+      setErrors({ email: "" });
+    }
   };
 
   return (
@@ -33,12 +55,15 @@ export default function SignInForm() {
         label="Email"
         leftIcon={<Icon name="mail" size={24} />}
         onChangeText={setEmail}
+        onBlur={validateEmail}
         value={email}
         placeholder="email@address.com"
         autoCapitalize="none"
         keyboardType="email-address"
         autoComplete="email"
         outlined={true}
+        error={!!errors.email}
+        errorMessage={errors.email}
       />
       <TextInput
         label="Password"

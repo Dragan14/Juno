@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { SegmentedButtons } from "react-native-paper";
 import SignInForm from "@/components/SignInForm";
 import SignUpForm from "@/components/SignUpForm";
 import { useThemeStore } from "@/stores/themeStore";
 import View from "@/components/ui/View";
+import SegmentedControl from "@/components/ui/SegmentedControl";
 
 type AuthMode = "signIn" | "signUp";
 
@@ -30,16 +30,13 @@ export default function Authentication() {
           paddingHorizontal: 10,
         }}
       >
-        <SegmentedButtons
-          value={authMode}
-          onValueChange={(value) => setAuthMode(value as AuthMode)}
-          buttons={[
-            { value: "signIn", label: "Sign In" },
-            { value: "signUp", label: "Sign Up" },
-          ]}
-          style={{
+        <SegmentedControl
+          values={["Sign In", "Sign Up"]}
+          selectedIndex={authMode === "signIn" ? 0 : 1}
+          onTabPress={(index) => setAuthMode(index === 0 ? "signIn" : "signUp")}
+          tabsContainerStyle={{
             marginTop: 10,
-            marginBottom: 15,
+            marginBottom: 25,
           }}
         />
         {authMode === "signIn" ? <SignInForm /> : <SignUpForm />}

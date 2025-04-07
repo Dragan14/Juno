@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { Keyboard } from "react-native";
 import { useSignIn } from "@/api/useAuth";
-import { Button } from "react-native-paper";
 import TextInput from "@/components/ui/TextInput";
 import Icon from "@/components/ui/Icon";
+import Button from "@/components/ui/Button";
 import { emailSchema } from "@/schemas/auth-schemas";
 import { z } from "zod";
 
@@ -83,12 +83,11 @@ export default function SignInForm() {
         outlined={true}
       />
       <Button
-        mode="contained"
         disabled={signIn.isPending}
         onPress={handleSignIn}
         loading={signIn.isPending}
       >
-        Sign in
+        Sign In
       </Button>
     </>
   );

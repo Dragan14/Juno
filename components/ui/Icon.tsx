@@ -3,21 +3,33 @@ import { PixelRatio } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useThemeStore } from "@/stores/themeStore";
 
+type IconProps = {
+  variant?: "active" | "inactive" | "button";
+  color?: string;
+  size?: number;
+} & ComponentProps<typeof Ionicons>;
+
 export default function Icon({
+  variant,
   color,
-  size,
+  size = 12,
   ...props
-}: ComponentProps<typeof Ionicons>) {
+}: IconProps) {
   const { theme } = useThemeStore();
-  color =
-    color === "active"
-      ? theme.colors.primary
-      : color === "inactive"
-        ? theme.colors.onBackground
-        : color
-          ? color
-          : theme.colors.onBackground;
-  return <Ionicons color={color} size={scaledSize(size ?? 12)} {...props} />;
+  switch (variant) {
+    case "active":
+      color = theme.colors.primary;
+      break;
+    case "inactive":
+      color = theme.colors.onBackground;
+      break;
+    case "button":
+      color = theme.colors.onPrimary;
+      break;
+    default:
+      color = color ?? theme.colors.onBackground;
+  }
+  return <Ionicons color={color} size={scaledSize(size)} {...props} />;
 }
 
 const scaledSize = (baseSize: number) => {

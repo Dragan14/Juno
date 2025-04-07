@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { Button, Text } from "react-native-paper";
+import { Text } from "react-native-paper";
 import { useSignOut } from "@/api/useAuth";
-import { useThemeStore } from "@/stores/themeStore";
 import View from "@/components/ui/View";
+import Button from "@/components/ui/Button";
 
 interface ErrorScreenProps {
   text?: string;
@@ -14,7 +14,6 @@ export default function ErrorScreen({
   onPress = async () => {},
 }: ErrorScreenProps) {
   // console.log("Error screen rendered");
-  const theme = useThemeStore((state) => state.theme);
   const signOut = useSignOut();
   const [isRetrying, setIsRetrying] = useState(false);
 
@@ -28,7 +27,6 @@ export default function ErrorScreen({
     >
       <Text style={{ marginTop: 16 }}>{text}</Text>
       <Button
-        mode="contained"
         onPress={async () => {
           setIsRetrying(true);
           await onPress();

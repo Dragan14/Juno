@@ -5,11 +5,12 @@ import { useSignOut } from "@/api/useAuth";
 import { useGetUser } from "@/api/useUser";
 import { useGetProfile, useUpdateProfile } from "@/api/useProfile";
 import ErrorScreen from "@/components/ErrorScreen";
-import { Button, Text } from "react-native-paper";
+import { Text } from "react-native-paper";
 import { z } from "zod";
 import { useToastStore } from "@/stores/toastStore";
 import View from "@/components/ui/View";
 import TextInput from "@/components/ui/TextInput";
+import Button from "@/components/ui/Button";
 
 export default function Account() {
   // console.log("Account screen rendered");
@@ -115,7 +116,6 @@ export default function Account() {
       {isEditing ? (
         <>
           <Button
-            mode="contained"
             onPress={handleSave}
             loading={updateProfile.isPending}
             disabled={signOut.isPending || updateProfile.isPending}
@@ -123,7 +123,7 @@ export default function Account() {
             Save
           </Button>
           <Button
-            mode="outlined"
+            variant="outlined"
             onPress={handleCancel}
             disabled={signOut.isPending || updateProfile.isPending}
           >
@@ -132,7 +132,6 @@ export default function Account() {
         </>
       ) : (
         <Button
-          mode="contained"
           onPress={() => setIsEditing(true)}
           disabled={signOut.isPending || updateProfile.isPending}
         >
@@ -140,7 +139,7 @@ export default function Account() {
         </Button>
       )}
       <Button
-        mode="outlined"
+        variant="outlined"
         onPress={async () => {
           await signOut.mutateAsync();
         }}

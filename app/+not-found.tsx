@@ -1,10 +1,11 @@
-import { Button, Text } from "react-native-paper";
+import { Text } from "react-native-paper";
 import { Link } from "expo-router";
 import { useEffect, useState } from "react";
 import * as SplashScreen from "expo-splash-screen";
 import LoadingScreen from "@/components/LoadingScreen";
 import { Platform } from "react-native";
 import View from "@/components/ui/View";
+import Button from "@/components/ui/Button";
 
 export default function NotFoundScreen() {
   // console.log("Not Found screen rendered");
@@ -32,7 +33,7 @@ export default function NotFoundScreen() {
     >
       <Text variant="headlineSmall">Oops! This page does not exist.</Text>
       <Link href="/" asChild>
-        <Button mode="contained">Go back to Home screen!</Button>
+        <Button>Go back to Home screen!</Button>
       </Link>
     </View>
   );

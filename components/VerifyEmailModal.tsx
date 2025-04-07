@@ -1,6 +1,7 @@
 import { View, StyleSheet } from "react-native";
-import { Modal, Portal, Text, Button } from "react-native-paper";
+import { Modal, Portal, Text } from "react-native-paper";
 import { useThemeStore } from "@/stores/themeStore";
+import Button from "@/components/ui/Button";
 
 interface EmailVerificationModalProps {
   visible: boolean;
@@ -31,7 +32,7 @@ export default function EmailVerificationModal({
           <Text variant="bodyMedium" style={styles.subMessage}>
             If you don't see the email, check your spam folder.
           </Text>
-          <Button mode="contained" onPress={onDismiss} style={styles.button}>
+          <Button onPress={onDismiss} style={styles.button}>
             Got it
           </Button>
         </View>

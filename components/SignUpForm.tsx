@@ -6,11 +6,11 @@ import {
   nameSchema,
 } from "@/schemas/auth-schemas";
 import { useSignUp } from "@/api/useAuth";
-import { Button } from "react-native-paper";
 import { z } from "zod";
 import EmailVerificationModal from "./VerifyEmailModal";
 import TextInput from "@/components/ui/TextInput";
 import Icon from "@/components/ui/Icon";
+import Button from "@/components/ui/Button";
 
 export default function SignUpForm() {
   const signUp = useSignUp();
@@ -204,7 +204,6 @@ export default function SignUpForm() {
         autoComplete="password"
       />
       <Button
-        mode="contained"
         disabled={signUp.isPending}
         onPress={handleSignUp}
         loading={signUp.isPending}

@@ -4,11 +4,13 @@ import {
   ViewStyle,
   Text,
   TextInput,
+  TextStyle,
   StyleSheet,
   StyleProp,
   TextInputProps,
   Pressable,
   PixelRatio,
+  Platform,
 } from "react-native";
 import { useThemeStore } from "@/stores/themeStore";
 
@@ -20,7 +22,8 @@ interface CustomTextInputProps {
   errorMessage?: string;
   retainErrorMessageSpace?: boolean;
   outlined?: boolean;
-  containerStyle?: StyleProp<ViewStyle>;
+  style?: StyleProp<ViewStyle>;
+  textStyle?: StyleProp<TextStyle>;
   disabled?: boolean;
 }
 
@@ -34,7 +37,8 @@ export default function MyTextInput({
   errorMessage,
   retainErrorMessageSpace = true,
   outlined,
-  containerStyle,
+  style,
+  textStyle,
   disabled,
   onBlur,
   onFocus,
@@ -73,7 +77,7 @@ export default function MyTextInput({
   };
 
   return (
-    <View style={containerStyle}>
+    <View style={style}>
       <Pressable
         onPress={() => {
           if (!disabled) {
@@ -100,19 +104,23 @@ export default function MyTextInput({
             styles.container,
             containerBorder,
             {
-              backgroundColor: theme.colors.background,
+              backgroundColor: "transparent",
               opacity: disabled ? 0.6 : 1,
             },
           ]}
         >
           {leftIcon && (
-            <View style={styles.icon} pointerEvents="none">
+            <View style={styles.leftIcon} pointerEvents="none">
               {leftIcon}
             </View>
           )}
           <TextInput
             ref={inputRef}
-            style={[styles.textInput, { color: theme.colors.onBackground }]}
+            style={[
+              styles.textInput,
+              { color: theme.colors.onBackground },
+              textStyle,
+            ]}
             placeholderTextColor={theme.colors.onSurfaceDisabled}
             onBlur={(e) => {
               setIsFocused(false);
@@ -125,7 +133,7 @@ export default function MyTextInput({
             editable={!disabled}
             {...props}
           />
-          {rightIcon && <View style={styles.icon}>{rightIcon}</View>}
+          {rightIcon && <View style={styles.rightIcon}>{rightIcon}</View>}
         </View>
       </Pressable>
       {(error || retainErrorMessageSpace) && (
@@ -152,7 +160,7 @@ const styles = StyleSheet.create({
     height: scaledSize(50),
     flexDirection: "row",
     alignItems: "center",
-    paddingLeft: 10,
+    paddingHorizontal: 10,
   },
   label: {
     position: "absolute",
@@ -163,12 +171,20 @@ const styles = StyleSheet.create({
     fontSize: 12,
     zIndex: 1,
   },
-  icon: {
+  leftIcon: {
     paddingRight: 8,
+  },
+  rightIcon: {
+    paddingLeft: 8,
   },
   textInput: {
     flex: 1,
     height: "100%",
+    ...Platform.select({
+      web: {
+        outlineStyle: "none",
+      },
+    }),
   },
   outlinedBorder: {
     borderRadius: 5,

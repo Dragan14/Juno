@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Keyboard } from "react-native";
 import { useSignIn } from "@/api/useAuth";
 import TextInput from "@/components/ui/TextInput";
-import Icon from "@/components/ui/Icon";
 import Button from "@/components/ui/Button";
 import { emailSchema } from "@/schemas/auth-schemas";
 import { z } from "zod";
@@ -53,7 +52,7 @@ export default function SignInForm() {
     <>
       <TextInput
         label="Email"
-        leftIcons={[<Icon name="mail" size={24} />]}
+        leftIcon={{ name: "mail" }}
         onChangeText={setEmail}
         onBlur={validateEmail}
         value={email}
@@ -67,14 +66,18 @@ export default function SignInForm() {
       />
       <TextInput
         label="Password"
-        leftIcons={[<Icon name="lock-closed" size={24} />]}
-        rightIcons={[
-          <Icon
-            name={passwordVisible ? "eye" : "eye-off"}
-            size={24}
-            onPress={togglePasswordVisibility}
-          />,
-        ]}
+        leftIcon={{ name: "lock-closed" }}
+        rightIcon={
+          passwordVisible
+            ? {
+                name: "eye",
+                onPress: togglePasswordVisibility,
+              }
+            : {
+                name: "eye-off",
+                onPress: togglePasswordVisibility,
+              }
+        }
         onChangeText={setPassword}
         value={password}
         secureTextEntry={!passwordVisible}

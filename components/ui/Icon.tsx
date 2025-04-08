@@ -4,7 +4,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useThemeStore } from "@/stores/themeStore";
 
 type IconProps = {
-  variant?: "active" | "inactive" | "button";
+  variant?: "active" | "inactive";
   color?: string;
   size?: number;
 } & ComponentProps<typeof Ionicons>;
@@ -23,8 +23,6 @@ export default function Icon({
         return theme.colors.primary;
       case "inactive":
         return theme.colors.onBackground;
-      case "button":
-        return theme.colors.onPrimary;
       default:
         return color ?? theme.colors.onBackground;
     }

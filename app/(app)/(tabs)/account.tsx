@@ -12,7 +12,6 @@ import Button from "@/components/ui/Button";
 import { SafeAreaView } from "@/components/ui/SafeAreaView";
 import Text from "@/components/ui/Text";
 import View from "@/components/ui/View";
-import Icon from "@/components/ui/Icon";
 
 export default function Account() {
   // console.log("Account screen rendered");
@@ -137,31 +136,36 @@ export default function Account() {
           onChangeText={setName}
           disabled={!isEditing || signOut.isPending || updateProfile.isPending}
           outlined={false}
-          autoCapitalize="none"
+          autoCapitalize="words"
           error={!!errors.name}
           errorMessage={errors.name}
-          rightIcons={[
-            <Icon
-              name={isEditing ? "save" : "pencil"}
-              size={24}
-              onPress={() => {
-                if (isEditing) {
-                  Keyboard.dismiss();
-                  handleSave();
-                } else {
-                  setIsEditing(true);
+          leftIcon={
+            isEditing
+              ? {
+                  name: "save",
+                  onPress: () => {
+                    Keyboard.dismiss();
+                    handleSave();
+                  },
                 }
-              }}
-            />,
-            isEditing ? (
-              <Icon
-                name={"close-circle"}
-                size={24}
-                onPress={handleCancel}
-                style={{ marginLeft: 10 }}
-              />
-            ) : null,
-          ]}
+              : {
+                  name: "pencil",
+                  onPress: () => {
+                    setIsEditing(true);
+                  },
+                }
+          }
+          rightIcon={
+            isEditing
+              ? {
+                  name: "close-circle",
+                  onPress: () => {
+                    Keyboard.dismiss();
+                    handleCancel();
+                  },
+                }
+              : null
+          }
         />
         <Button
           variant="outlined"

@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, ComponentProps } from "react";
 import {
   View,
   ViewStyle,
@@ -13,11 +13,12 @@ import {
   Platform,
 } from "react-native";
 import { useThemeStore } from "@/stores/themeStore";
+import { Ionicons } from "@expo/vector-icons";
 
 type MyTextInputProps = {
   label?: string;
-  leftIcons?: React.ReactNode[];
-  rightIcons?: React.ReactNode[];
+  leftIcon?: ComponentProps<typeof Ionicons> | null;
+  rightIcon?: ComponentProps<typeof Ionicons> | null;
   error?: boolean;
   errorMessage?: string;
   retainErrorMessageSpace?: boolean;
@@ -31,8 +32,8 @@ type MyTextInputProps = {
 
 export default function MyTextInput({
   label,
-  leftIcons,
-  rightIcons,
+  leftIcon,
+  rightIcon,
   error,
   errorMessage,
   retainErrorMessageSpace = true,
@@ -83,6 +84,24 @@ export default function MyTextInput({
     return { color: theme.colors.onBackground };
   })();
 
+  const renderIcon = ({
+    name,
+    size = 24,
+    color,
+    style,
+    ...props
+  }: ComponentProps<typeof Ionicons>) => {
+    return (
+      <Ionicons
+        name={name}
+        size={scaledSize(size)}
+        color={color ?? theme.colors.onBackground}
+        style={style}
+        {...props}
+      />
+    );
+  };
+
   return (
     <View style={style}>
       <Pressable
@@ -116,12 +135,8 @@ export default function MyTextInput({
             },
           ]}
         >
-          {leftIcons && leftIcons.length > 0 && (
-            <View style={styles.leftIcons}>
-              {leftIcons.map((icon, index) => (
-                <View key={index}>{icon}</View>
-              ))}
-            </View>
+          {leftIcon && (
+            <View style={styles.leftIcons}>{renderIcon(leftIcon)}</View>
           )}
           <TextInput
             ref={inputRef}
@@ -142,12 +157,8 @@ export default function MyTextInput({
             editable={!disabled}
             {...props}
           />
-          {rightIcons && rightIcons.length > 0 && (
-            <View style={styles.rightIcons}>
-              {rightIcons.map((icon, index) => (
-                <View key={index}>{icon}</View>
-              ))}
-            </View>
+          {rightIcon && (
+            <View style={styles.rightIcons}>{renderIcon(rightIcon)}</View>
           )}
         </View>
       </Pressable>

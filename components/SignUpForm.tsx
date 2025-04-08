@@ -9,7 +9,6 @@ import { useSignUp } from "@/api/useAuth";
 import { z } from "zod";
 import EmailVerificationModal from "./VerifyEmailModal";
 import TextInput from "@/components/ui/TextInput";
-import Icon from "@/components/ui/Icon";
 import Button from "@/components/ui/Button";
 
 export default function SignUpForm() {
@@ -136,7 +135,7 @@ export default function SignUpForm() {
     <>
       <TextInput
         label="Name"
-        leftIcons={[<Icon name="person" size={24} />]}
+        leftIcon={{ name: "person" }}
         onChangeText={setName}
         onBlur={validateName}
         value={name}
@@ -149,7 +148,7 @@ export default function SignUpForm() {
       />
       <TextInput
         label="Email"
-        leftIcons={[<Icon name="mail" size={24} />]}
+        leftIcon={{ name: "mail" }}
         onChangeText={setEmail}
         onBlur={validateEmail}
         value={email}
@@ -163,14 +162,18 @@ export default function SignUpForm() {
       />
       <TextInput
         label="Password"
-        leftIcons={[<Icon name="lock-closed" size={24} />]}
-        rightIcons={[
-          <Icon
-            name={passwordVisibility.password ? "eye" : "eye-off"}
-            size={24}
-            onPress={() => togglePasswordVisibility("password")}
-          />,
-        ]}
+        leftIcon={{ name: "lock-closed" }}
+        rightIcon={
+          passwordVisibility.password
+            ? {
+                name: "eye",
+                onPress: () => togglePasswordVisibility("password"),
+              }
+            : {
+                name: "eye-off",
+                onPress: () => togglePasswordVisibility("password"),
+              }
+        }
         onChangeText={setPassword}
         onBlur={validatePassword}
         value={password}
@@ -184,14 +187,18 @@ export default function SignUpForm() {
       />
       <TextInput
         label="Confirm Password"
-        leftIcons={[<Icon name="lock-closed" size={24} />]}
-        rightIcons={[
-          <Icon
-            name={passwordVisibility.confirmPassword ? "eye" : "eye-off"}
-            size={24}
-            onPress={() => togglePasswordVisibility("confirmPassword")}
-          />,
-        ]}
+        leftIcon={{ name: "lock-closed" }}
+        rightIcon={
+          passwordVisibility.confirmPassword
+            ? {
+                name: "eye",
+                onPress: () => togglePasswordVisibility("confirmPassword"),
+              }
+            : {
+                name: "eye-off",
+                onPress: () => togglePasswordVisibility("confirmPassword"),
+              }
+        }
         onChangeText={setConfirmPassword}
         onBlur={validateConfirmPassword}
         value={confirmPassword}

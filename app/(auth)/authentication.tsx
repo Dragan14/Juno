@@ -17,9 +17,9 @@ export default function Authentication() {
         style={{
           flex: 1,
           width: "100%",
-          maxWidth: 650,
-          alignSelf: "center",
+          maxWidth: 800,
           paddingHorizontal: 10,
+          marginHorizontal: "auto",
         }}
       >
         <SegmentedControl

@@ -3,7 +3,6 @@ import { Link } from "expo-router";
 import View from "@/components/ui/View";
 import Button from "@/components/ui/Button";
 import Icon from "@/components/ui/Icon";
-import { Button as RPButton } from "react-native-paper";
 
 export default function Home() {
   // console.log("Home screen rendered");

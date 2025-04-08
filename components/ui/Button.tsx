@@ -29,7 +29,8 @@ type ButtonProps = {
     | "tertiary"
     | "outlined"
     | "success"
-    | "error";
+    | "error"
+    | "elevated";
 } & PressableProps;
 
 const Button = forwardRef<View, ButtonProps>(
@@ -59,13 +60,15 @@ const Button = forwardRef<View, ButtonProps>(
         case "error":
           return theme.colors.error;
         case "outlined":
-          return theme.colors.background;
+          return "transparent";
         case "primary":
           return theme.colors.primary;
         case "secondary":
           return theme.colors.secondary;
         case "tertiary":
           return theme.colors.tertiary;
+        case "elevated":
+          return theme.colors.elevation.level1;
         default:
           return color ?? theme.colors.primary;
       }
@@ -79,13 +82,15 @@ const Button = forwardRef<View, ButtonProps>(
         case "error":
           return theme.colors.onError;
         case "outlined":
-          return theme.colors.onBackground;
+          return theme.colors.primary;
         case "primary":
           return theme.colors.onPrimary;
         case "secondary":
           return theme.colors.onSecondary;
         case "tertiary":
           return theme.colors.onTertiary;
+        case "elevated":
+          return theme.colors.primary;
         default:
           return textColor ?? theme.colors.onPrimary;
       }

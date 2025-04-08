@@ -3,6 +3,7 @@ import SignInForm from "@/components/SignInForm";
 import SignUpForm from "@/components/SignUpForm";
 import View from "@/components/ui/View";
 import SegmentedControl from "@/components/ui/SegmentedControl";
+import { SafeAreaView } from "@/components/ui/SafeAreaView";
 
 type AuthMode = "signIn" | "signUp";
 
@@ -12,7 +13,7 @@ export default function Authentication() {
   const [authMode, setAuthMode] = useState<AuthMode>("signIn");
 
   return (
-    <View isSafeArea>
+    <SafeAreaView>
       <View
         style={{
           flex: 1,
@@ -33,6 +34,6 @@ export default function Authentication() {
         />
         {authMode === "signIn" ? <SignInForm /> : <SignUpForm />}
       </View>
-    </View>
+    </SafeAreaView>
   );
 }

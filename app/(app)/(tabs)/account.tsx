@@ -8,9 +8,9 @@ import ErrorScreen from "@/components/ErrorScreen";
 import { Text } from "react-native-paper";
 import { z } from "zod";
 import { useToastStore } from "@/stores/toastStore";
-import View from "@/components/ui/View";
 import TextInput from "@/components/ui/TextInput";
 import Button from "@/components/ui/Button";
+import { SafeAreaView } from "@/components/ui/SafeAreaView";
 
 export default function Account() {
   // console.log("Account screen rendered");
@@ -65,15 +65,14 @@ export default function Account() {
 
   if (profile.isPending || user.isPending) {
     return (
-      <View
-        isSafeArea
+      <SafeAreaView
         style={{
           justifyContent: "center",
           alignItems: "center",
         }}
       >
         <Text>Loading...</Text>
-      </View>
+      </SafeAreaView>
     );
   }
 
@@ -94,7 +93,7 @@ export default function Account() {
   }
 
   return (
-    <View isSafeArea>
+    <SafeAreaView>
       <Text>Account</Text>
       <Text>Email</Text>
       <Text>{user.data?.email || "No email available"}</Text>
@@ -144,6 +143,6 @@ export default function Account() {
       >
         Sign Out
       </Button>
-    </View>
+    </SafeAreaView>
   );
 }

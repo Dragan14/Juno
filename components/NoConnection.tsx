@@ -1,18 +1,17 @@
 import { Text } from "react-native-paper";
-import View from "@/components/ui/View";
+import { SafeAreaView } from "@/components/ui/SafeAreaView";
 
 export default function NoConnection() {
   // console.log("No connection screen rendered");
 
   return (
-    <View
-      isSafeArea
+    <SafeAreaView
       style={{
         justifyContent: "center",
         alignItems: "center",
       }}
     >
       <Text>No internet connection</Text>
-    </View>
+    </SafeAreaView>
   );
 }

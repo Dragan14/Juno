@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Text } from "react-native-paper";
 import { useSignOut } from "@/api/useAuth";
-import View from "@/components/ui/View";
 import Button from "@/components/ui/Button";
+import { SafeAreaView } from "@/components/ui/SafeAreaView";
 
 interface ErrorScreenProps {
   text?: string;
@@ -18,8 +18,7 @@ export default function ErrorScreen({
   const [isRetrying, setIsRetrying] = useState(false);
 
   return (
-    <View
-      isSafeArea
+    <SafeAreaView
       style={{
         justifyContent: "center",
         alignItems: "center",
@@ -45,6 +44,6 @@ export default function ErrorScreen({
       >
         Sign Out
       </Button>
-    </View>
+    </SafeAreaView>
   );
 }

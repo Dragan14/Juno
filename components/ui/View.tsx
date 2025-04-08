@@ -1,30 +1,10 @@
 import { View, ViewProps } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { useThemeStore } from "@/stores/themeStore";
 
-interface CustomViewProps extends ViewProps {
-  isSafeArea?: boolean;
-}
-
-export default function MyView({
-  isSafeArea = false,
-  style,
-  ...props
-}: CustomViewProps) {
+export default function MyView({ style, ...props }: ViewProps) {
   const theme = useThemeStore((state) => state.theme);
   const { colors } = theme;
-  if (!isSafeArea) {
-    return (
-      <View
-        {...props}
-        style={[{ backgroundColor: colors.background }, style]}
-      />
-    );
-  }
   return (
-    <SafeAreaView
-      {...props}
-      style={[{ backgroundColor: colors.background, flex: 1 }, style]}
-    />
+    <View {...props} style={[{ backgroundColor: colors.background }, style]} />
   );
 }

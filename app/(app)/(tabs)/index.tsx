@@ -3,12 +3,13 @@ import { Link } from "expo-router";
 import View from "@/components/ui/View";
 import Button from "@/components/ui/Button";
 import Icon from "@/components/ui/Icon";
+import { SafeAreaView } from "@/components/ui/SafeAreaView";
 
 export default function Home() {
   // console.log("Home screen rendered");
 
   return (
-    <View isSafeArea>
+    <SafeAreaView>
       <View
         style={{
           flex: 1,
@@ -75,6 +76,6 @@ export default function Home() {
           </Button>
         </Link>
       </View>
-    </View>
+    </SafeAreaView>
   );
 }

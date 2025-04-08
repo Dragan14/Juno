@@ -173,8 +173,7 @@ export default function Account() {
           style={{
             width: 300,
             marginHorizontal: "auto",
-            marginVertical: "auto",
-            marginBottom: 50,
+            marginTop: 10,
           }}
         >
           Sign Out

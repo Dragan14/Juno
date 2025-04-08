@@ -53,7 +53,7 @@ export default function SignInForm() {
     <>
       <TextInput
         label="Email"
-        leftIcon={<Icon name="mail" size={24} />}
+        leftIcons={[<Icon name="mail" size={24} />]}
         onChangeText={setEmail}
         onBlur={validateEmail}
         value={email}
@@ -67,14 +67,14 @@ export default function SignInForm() {
       />
       <TextInput
         label="Password"
-        leftIcon={<Icon name="lock-closed" size={24} />}
-        rightIcon={
+        leftIcons={[<Icon name="lock-closed" size={24} />]}
+        rightIcons={[
           <Icon
             name={passwordVisible ? "eye" : "eye-off"}
             size={24}
             onPress={togglePasswordVisibility}
-          />
-        }
+          />,
+        ]}
         onChangeText={setPassword}
         value={password}
         secureTextEntry={!passwordVisible}

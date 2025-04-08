@@ -9,7 +9,7 @@ export default function Home() {
   // console.log("Home screen rendered");
 
   return (
-    <SafeAreaView>
+    <SafeAreaView disableBottomSafeArea={true}>
       <View
         style={{
           flex: 1,

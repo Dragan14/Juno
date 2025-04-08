@@ -136,7 +136,7 @@ export default function SignUpForm() {
     <>
       <TextInput
         label="Name"
-        leftIcon={<Icon name="person" size={24} />}
+        leftIcons={[<Icon name="person" size={24} />]}
         onChangeText={setName}
         onBlur={validateName}
         value={name}
@@ -149,7 +149,7 @@ export default function SignUpForm() {
       />
       <TextInput
         label="Email"
-        leftIcon={<Icon name="mail" size={24} />}
+        leftIcons={[<Icon name="mail" size={24} />]}
         onChangeText={setEmail}
         onBlur={validateEmail}
         value={email}
@@ -163,14 +163,14 @@ export default function SignUpForm() {
       />
       <TextInput
         label="Password"
-        leftIcon={<Icon name="lock-closed" size={24} />}
-        rightIcon={
+        leftIcons={[<Icon name="lock-closed" size={24} />]}
+        rightIcons={[
           <Icon
             name={passwordVisibility.password ? "eye" : "eye-off"}
             size={24}
             onPress={() => togglePasswordVisibility("password")}
-          />
-        }
+          />,
+        ]}
         onChangeText={setPassword}
         onBlur={validatePassword}
         value={password}
@@ -184,14 +184,14 @@ export default function SignUpForm() {
       />
       <TextInput
         label="Confirm Password"
-        leftIcon={<Icon name="lock-closed" size={24} />}
-        rightIcon={
+        leftIcons={[<Icon name="lock-closed" size={24} />]}
+        rightIcons={[
           <Icon
             name={passwordVisibility.confirmPassword ? "eye" : "eye-off"}
             size={24}
             onPress={() => togglePasswordVisibility("confirmPassword")}
-          />
-        }
+          />,
+        ]}
         onChangeText={setConfirmPassword}
         onBlur={validateConfirmPassword}
         value={confirmPassword}

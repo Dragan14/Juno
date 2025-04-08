@@ -12,7 +12,7 @@ type IconProps = {
 export default function Icon({
   variant,
   color,
-  size = 12,
+  size = 24,
   ...props
 }: IconProps) {
   const { theme } = useThemeStore();

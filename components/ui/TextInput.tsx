@@ -16,8 +16,8 @@ import { useThemeStore } from "@/stores/themeStore";
 
 type MyTextInputProps = {
   label?: string;
-  leftIcon?: React.ReactNode;
-  rightIcon?: React.ReactNode;
+  leftIcons?: React.ReactNode[];
+  rightIcons?: React.ReactNode[];
   error?: boolean;
   errorMessage?: string;
   retainErrorMessageSpace?: boolean;
@@ -29,8 +29,8 @@ type MyTextInputProps = {
 
 export default function MyTextInput({
   label,
-  leftIcon,
-  rightIcon,
+  leftIcons,
+  rightIcons,
   error,
   errorMessage,
   retainErrorMessageSpace = true,
@@ -107,9 +107,11 @@ export default function MyTextInput({
             },
           ]}
         >
-          {leftIcon && (
-            <View style={styles.leftIcon} pointerEvents="none">
-              {leftIcon}
+          {leftIcons && leftIcons.length > 0 && (
+            <View style={styles.leftIcons}>
+              {leftIcons.map((icon, index) => (
+                <View key={index}>{icon}</View>
+              ))}
             </View>
           )}
           <TextInput
@@ -131,7 +133,13 @@ export default function MyTextInput({
             editable={!disabled}
             {...props}
           />
-          {rightIcon && <View style={styles.rightIcon}>{rightIcon}</View>}
+          {rightIcons && rightIcons.length > 0 && (
+            <View style={styles.rightIcons}>
+              {rightIcons.map((icon, index) => (
+                <View key={index}>{icon}</View>
+              ))}
+            </View>
+          )}
         </View>
       </Pressable>
       {(error || retainErrorMessageSpace) && (
@@ -169,10 +177,12 @@ const styles = StyleSheet.create({
     fontSize: 12,
     zIndex: 1,
   },
-  leftIcon: {
+  leftIcons: {
+    flexDirection: "row",
     paddingRight: 8,
   },
-  rightIcon: {
+  rightIcons: {
+    flexDirection: "row",
     paddingLeft: 8,
   },
   textInput: {

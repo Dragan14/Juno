@@ -11,6 +11,8 @@ import TextInput from "@/components/ui/TextInput";
 import Button from "@/components/ui/Button";
 import { SafeAreaView } from "@/components/ui/SafeAreaView";
 import Text from "@/components/ui/Text";
+import View from "@/components/ui/View";
+import Icon from "@/components/ui/Icon";
 
 export default function Account() {
   // console.log("Account screen rendered");
@@ -93,56 +95,99 @@ export default function Account() {
   }
 
   return (
-    <SafeAreaView>
-      <Text>Account</Text>
-      <Text>Email</Text>
-      <Text>{user.data?.email || "No email available"}</Text>
-      <Text>Name</Text>
-      <TextInput
-        label="Name"
-        value={name}
-        onChangeText={setName}
-        disabled={!isEditing || signOut.isPending}
-        outlined={true}
-        autoCapitalize="none"
-        error={!!errors.name}
-        errorMessage={errors.name}
-      />
-      {isEditing ? (
-        <>
-          <Button
-            onPress={handleSave}
-            loading={updateProfile.isPending}
-            disabled={signOut.isPending || updateProfile.isPending}
-          >
-            Save
-          </Button>
-          <Button
-            variant="outlined"
-            onPress={handleCancel}
-            disabled={signOut.isPending || updateProfile.isPending}
-          >
-            Cancel
-          </Button>
-        </>
-      ) : (
-        <Button
-          onPress={() => setIsEditing(true)}
-          disabled={signOut.isPending || updateProfile.isPending}
-        >
-          Edit Name
-        </Button>
-      )}
-      <Button
-        variant="outlined"
-        onPress={async () => {
-          await signOut.mutateAsync();
+    <SafeAreaView disableBottomSafeArea={true}>
+      <View
+        style={{
+          flex: 1,
+          maxWidth: 800,
+          width: "100%",
+          paddingHorizontal: 10,
+          marginHorizontal: "auto",
         }}
-        loading={signOut.isPending}
-        disabled={signOut.isPending || updateProfile.isPending}
       >
-        Sign Out
-      </Button>
+        <Text
+          style={{
+            fontWeight: "bold",
+            fontSize: 32,
+            textAlign: "center",
+            marginBottom: 20,
+          }}
+        >
+          Account
+        </Text>
+        <Text
+          style={{
+            fontWeight: "bold",
+            fontSize: 20,
+            marginBottom: 10,
+          }}
+        >
+          Email
+        </Text>
+        <Text
+          style={{
+            marginBottom: 15,
+          }}
+        >
+          {user.data?.email || "No email available"}
+        </Text>
+        <Text
+          style={{
+            fontWeight: "bold",
+            fontSize: 20,
+            marginBottom: 10,
+          }}
+        >
+          Name
+        </Text>
+        <TextInput
+          value={name}
+          onChangeText={setName}
+          disabled={!isEditing || signOut.isPending || updateProfile.isPending}
+          outlined={true}
+          autoCapitalize="none"
+          error={!!errors.name}
+          errorMessage={errors.name}
+          rightIcons={[
+            <Icon
+              name={isEditing ? "save" : "pencil"}
+              size={24}
+              onPress={() => {
+                if (isEditing) {
+                  Keyboard.dismiss();
+                  handleSave();
+                } else {
+                  setIsEditing(true);
+                }
+              }}
+            />,
+            isEditing ? (
+              <Icon
+                name={"close-circle"}
+                size={24}
+                onPress={handleCancel}
+                style={{ marginLeft: 10 }}
+              />
+            ) : null,
+          ]}
+        />
+        <Button
+          variant="outlined"
+          onPress={async () => {
+            await signOut.mutateAsync();
+          }}
+          loading={signOut.isPending}
+          disabled={signOut.isPending || updateProfile.isPending}
+          style={{
+            width: 300,
+            marginHorizontal: "auto",
+            marginVertical: "auto",
+            marginBottom: 50,
+          }}
+        >
+          Sign Out
+        </Button>
+      </View>
     </SafeAreaView>
   );
 }

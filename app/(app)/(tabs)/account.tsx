@@ -135,7 +135,6 @@ export default function Account() {
           style={{
             fontWeight: "bold",
             fontSize: 20,
-            marginBottom: 10,
           }}
         >
           Name
@@ -144,7 +143,7 @@ export default function Account() {
           value={name}
           onChangeText={setName}
           disabled={!isEditing || signOut.isPending || updateProfile.isPending}
-          outlined={true}
+          outlined={false}
           autoCapitalize="none"
           error={!!errors.name}
           errorMessage={errors.name}

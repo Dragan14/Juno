@@ -25,6 +25,8 @@ type MyTextInputProps = {
   style?: StyleProp<ViewStyle>;
   textStyle?: StyleProp<TextStyle>;
   disabled?: boolean;
+  onBlur?: (e: React.FocusEvent<TextInput>) => void;
+  onFocus?: (e: React.FocusEvent<TextInput>) => void;
 } & TextInputProps;
 
 export default function MyTextInput({
@@ -46,33 +48,40 @@ export default function MyTextInput({
   const inputRef = useRef<TextInput>(null);
   const [isFocused, setIsFocused] = useState(false);
 
+  const borderColor = (() => {
+    if (disabled) {
+      return theme.colors.onSurfaceDisabled;
+    } else if (error) {
+      return theme.colors.error;
+    } else if (isFocused) {
+      return theme.colors.primary;
+    } else {
+      return theme.colors.onBackground;
+    }
+  })();
+
   const containerBorder = outlined
     ? {
         ...styles.outlinedBorder,
-        borderColor: error
-          ? theme.colors.error
-          : isFocused
-            ? theme.colors.primary
-            : theme.colors.onBackground,
+        borderColor,
       }
     : {
         ...styles.standardBorder,
-        borderBottomColor: error
-          ? theme.colors.error
-          : isFocused
-            ? theme.colors.primary
-            : theme.colors.onBackground,
+        borderBottomColor: borderColor,
       };
 
-  const labelStyleColor = {
-    color: disabled
-      ? theme.colors.onSurfaceDisabled
-      : error
-        ? theme.colors.error
-        : isFocused
-          ? theme.colors.primary
-          : theme.colors.onBackground,
-  };
+  const labelStyleColor = (() => {
+    if (disabled) {
+      return { color: theme.colors.onSurfaceDisabled };
+    }
+    if (error) {
+      return { color: theme.colors.error };
+    }
+    if (isFocused) {
+      return { color: theme.colors.primary };
+    }
+    return { color: theme.colors.onBackground };
+  })();
 
   return (
     <View style={style}>
@@ -84,7 +93,7 @@ export default function MyTextInput({
         }}
         disabled={disabled}
       >
-        {label && (
+        {label && !outlined && (
           <Text
             style={[
               styles.label,
@@ -117,9 +126,9 @@ export default function MyTextInput({
           <TextInput
             ref={inputRef}
             style={[
+              textStyle,
               styles.textInput,
               { color: theme.colors.onBackground },
-              textStyle,
             ]}
             placeholderTextColor={theme.colors.onSurfaceDisabled}
             onBlur={(e) => {

@@ -142,7 +142,7 @@ export default function Account() {
           leftIcon={
             isEditing
               ? {
-                  name: "save",
+                  name: "checkmark-circle",
                   onPress: () => {
                     Keyboard.dismiss();
                     handleSave();

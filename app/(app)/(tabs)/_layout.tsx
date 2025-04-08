@@ -1,6 +1,6 @@
 import { Tabs } from "expo-router";
-import { Icon } from "react-native-paper";
 import { useThemeStore } from "@/stores/themeStore";
+import Icon from "@/components/ui/Icon";
 
 export default function TabsLayout() {
   // console.log("Tabs layout rendered");
@@ -32,11 +32,7 @@ export default function TabsLayout() {
           headerShown: false,
           title: "Home",
           tabBarIcon: ({ color, focused }) => (
-            <Icon
-              source={focused ? "home" : "home-outline"}
-              color={color}
-              size={30}
-            />
+            <Icon name={focused ? "home" : "home-outline"} color={color} />
           ),
         }}
       />
@@ -46,11 +42,7 @@ export default function TabsLayout() {
           headerShown: true,
           title: "Account",
           tabBarIcon: ({ color, focused }) => (
-            <Icon
-              source={focused ? "account" : "account-outline"}
-              color={color}
-              size={30}
-            />
+            <Icon name={focused ? "person" : "person-outline"} color={color} />
           ),
         }}
       />

@@ -45,7 +45,7 @@ export default function Home() {
         <Link href="https://dragan14.github.io" asChild>
           <Button
             variant="outlined"
-            leftIcon={{ name: "globe-outline", size: 16 }}
+            leftIcon={{ name: "globe-outline", size: 20 }}
             style={{ width: 300, marginHorizontal: "auto", marginBottom: 10 }}
             textStyle={{ width: "70%" }}
           >
@@ -55,7 +55,7 @@ export default function Home() {
         <Link href="https://github.com/dragan14" asChild>
           <Button
             variant="outlined"
-            leftIcon={{ name: "logo-github", size: 16 }}
+            leftIcon={{ name: "logo-github", size: 20 }}
             style={{ width: 300, marginHorizontal: "auto", marginBottom: 10 }}
             textStyle={{ width: "70%" }}
           >
@@ -68,7 +68,7 @@ export default function Home() {
         >
           <Button
             variant="outlined"
-            leftIcon={{ name: "logo-linkedin", size: 16 }}
+            leftIcon={{ name: "logo-linkedin", size: 20 }}
             style={{ width: 300, marginHorizontal: "auto", marginBottom: 10 }}
             textStyle={{ width: "70%" }}
           >

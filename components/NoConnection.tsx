@@ -1,5 +1,5 @@
-import { Text } from "react-native-paper";
 import { SafeAreaView } from "@/components/ui/SafeAreaView";
+import Text from "@/components/ui/Text";
 
 export default function NoConnection() {
   // console.log("No connection screen rendered");

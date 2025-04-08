@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { Text } from "react-native-paper";
 import { useSignOut } from "@/api/useAuth";
 import Button from "@/components/ui/Button";
 import { SafeAreaView } from "@/components/ui/SafeAreaView";
+import Text from "@/components/ui/Text";
 
 interface ErrorScreenProps {
   text?: string;

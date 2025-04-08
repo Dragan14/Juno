@@ -5,12 +5,12 @@ import { useSignOut } from "@/api/useAuth";
 import { useGetUser } from "@/api/useUser";
 import { useGetProfile, useUpdateProfile } from "@/api/useProfile";
 import ErrorScreen from "@/components/ErrorScreen";
-import { Text } from "react-native-paper";
 import { z } from "zod";
 import { useToastStore } from "@/stores/toastStore";
 import TextInput from "@/components/ui/TextInput";
 import Button from "@/components/ui/Button";
 import { SafeAreaView } from "@/components/ui/SafeAreaView";
+import Text from "@/components/ui/Text";
 
 export default function Account() {
   // console.log("Account screen rendered");

@@ -14,7 +14,7 @@ import {
 import { useThemeStore } from "@/stores/themeStore";
 
 type ButtonProps = {
-  children: string;
+  children?: string;
   color?: string;
   textColor?: string;
   leftIcon?: React.ReactNode;

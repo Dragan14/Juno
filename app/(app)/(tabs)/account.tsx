@@ -68,6 +68,8 @@ export default function Account() {
   if (profile.isPending || user.isPending) {
     return (
       <SafeAreaView
+        disableBottomSafeArea={true}
+        disableTopSafeArea={true}
         style={{
           justifyContent: "center",
           alignItems: "center",
@@ -95,7 +97,7 @@ export default function Account() {
   }
 
   return (
-    <SafeAreaView disableBottomSafeArea={true}>
+    <SafeAreaView disableBottomSafeArea={true} disableTopSafeArea={true}>
       <View
         style={{
           flex: 1,
@@ -103,22 +105,13 @@ export default function Account() {
           width: "100%",
           paddingHorizontal: 10,
           marginHorizontal: "auto",
+          marginTop: 10,
         }}
       >
         <Text
           style={{
             fontWeight: "bold",
-            fontSize: 32,
-            textAlign: "center",
-            marginBottom: 20,
-          }}
-        >
-          Account
-        </Text>
-        <Text
-          style={{
-            fontWeight: "bold",
-            fontSize: 20,
+            fontSize: 18,
             marginBottom: 10,
           }}
         >
@@ -134,7 +127,7 @@ export default function Account() {
         <Text
           style={{
             fontWeight: "bold",
-            fontSize: 20,
+            fontSize: 18,
           }}
         >
           Name

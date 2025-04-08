@@ -16,12 +16,20 @@ export default function TabsLayout() {
         tabBarStyle: {
           backgroundColor: theme.colors.background,
         },
-        headerShown: false,
+        headerStyle: {
+          backgroundColor: theme.colors.background,
+        },
+        headerTitleStyle: {
+          fontSize: 24,
+          fontWeight: "bold",
+          color: theme.colors.primary,
+        },
       }}
     >
       <Tabs.Screen
         name="index"
         options={{
+          headerShown: false,
           title: "Home",
           tabBarIcon: ({ color, focused }) => (
             <Icon
@@ -35,6 +43,7 @@ export default function TabsLayout() {
       <Tabs.Screen
         name="account"
         options={{
+          headerShown: true,
           title: "Account",
           tabBarIcon: ({ color, focused }) => (
             <Icon

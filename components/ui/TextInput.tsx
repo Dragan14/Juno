@@ -14,7 +14,7 @@ import {
 } from "react-native";
 import { useThemeStore } from "@/stores/themeStore";
 
-interface CustomTextInputProps {
+type MyTextInputProps = {
   label?: string;
   leftIcon?: React.ReactNode;
   rightIcon?: React.ReactNode;
@@ -25,9 +25,7 @@ interface CustomTextInputProps {
   style?: StyleProp<ViewStyle>;
   textStyle?: StyleProp<TextStyle>;
   disabled?: boolean;
-}
-
-type MyTextInputProps = CustomTextInputProps & TextInputProps;
+} & TextInputProps;
 
 export default function MyTextInput({
   label,

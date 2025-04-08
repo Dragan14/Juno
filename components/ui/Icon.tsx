@@ -16,19 +16,20 @@ export default function Icon({
   ...props
 }: IconProps) {
   const { theme } = useThemeStore();
-  switch (variant) {
-    case "active":
-      color = theme.colors.primary;
-      break;
-    case "inactive":
-      color = theme.colors.onBackground;
-      break;
-    case "button":
-      color = theme.colors.onPrimary;
-      break;
-    default:
-      color = color ?? theme.colors.onBackground;
-  }
+
+  color = (() => {
+    switch (variant) {
+      case "active":
+        return theme.colors.primary;
+      case "inactive":
+        return theme.colors.onBackground;
+      case "button":
+        return theme.colors.onPrimary;
+      default:
+        return color ?? theme.colors.onBackground;
+    }
+  })();
+
   return <Ionicons color={color} size={scaledSize(size)} {...props} />;
 }
 

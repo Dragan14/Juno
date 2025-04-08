@@ -11,13 +11,20 @@ type MyTextProps = {
     | "tertiary"
     | "error"
     | "success";
+  color?: string;
 } & TextProps;
 
-export default function MyText({ children, style, ...props }: MyTextProps) {
+export default function MyText({
+  children,
+  style,
+  variant,
+  color,
+  ...props
+}: MyTextProps) {
   const theme = useThemeStore((state) => state.theme);
 
-  const color = (() => {
-    switch (props.variant) {
+  color = (() => {
+    switch (variant) {
       case "default":
         return theme.colors.onSurface;
       case "primary":
@@ -31,12 +38,12 @@ export default function MyText({ children, style, ...props }: MyTextProps) {
       case "success":
         return theme.colors.onSuccess;
       default:
-        return theme.colors.onSurface;
+        return color ?? theme.colors.onSurface;
     }
   })();
 
   return (
-    <Text style={[{ color: color }, style]} {...props}>
+    <Text style={[style, { color: color }]} {...props}>
       {children}
     </Text>
   );

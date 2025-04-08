@@ -52,7 +52,7 @@ const Button = forwardRef<View, ButtonProps>(
   ) => {
     const theme = useThemeStore((state) => state.theme);
 
-    const backgroundColor = (() => {
+    color = (() => {
       if (disabled) return theme.colors.surfaceDisabled;
       switch (variant) {
         case "success":
@@ -74,7 +74,7 @@ const Button = forwardRef<View, ButtonProps>(
       }
     })();
 
-    const contentColor = (() => {
+    textColor = (() => {
       if (disabled) return theme.colors.onSurfaceDisabled;
       switch (variant) {
         case "success":
@@ -100,8 +100,9 @@ const Button = forwardRef<View, ButtonProps>(
       <Pressable
         ref={ref}
         style={({ pressed, hovered }) => [
+          style,
           styles.button,
-          { backgroundColor },
+          { backgroundColor: color },
           variant === "outlined" && {
             borderWidth: 1,
             borderColor: theme.colors.outline,
@@ -109,19 +110,18 @@ const Button = forwardRef<View, ButtonProps>(
           !disabled && hovered && styles.hovered,
           !disabled && pressed && styles.pressed,
           disabled && styles.disabled,
-          style,
         ]}
         disabled={disabled}
         {...props}
       >
         <View style={styles.contentContainer}>
           {loading ? (
-            <ActivityIndicator size="small" color={contentColor} />
+            <ActivityIndicator size="small" color={textColor} />
           ) : (
             <>
               {leftIcon && <View style={styles.iconSpacing}>{leftIcon}</View>}
               <Text
-                style={[styles.text, { color: contentColor }, textStyle]}
+                style={[textStyle, styles.text, { color: textColor }]}
                 numberOfLines={1}
                 ellipsizeMode="tail"
               >

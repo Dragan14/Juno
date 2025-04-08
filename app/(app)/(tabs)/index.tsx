@@ -1,7 +1,6 @@
 import { Link } from "expo-router";
 import View from "@/components/ui/View";
 import Button from "@/components/ui/Button";
-import Icon from "@/components/ui/Icon";
 import { SafeAreaView } from "@/components/ui/SafeAreaView";
 import Text from "@/components/ui/Text";
 
@@ -46,7 +45,7 @@ export default function Home() {
         <Link href="https://dragan14.github.io" asChild>
           <Button
             variant="outlined"
-            leftIcon={<Icon name="globe-outline" size={16} variant="active" />}
+            leftIcon={{ name: "globe-outline", size: 16 }}
             style={{ width: 300, marginHorizontal: "auto", marginBottom: 10 }}
             textStyle={{ width: "70%" }}
           >
@@ -56,7 +55,7 @@ export default function Home() {
         <Link href="https://github.com/dragan14" asChild>
           <Button
             variant="outlined"
-            leftIcon={<Icon name="logo-github" size={16} variant="active" />}
+            leftIcon={{ name: "logo-github", size: 16 }}
             style={{ width: 300, marginHorizontal: "auto", marginBottom: 10 }}
             textStyle={{ width: "70%" }}
           >
@@ -69,7 +68,7 @@ export default function Home() {
         >
           <Button
             variant="outlined"
-            leftIcon={<Icon name="logo-linkedin" size={16} variant="active" />}
+            leftIcon={{ name: "logo-linkedin", size: 16 }}
             style={{ width: 300, marginHorizontal: "auto", marginBottom: 10 }}
             textStyle={{ width: "70%" }}
           >

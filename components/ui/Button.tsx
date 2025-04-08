@@ -1,4 +1,4 @@
-import React, { forwardRef } from "react";
+import React, { forwardRef, ComponentProps } from "react";
 import {
   Pressable,
   PressableProps,
@@ -12,13 +12,14 @@ import {
   PixelRatio,
 } from "react-native";
 import { useThemeStore } from "@/stores/themeStore";
+import { Ionicons } from "@expo/vector-icons";
 
 type ButtonProps = {
   children?: string;
   color?: string;
   textColor?: string;
-  leftIcon?: React.ReactNode;
-  rightIcon?: React.ReactNode;
+  leftIcon?: ComponentProps<typeof Ionicons>;
+  rightIcon?: ComponentProps<typeof Ionicons>;
   loading?: boolean;
   style?: StyleProp<ViewStyle>;
   textStyle?: StyleProp<TextStyle>;
@@ -96,6 +97,26 @@ const Button = forwardRef<View, ButtonProps>(
       }
     })();
 
+    const renderIcon = ({
+      name,
+      size = 24,
+      color,
+      style,
+      ...props
+    }: ComponentProps<typeof Ionicons>) => {
+      return (
+        <View style={styles.iconSpacing}>
+          <Ionicons
+            name={name}
+            size={scaledSize(size)}
+            color={color ?? textColor}
+            style={style}
+            {...props}
+          />
+        </View>
+      );
+    };
+
     return (
       <Pressable
         ref={ref}
@@ -119,7 +140,7 @@ const Button = forwardRef<View, ButtonProps>(
             <ActivityIndicator size="small" color={textColor} />
           ) : (
             <>
-              {leftIcon && <View style={styles.iconSpacing}>{leftIcon}</View>}
+              {leftIcon && renderIcon(leftIcon)}
               <Text
                 style={[textStyle, styles.text, { color: textColor }]}
                 numberOfLines={1}
@@ -127,7 +148,7 @@ const Button = forwardRef<View, ButtonProps>(
               >
                 {children}
               </Text>
-              {rightIcon && <View style={styles.iconSpacing}>{rightIcon}</View>}
+              {rightIcon && renderIcon(rightIcon)}
             </>
           )}
         </View>

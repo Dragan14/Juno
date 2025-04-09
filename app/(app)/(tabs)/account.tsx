@@ -111,14 +111,14 @@ export default function Account() {
           style={{
             fontWeight: "bold",
             fontSize: 18,
-            marginBottom: 10,
+            marginBottom: 5,
           }}
         >
           Email
         </Text>
         <Text
           style={{
-            marginBottom: 15,
+            marginBottom: 20,
           }}
         >
           {user.data?.email || "No email available"}
@@ -127,6 +127,7 @@ export default function Account() {
           style={{
             fontWeight: "bold",
             fontSize: 18,
+            marginBottom: 5,
           }}
         >
           Name
@@ -135,7 +136,7 @@ export default function Account() {
           value={name}
           onChangeText={setName}
           disabled={!isEditing || signOut.isPending || updateProfile.isPending}
-          outlined={false}
+          variant="solid"
           autoCapitalize="words"
           error={!!errors.name}
           errorMessage={errors.name}

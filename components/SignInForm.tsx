@@ -60,7 +60,6 @@ export default function SignInForm() {
         autoCapitalize="none"
         keyboardType="email-address"
         autoComplete="email"
-        outlined={true}
         error={!!errors.email}
         errorMessage={errors.email}
       />
@@ -83,7 +82,6 @@ export default function SignInForm() {
         secureTextEntry={!passwordVisible}
         placeholder="Password"
         autoCapitalize="none"
-        outlined={true}
       />
       <Button
         disabled={signIn.isPending}

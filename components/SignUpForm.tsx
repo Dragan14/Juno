@@ -141,7 +141,6 @@ export default function SignUpForm() {
         value={name}
         placeholder="Name"
         autoCapitalize="words"
-        outlined={true}
         error={!!errors.name}
         errorMessage={errors.name}
         autoComplete="name"
@@ -155,7 +154,6 @@ export default function SignUpForm() {
         placeholder="email@address.com"
         autoCapitalize="none"
         keyboardType="email-address"
-        outlined={true}
         error={!!errors.email}
         errorMessage={errors.email}
         autoComplete="email"
@@ -180,7 +178,6 @@ export default function SignUpForm() {
         secureTextEntry={!passwordVisibility.password}
         placeholder="Password"
         autoCapitalize="none"
-        outlined={true}
         error={!!errors.password}
         errorMessage={errors.password}
         autoComplete="password"
@@ -205,7 +202,6 @@ export default function SignUpForm() {
         secureTextEntry={!passwordVisibility.confirmPassword}
         placeholder="Confirm Password"
         autoCapitalize="none"
-        outlined={true}
         error={!!errors.confirmPassword}
         errorMessage={errors.confirmPassword}
         autoComplete="password"

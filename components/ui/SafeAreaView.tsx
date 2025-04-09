@@ -25,8 +25,8 @@ export const SafeAreaView: FunctionComponent<SafeAreaViewProps> = ({
   const insets = useSafeAreaInsets();
 
   style = StyleSheet.flatten([
-    style,
     { flex: 1, backgroundColor: theme.colors.background },
+    style,
   ]);
 
   if (!disableBottomSafeArea) {

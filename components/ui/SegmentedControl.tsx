@@ -24,24 +24,24 @@ export default function SegmentedControl({
     <SegmentedControlTab
       selectedIndex={selectedIndex}
       tabStyle={[
-        tabStyle,
         {
           backgroundColor: theme.colors.background,
           borderColor: theme.colors.outline,
           height: scaledSize(40),
         },
+        tabStyle,
       ]}
       activeTabStyle={[
-        activeTabStyle,
         { backgroundColor: theme.colors.secondaryContainer },
+        activeTabStyle,
       ]}
       tabTextStyle={[
-        tabTextStyle,
         { color: theme.colors.onBackground, fontWeight: "500" },
+        tabTextStyle,
       ]}
       activeTabTextStyle={[
-        activeTabTextStyle,
         { color: theme.colors.onSecondaryContainer },
+        activeTabTextStyle,
       ]}
       borderRadius={borderRadius ?? (round ? scaledSize(20) : scaledSize(5))}
       allowFontScaling={allowFontScaling}

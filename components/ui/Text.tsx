@@ -43,7 +43,7 @@ export default function MyText({
   })();
 
   return (
-    <Text style={[style, { color: color }]} {...props}>
+    <Text style={[{ color: color }, style]} {...props}>
       {children}
     </Text>
   );

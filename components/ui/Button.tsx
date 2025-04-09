@@ -125,7 +125,6 @@ const Button = forwardRef<View, ButtonProps>(
       <Pressable
         ref={ref}
         style={({ pressed, hovered }) => [
-          style,
           styles.button,
           { backgroundColor: color },
           { borderRadius: borderRadius },
@@ -136,6 +135,7 @@ const Button = forwardRef<View, ButtonProps>(
           !disabled && hovered && styles.hovered,
           !disabled && pressed && styles.pressed,
           disabled && styles.disabled,
+          style,
         ]}
         disabled={disabled}
         {...props}

@@ -24,6 +24,7 @@ type ButtonProps = {
   style?: StyleProp<ViewStyle>;
   textStyle?: StyleProp<TextStyle>;
   disabled?: boolean;
+  round?: boolean;
   variant?:
     | "primary"
     | "secondary"
@@ -46,6 +47,7 @@ const Button = forwardRef<View, ButtonProps>(
       style,
       textStyle,
       disabled,
+      round = false,
       variant,
       ...props
     },
@@ -97,6 +99,8 @@ const Button = forwardRef<View, ButtonProps>(
       }
     })();
 
+    const borderRadius = round ? 20 : 5;
+
     const renderIcon = ({
       name,
       size = 24,
@@ -124,6 +128,7 @@ const Button = forwardRef<View, ButtonProps>(
           style,
           styles.button,
           { backgroundColor: color },
+          { borderRadius: borderRadius },
           variant === "outlined" && {
             borderWidth: 1,
             borderColor: theme.colors.outline,
@@ -142,7 +147,7 @@ const Button = forwardRef<View, ButtonProps>(
             <>
               {leftIcon && renderIcon(leftIcon)}
               <Text
-                style={[textStyle, styles.text, { color: textColor }]}
+                style={[styles.text, { color: textColor }, textStyle]}
                 numberOfLines={1}
                 ellipsizeMode="tail"
               >
@@ -168,7 +173,6 @@ const scaledSize = (baseSize: number) => {
 const styles = StyleSheet.create({
   button: {
     height: scaledSize(40),
-    borderRadius: 20,
     justifyContent: "center",
     alignItems: "center",
     flexDirection: "row",

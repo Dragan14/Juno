@@ -7,12 +7,14 @@ type IconProps = {
   variant?: "active" | "inactive";
   color?: string;
   size?: number;
+  allowIconScaling?: boolean;
 } & ComponentProps<typeof Ionicons>;
 
 export default function Icon({
   variant,
   color,
   size = 24,
+  allowIconScaling = true,
   ...props
 }: IconProps) {
   const { theme } = useThemeStore();
@@ -28,7 +30,13 @@ export default function Icon({
     }
   })();
 
-  return <Ionicons color={color} size={scaledSize(size)} {...props} />;
+  return (
+    <Ionicons
+      color={color}
+      size={allowIconScaling ? scaledSize(size) : size}
+      {...props}
+    />
+  );
 }
 
 const scaledSize = (baseSize: number) => {

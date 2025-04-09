@@ -16,6 +16,9 @@ export default function TabsLayout() {
         tabBarStyle: {
           backgroundColor: theme.colors.background,
         },
+        tabBarLabelStyle: {
+          fontSize: 12,
+        },
         headerStyle: {
           backgroundColor: theme.colors.background,
         },
@@ -32,7 +35,11 @@ export default function TabsLayout() {
           headerShown: false,
           title: "Home",
           tabBarIcon: ({ color, focused }) => (
-            <Icon name={focused ? "home" : "home-outline"} color={color} />
+            <Icon
+              name={focused ? "home" : "home-outline"}
+              color={color}
+              allowIconScaling={false}
+            />
           ),
         }}
       />
@@ -42,7 +49,11 @@ export default function TabsLayout() {
           headerShown: true,
           title: "Account",
           tabBarIcon: ({ color, focused }) => (
-            <Icon name={focused ? "person" : "person-outline"} color={color} />
+            <Icon
+              name={focused ? "person" : "person-outline"}
+              color={color}
+              allowIconScaling={false}
+            />
           ),
         }}
       />

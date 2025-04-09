@@ -211,7 +211,7 @@ export default function SignUpForm() {
         onPress={handleSignUp}
         loading={signUp.isPending}
       >
-        Sign up
+        Sign Up
       </Button>
       <EmailVerificationModal
         visible={verificationModalVisible}

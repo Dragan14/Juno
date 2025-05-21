@@ -1,10 +1,24 @@
-import React, { forwardRef, ForwardedRef } from "react";
-import { Text, TextProps, StyleProp, TextStyle, Pressable } from "react-native";
-import { useThemeStore } from "@/stores/themeStore";
+// Text.tsx
+import { useState, ReactNode } from "react";
+import {
+  Text as RNText,
+  TextProps as RNTextProps,
+  StyleProp,
+  TextStyle,
+  Pressable,
+} from "react-native";
+import { useTheme } from "../../context/ThemeContext";
 
-type MyTextProps = {
-  children: React.ReactNode;
+/**
+ * Props for the Text component.
+ * Extends the standard React Native TextProps.
+ */
+type TextProps = {
+  /** The content to be rendered inside the Text component. */
+  children: ReactNode;
+  /** Custom style for the Text component. */
   style?: StyleProp<TextStyle>;
+  /** Predefined color variant for the text. Affects text color. Defaults to 'default'. */
   variant?:
     | "default"
     | "primary"
@@ -12,60 +26,79 @@ type MyTextProps = {
     | "tertiary"
     | "error"
     | "success";
+  /** Custom text color. Overrides variant colors. */
   color?: string;
+  /** If true, renders the text as a Pressable with underline on hover/press. Requires `onPress`. */
   link?: boolean;
-} & TextProps;
+  /** If true, disables the text (and the Pressable if `link` is true). */
+  disabled?: boolean;
+} & RNTextProps;
 
-const MyText = forwardRef(
-  (
-    { children, style, variant, color, link, onPress, ...props }: MyTextProps,
-    ref: ForwardedRef<Text>,
-  ) => {
-    const theme = useThemeStore((state) => state.theme);
+// Text component
+const Text = ({
+  children,
+  style,
+  variant,
+  color: initialColor,
+  link,
+  disabled,
+  onPress,
+  ...props
+}: TextProps) => {
+  const { theme } = useTheme();
+  const [isHovered, setIsHovered] = useState(false);
 
-    color = (() => {
-      switch (variant) {
-        case "default":
-          return theme.colors.onSurface;
-        case "primary":
-          return theme.colors.onPrimary;
-        case "secondary":
-          return theme.colors.onSecondary;
-        case "tertiary":
-          return theme.colors.onTertiary;
-        case "error":
-          return theme.colors.onError;
-        case "success":
-          return theme.colors.onSuccess;
-        default:
-          return color ?? theme.colors.onSurface;
-      }
-    })();
+  // Calculate color
+  const color = (() => {
+    if (initialColor) return initialColor;
+    switch (variant) {
+      case "default":
+        return theme.colors.onBackground;
+      case "primary":
+        return theme.colors.primary;
+      case "secondary":
+        return theme.colors.secondary;
+      case "tertiary":
+        return theme.colors.tertiary;
+      case "error":
+        return theme.colors.error;
+      case "success":
+        return theme.colors.success;
+      default:
+        return theme.colors.onBackground;
+    }
+  })();
 
-    return link ? (
-      <Pressable onPress={onPress}>
-        {({ pressed, hovered }) => (
-          <Text
-            ref={ref}
-            style={[
-              { color: color },
-              pressed || hovered ? { textDecorationLine: "underline" } : {},
-              style,
-            ]}
-            {...props}
-          >
-            {children}
-          </Text>
-        )}
-      </Pressable>
-    ) : (
-      <Text ref={ref} style={[{ color: color }, style]} {...props}>
-        {children}
-      </Text>
-    );
-  },
-);
+  return link ? (
+    <Pressable
+      onPress={onPress}
+      disabled={disabled}
+      onHoverIn={() => !disabled && setIsHovered(true)}
+      onHoverOut={() => setIsHovered(false)}
+    >
+      {({ pressed }) => (
+        <RNText
+          disabled={disabled}
+          style={[
+            { color: color },
+            !disabled && (pressed || isHovered)
+              ? { textDecorationLine: "underline" }
+              : {},
+            style,
+          ]}
+          {...props}
+        >
+          {children}
+        </RNText>
+      )}
+    </Pressable>
+  ) : (
+    <RNText disabled={disabled} style={[{ color: color }, style]} {...props}>
+      {children}
+    </RNText>
+  );
+};
 
-MyText.displayName = "Text";
+Text.displayName = "Text";
 
-export default MyText;
+export default Text;

@@ -1,5 +1,0 @@
-# Run the test: maestro test .maestro/login.yaml
-appId: host.exp.Exponent # host.exp.Exponent for Expo Go or your standalone app’s ID
----
-- openLink: exp://192.168.50.98:8081 # Replace with your local Expo URL
-- assertVisible: "Edit app/index.tsx to edit this screen."

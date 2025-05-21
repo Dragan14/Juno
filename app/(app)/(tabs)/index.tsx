@@ -1,14 +1,15 @@
-import { Link } from "expo-router";
+import SafeAreaView from "@/components/ui/SafeAreaView";
 import View from "@/components/ui/View";
-import Button from "@/components/ui/Button";
-import { SafeAreaView } from "@/components/ui/SafeAreaView";
+import { Link } from "expo-router";
 import Text from "@/components/ui/Text";
+import Button from "@/components/ui/Button";
+import { Ionicons } from "@expo/vector-icons";
 
-export default function Home() {
+export default function HomeScreen() {
   // console.log("Home screen rendered");
 
   return (
-    <SafeAreaView disableBottomSafeArea={true}>
+    <SafeAreaView disableBottomSafeArea>
       <View
         style={{
           flex: 1,
@@ -19,20 +20,20 @@ export default function Home() {
           justifyContent: "center",
         }}
       >
-        {/* <Link href="/+not-found" asChild>
+        <Link href="/+not-found" asChild>
           <Button
             style={{ width: 300, marginHorizontal: "auto", marginBottom: 10 }}
           >
             Go to the Not Found screen!
           </Button>
         </Link>
-        <Link href="/(auth)/authentication" asChild>
+        <Link href="/(auth)" asChild>
           <Button
             style={{ width: 300, marginHorizontal: "auto", marginBottom: 20 }}
           >
             Go to the Authentication screen!
           </Button>
-        </Link> */}
+        </Link>
         <Text
           style={{
             textAlign: "center",
@@ -44,20 +45,16 @@ export default function Home() {
         </Text>
         <Link href="https://dragan14.github.io" asChild>
           <Button
-            variant="outlined"
-            leftIcon={{ name: "globe-outline", size: 20 }}
+            leftIcon={<Ionicons name="globe-outline" />}
             style={{ width: 300, marginHorizontal: "auto", marginBottom: 10 }}
-            textStyle={{ width: "70%" }}
           >
             Check out my portfolio!
           </Button>
         </Link>
         <Link href="https://github.com/dragan14" asChild>
           <Button
-            variant="outlined"
-            leftIcon={{ name: "logo-github", size: 20 }}
+            leftIcon={<Ionicons name="logo-github" />}
             style={{ width: 300, marginHorizontal: "auto", marginBottom: 10 }}
-            textStyle={{ width: "70%" }}
           >
             Check out my GitHub!
           </Button>
@@ -67,12 +64,10 @@ export default function Home() {
           asChild
         >
           <Button
-            variant="outlined"
-            leftIcon={{ name: "logo-linkedin", size: 20 }}
+            leftIcon={<Ionicons name="logo-linkedin" />}
             style={{ width: 300, marginHorizontal: "auto", marginBottom: 10 }}
-            textStyle={{ width: "70%" }}
           >
-            Check out my LinkedIn!
+            Checkout my LinkedIn!
           </Button>
         </Link>
       </View>

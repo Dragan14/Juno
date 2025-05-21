@@ -4,18 +4,20 @@ import { nameSchema } from "@/schemas/auth-schemas";
 import { useSignOut } from "@/api/useAuth";
 import { useGetUser } from "@/api/useUser";
 import { useGetProfile, useUpdateProfile } from "@/api/useProfile";
-import ErrorScreen from "@/components/ErrorScreen";
 import { z } from "zod";
-import { useToastStore } from "@/stores/toastStore";
+import SafeAreaView from "@/components/ui/SafeAreaView";
 import TextInput from "@/components/ui/TextInput";
 import Button from "@/components/ui/Button";
-import { SafeAreaView } from "@/components/ui/SafeAreaView";
 import Text from "@/components/ui/Text";
 import View from "@/components/ui/View";
+import { Ionicons } from "@expo/vector-icons";
+import { useToast } from "@/context/ToastContext";
+import ErrorScreen from "@/components/ErrorScreen";
 
 export default function Account() {
   // console.log("Account screen rendered");
-  const showToast = useToastStore((state) => state.showToast);
+
+  const { showToast } = useToast();
 
   // User and profile state
   const user = useGetUser();
@@ -52,7 +54,11 @@ export default function Account() {
     if (validateName()) {
       await updateProfile.mutateAsync({ name });
       setIsEditing(false);
-      showToast("Name updated successfully");
+      showToast({
+        message: "Name updated successfully",
+        position: "top",
+        variant: "success",
+      });
     }
   };
 
@@ -85,13 +91,15 @@ export default function Account() {
     !user.isPending
   ) {
     return (
-      <ErrorScreen
-        text="Error loading profile. Please try again."
-        onPress={async () => {
-          if (profile.isError) await profile.refetch();
-          if (user.isError) await user.refetch();
-        }}
-      />
+      <SafeAreaView disableBottomSafeArea={true} disableTopSafeArea={true}>
+        <ErrorScreen
+          text="Error loading profile"
+          onPress={async () => {
+            if (profile.isError) await profile.refetch();
+            if (user.isError) await user.refetch();
+          }}
+        />
+      </SafeAreaView>
     );
   }
 
@@ -141,40 +149,34 @@ export default function Account() {
           error={!!errors.name}
           errorMessage={errors.name}
           leftIcon={
-            isEditing
-              ? {
-                  name: "checkmark-circle",
-                  onPress: () => {
-                    Keyboard.dismiss();
-                    handleSave();
-                  },
+            <Ionicons
+              name={isEditing ? "checkmark-circle" : "pencil"}
+              onPress={() => {
+                if (isEditing) {
+                  Keyboard.dismiss();
+                  handleSave();
+                } else {
+                  setIsEditing(true);
                 }
-              : {
-                  name: "pencil",
-                  onPress: () => {
-                    setIsEditing(true);
-                  },
-                }
+              }}
+            />
           }
           rightIcon={
-            isEditing
-              ? {
-                  name: "close-circle",
-                  onPress: () => {
-                    Keyboard.dismiss();
-                    handleCancel();
-                  },
-                }
-              : null
+            isEditing ? (
+              <Ionicons
+                name="close-circle"
+                onPress={() => {
+                  Keyboard.dismiss();
+                  handleCancel();
+                }}
+              />
+            ) : undefined
           }
         />
         <Button
-          variant="outlined"
           onPress={async () => {
             await signOut.mutateAsync();
           }}
-          loading={signOut.isPending}
-          disabled={signOut.isPending || updateProfile.isPending}
           style={{
             width: 300,
             marginHorizontal: "auto",

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useSignOut } from "@/api/useAuth";
+import View from "@/components/ui/View";
 import Button from "@/components/ui/Button";
-import { SafeAreaView } from "@/components/ui/SafeAreaView";
 import Text from "@/components/ui/Text";
 
 interface ErrorScreenProps {
@@ -18,32 +18,38 @@ export default function ErrorScreen({
   const [isRetrying, setIsRetrying] = useState(false);
 
   return (
-    <SafeAreaView
+    <View
       style={{
+        flex: 1,
         justifyContent: "center",
         alignItems: "center",
+        gap: 10,
+        maxWidth: 800,
+        alignSelf: "center",
       }}
     >
       <Text style={{ marginTop: 16 }}>{text}</Text>
+      {onPress && (
+        <Button
+          onPress={async () => {
+            setIsRetrying(true);
+            await onPress();
+            setIsRetrying(false);
+          }}
+          style={{ width: "75%" }}
+          loading={isRetrying}
+        >
+          Retry
+        </Button>
+      )}
       <Button
-        onPress={async () => {
-          setIsRetrying(true);
-          await onPress();
-          setIsRetrying(false);
-        }}
-        disabled={signOut.isPending}
-      >
-        Retry
-      </Button>
-      <Button
-        disabled={isRetrying}
-        loading={signOut.isPending}
         onPress={async () => {
           await signOut.mutateAsync();
         }}
+        style={{ width: "75%" }}
       >
         Sign Out
       </Button>
-    </SafeAreaView>
+    </View>
   );
 }

@@ -5,6 +5,7 @@ import TextInput from "@/components/ui/TextInput";
 import Button from "@/components/ui/Button";
 import { emailSchema } from "@/schemas/auth-schemas";
 import { z } from "zod";
+import { Mail, Lock, Eye, EyeOff } from "lucide-react-native";
 
 export default function SignInForm() {
   const signIn = useSignIn();
@@ -51,8 +52,8 @@ export default function SignInForm() {
   return (
     <>
       <TextInput
-        label="Email"
-        leftIcon={{ name: "mail" }}
+        topLabel="Email"
+        leftIcon={<Mail />}
         onChangeText={setEmail}
         onBlur={validateEmail}
         value={email}
@@ -64,18 +65,14 @@ export default function SignInForm() {
         errorMessage={errors.email}
       />
       <TextInput
-        label="Password"
-        leftIcon={{ name: "lock-closed" }}
+        topLabel="Password"
+        leftIcon={<Lock />}
         rightIcon={
-          passwordVisible
-            ? {
-                name: "eye",
-                onPress: togglePasswordVisibility,
-              }
-            : {
-                name: "eye-off",
-                onPress: togglePasswordVisibility,
-              }
+          passwordVisible ? (
+            <Eye onPress={togglePasswordVisibility} />
+          ) : (
+            <EyeOff onPress={togglePasswordVisibility} />
+          )
         }
         onChangeText={setPassword}
         value={password}

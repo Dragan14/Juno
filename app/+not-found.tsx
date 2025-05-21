@@ -1,59 +1,48 @@
-import { Link } from "expo-router";
-import { useEffect, useState } from "react";
-import * as SplashScreen from "expo-splash-screen";
-import LoadingScreen from "@/components/LoadingScreen";
-import { Platform } from "react-native";
+import { Stack, Link } from "expo-router";
+import SafeAreaView from "@/components/ui/SafeAreaView";
 import Button from "@/components/ui/Button";
 import Text from "@/components/ui/Text";
-import { SafeAreaView } from "@/components/ui/SafeAreaView";
 import MyView from "@/components/ui/View";
+import * as SplashScreen from "expo-splash-screen";
 
 export default function NotFoundScreen() {
   // console.log("Not Found screen rendered");
-  const [isWebLoading, setIsWebLoading] = useState(Platform.OS === "web");
-
-  useEffect(() => {
-    setTimeout(() => {
-      setIsWebLoading(false);
-      SplashScreen.hideAsync();
-    }, 1500);
-  }, []);
-
-  if (isWebLoading) {
-    return <LoadingScreen />;
-  }
+  SplashScreen.hide();
 
   return (
-    <SafeAreaView>
-      <MyView
-        style={{
-          flex: 1,
-          maxWidth: 800,
-          width: "100%",
-          paddingHorizontal: 10,
-          marginHorizontal: "auto",
-          justifyContent: "center",
-        }}
-      >
-        <Text
+    <>
+      <Stack.Screen name="+not-found" options={{ headerShown: false }} />
+      <SafeAreaView>
+        <MyView
           style={{
-            textAlign: "center",
-            marginBottom: 20,
+            flex: 1,
+            maxWidth: 800,
+            width: "100%",
+            paddingHorizontal: 10,
+            marginHorizontal: "auto",
+            justifyContent: "center",
           }}
         >
-          Oops! This page does not exist.
-        </Text>
-        <Link href="/" asChild>
-          <Button
+          <Text
             style={{
-              width: 300,
-              marginHorizontal: "auto",
+              textAlign: "center",
+              marginBottom: 20,
             }}
           >
-            Go back to Home screen!
-          </Button>
-        </Link>
-      </MyView>
-    </SafeAreaView>
+            Oops! This page does not exist.
+          </Text>
+          <Link href="/" asChild>
+            <Button
+              style={{
+                width: 300,
+                marginHorizontal: "auto",
+              }}
+            >
+              Go back to the Home screen!
+            </Button>
+          </Link>
+        </MyView>
+      </SafeAreaView>
+    </>
   );
 }

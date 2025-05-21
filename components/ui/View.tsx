@@ -1,8 +1,11 @@
-import { View, ViewProps } from "react-native";
-import { useThemeStore } from "@/stores/themeStore";
+// View.tsx
+import { View as RNView, ViewProps } from "react-native";
+import { useTheme } from "../../context/ThemeContext";
 
-export default function MyView({ style, ...props }: ViewProps) {
-  const theme = useThemeStore((state) => state.theme);
+const View = ({ style, ...props }: ViewProps) => {
+  const { theme } = useTheme();
   const color = theme.colors.background;
-  return <View {...props} style={[{ backgroundColor: color }, style]} />;
-}
+  return <RNView {...props} style={[{ backgroundColor: color }, style]} />;
+};
+
+export default View;

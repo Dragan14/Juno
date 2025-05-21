@@ -7,11 +7,16 @@ import {
 } from "@/schemas/auth-schemas";
 import { useSignUp } from "@/api/useAuth";
 import { z } from "zod";
-import EmailVerificationModal from "./VerifyEmailModal";
 import TextInput from "@/components/ui/TextInput";
 import Button from "@/components/ui/Button";
+import { CircleUser, Mail, Lock, Eye, EyeOff } from "lucide-react-native";
+import { useAlert } from "../context/AlertContext";
+import Text from "@/components/ui/Text";
+import View from "@/components/ui/View";
 
 export default function SignUpForm() {
+  const { showAlert, hideAlert } = useAlert();
+
   const signUp = useSignUp();
 
   // Form state
@@ -25,10 +30,6 @@ export default function SignUpForm() {
     password: "",
     confirmPassword: "",
   });
-
-  // Email verification modal state
-  const [verificationModalVisible, setVerificationModalVisible] =
-    useState(false);
 
   // Password visibility state
   const [passwordVisibility, setPasswordVisibility] = useState({
@@ -126,7 +127,33 @@ export default function SignUpForm() {
       setConfirmPassword("");
       setErrors({ name: "", email: "", password: "", confirmPassword: "" });
       if (!session && !(user && user?.identities?.length === 0)) {
-        setVerificationModalVisible(true);
+        showAlert({
+          content: (
+            <View style={{ gap: 10 }}>
+              <Text>
+                Check your Email for a verification link to complete your sign
+                up.
+              </Text>
+              <View style={{ flexDirection: "row", gap: 10 }}>
+                <Button
+                  onPress={hideAlert}
+                  variant="secondary"
+                  outlined={true}
+                  style={{ flex: 1 }}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  onPress={hideAlert}
+                  variant="primary"
+                  style={{ flex: 1 }}
+                >
+                  Confirm
+                </Button>
+              </View>
+            </View>
+          ),
+        });
       }
     }
   };
@@ -134,8 +161,8 @@ export default function SignUpForm() {
   return (
     <>
       <TextInput
-        label="Name"
-        leftIcon={{ name: "person" }}
+        topLabel="Name"
+        leftIcon={<CircleUser />}
         onChangeText={setName}
         onBlur={validateName}
         value={name}
@@ -146,8 +173,8 @@ export default function SignUpForm() {
         autoComplete="name"
       />
       <TextInput
-        label="Email"
-        leftIcon={{ name: "mail" }}
+        topLabel="Email"
+        leftIcon={<Mail />}
         onChangeText={setEmail}
         onBlur={validateEmail}
         value={email}
@@ -159,18 +186,14 @@ export default function SignUpForm() {
         autoComplete="email"
       />
       <TextInput
-        label="Password"
-        leftIcon={{ name: "lock-closed" }}
+        topLabel="Password"
+        leftIcon={<Lock />}
         rightIcon={
-          passwordVisibility.password
-            ? {
-                name: "eye",
-                onPress: () => togglePasswordVisibility("password"),
-              }
-            : {
-                name: "eye-off",
-                onPress: () => togglePasswordVisibility("password"),
-              }
+          passwordVisibility.password ? (
+            <Eye onPress={() => togglePasswordVisibility("password")} />
+          ) : (
+            <EyeOff onPress={() => togglePasswordVisibility("password")} />
+          )
         }
         onChangeText={setPassword}
         onBlur={validatePassword}
@@ -180,21 +203,19 @@ export default function SignUpForm() {
         autoCapitalize="none"
         error={!!errors.password}
         errorMessage={errors.password}
-        autoComplete="password"
+        autoComplete="password-new"
       />
       <TextInput
-        label="Confirm Password"
-        leftIcon={{ name: "lock-closed" }}
+        topLabel="Confirm Password"
+        leftIcon={<Lock />}
         rightIcon={
-          passwordVisibility.confirmPassword
-            ? {
-                name: "eye",
-                onPress: () => togglePasswordVisibility("confirmPassword"),
-              }
-            : {
-                name: "eye-off",
-                onPress: () => togglePasswordVisibility("confirmPassword"),
-              }
+          passwordVisibility.confirmPassword ? (
+            <Eye onPress={() => togglePasswordVisibility("confirmPassword")} />
+          ) : (
+            <EyeOff
+              onPress={() => togglePasswordVisibility("confirmPassword")}
+            />
+          )
         }
         onChangeText={setConfirmPassword}
         onBlur={validateConfirmPassword}
@@ -204,7 +225,6 @@ export default function SignUpForm() {
         autoCapitalize="none"
         error={!!errors.confirmPassword}
         errorMessage={errors.confirmPassword}
-        autoComplete="password"
       />
       <Button
         disabled={signUp.isPending}
@@ -213,10 +233,6 @@ export default function SignUpForm() {
       >
         Sign Up
       </Button>
-      <EmailVerificationModal
-        visible={verificationModalVisible}
-        onDismiss={() => setVerificationModalVisible(false)}
-      />
     </>
   );
 }

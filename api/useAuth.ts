@@ -4,12 +4,12 @@ import { AUTH_KEYS } from "@/constants/queryKeys";
 import { getDeepLink } from "@/utils/deepLinkUtils";
 import type { SignInCredentials, SignUpCredentials } from "@/types/authTypes";
 import { useClearProfile } from "./useProfile";
-import { useToastStore } from "@/stores/toastStore";
+import { useToast } from "@/context/ToastContext";
 
 // Hook for sign in functionality
 export const useSignIn = () => {
   const queryClient = useQueryClient();
-  const showToast = useToastStore((state) => state.showToast);
+  const { showToast } = useToast();
 
   return useMutation({
     mutationFn: async ({ email, password }: SignInCredentials) => {
@@ -26,7 +26,10 @@ export const useSignIn = () => {
       queryClient.setQueryData(AUTH_KEYS.user, data.user);
     },
     onError: (error) => {
-      showToast(error.message || "Failed to sign in");
+      showToast({
+        message: error.message || "Failed to sign in",
+        variant: "error",
+      });
     },
   });
 };
@@ -34,7 +37,7 @@ export const useSignIn = () => {
 // Hook for sign up functionality
 export const useSignUp = () => {
   const queryClient = useQueryClient();
-  const showToast = useToastStore((state) => state.showToast);
+  const { showToast } = useToast();
 
   return useMutation({
     mutationFn: async ({ email, password, name }: SignUpCredentials) => {
@@ -55,11 +58,17 @@ export const useSignUp = () => {
         queryClient.setQueryData(AUTH_KEYS.session, data.session);
         queryClient.setQueryData(AUTH_KEYS.user, data.user);
       } else if (data?.user && data.user?.identities?.length === 0) {
-        showToast("An account with this email already exists. Please sign in.");
+        showToast({
+          message: "An account with this email already exists. Please sign in.",
+          variant: "error",
+        });
       }
     },
     onError: (error) => {
-      showToast(error.message || "Failed to sign up");
+      showToast({
+        message: error.message || "Failed to sign up",
+        variant: "error",
+      });
     },
   });
 };
@@ -68,7 +77,7 @@ export const useSignUp = () => {
 export const useSignOut = () => {
   const queryClient = useQueryClient();
   const clearProfile = useClearProfile();
-  const showToast = useToastStore((state) => state.showToast);
+  const { showToast } = useToast();
 
   return useMutation({
     mutationFn: async () => {
@@ -78,7 +87,10 @@ export const useSignOut = () => {
     },
     retry: false,
     onError: (error) => {
-      showToast(error.message || "Failed to sign out");
+      showToast({
+        message: error.message || "Failed to sign out",
+        variant: "error",
+      });
     },
     onSettled: () => {
       queryClient.setQueryData(AUTH_KEYS.session, null);

@@ -1,15 +1,17 @@
-import { Slot } from "expo-router";
+import { Stack } from "expo-router";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Provider as PaperProvider } from "react-native-paper";
 import { StatusBar } from "expo-status-bar";
-import { Toast } from "@/components/ui/Toast";
-import { useThemeStore } from "@/stores/themeStore";
-import { useColorScheme } from "react-native";
-import { useEffect } from "react";
 import * as SplashScreen from "expo-splash-screen";
 import { useDeepLinks } from "@/hooks/useDeepLinks";
-import { NetworkHandler } from "@/components/NetworkHandler";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { ThemeProvider, useTheme } from "@/context/ThemeContext";
+import { ToastProvider } from "@/context/ToastContext";
+import { AlertProvider } from "@/context/AlertContext";
+import { useAuthStateChange } from "@/utils/authStateChange";
+import { useGetSession } from "@/api/useSession";
+import { Platform } from "react-native";
+import { useNetworkStatus } from "@/hooks/useNetworkStatus";
 
 const queryClient = new QueryClient({});
 
@@ -22,30 +24,58 @@ SplashScreen.setOptions({
 function AppLayout() {
   // console.log("Root layout rendered");
 
-  const colorScheme = useColorScheme();
-  const { theme, setTheme } = useThemeStore();
+  const { theme, isDark } = useTheme();
+
+  const network = useNetworkStatus();
+
+  const session = useGetSession();
 
   // Hook to handle deep links
   useDeepLinks();
 
-  useEffect(() => {
-    if (colorScheme) {
-      setTheme(colorScheme === "dark" ? "dark" : "light");
-    }
-  }, [colorScheme, setTheme]);
+  useAuthStateChange();
+
+  if (Platform.OS !== "web" && (session.isPending || network.isLoading)) {
+    return null;
+  }
 
   return (
     <SafeAreaProvider>
-      <PaperProvider theme={theme}>
-        <StatusBar
-          style={colorScheme === "dark" ? "light" : "dark"}
-          backgroundColor={theme.colors.background}
-        />
-        <NetworkHandler>
-          <Slot />
-        </NetworkHandler>
-        <Toast />
-      </PaperProvider>
+      <GestureHandlerRootView>
+        <ToastProvider>
+          <AlertProvider>
+            <StatusBar style={isDark ? "light" : "dark"} />
+            <Stack
+              screenOptions={{
+                navigationBarColor: theme.colors.background,
+                headerStyle: {
+                  backgroundColor: theme.colors.background,
+                },
+                headerTintColor: theme.colors.primary,
+                headerTitleStyle: { color: theme.colors.onBackground },
+              }}
+            >
+              <Stack.Protected
+                guard={!network.isConnected && !network.isLoading}
+              >
+                <Stack.Screen
+                  name="noconnection"
+                  options={{ headerShown: false }}
+                />
+              </Stack.Protected>
+              <Stack.Protected guard={session.isError && !session.isPending}>
+                <Stack.Screen name="error" options={{ headerShown: false }} />
+              </Stack.Protected>
+              <Stack.Protected guard={!session.data && !session.isPending}>
+                <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+              </Stack.Protected>
+              <Stack.Protected guard={!!session.data && !session.isPending}>
+                <Stack.Screen name="(app)" options={{ headerShown: false }} />
+              </Stack.Protected>
+            </Stack>
+          </AlertProvider>
+        </ToastProvider>
+      </GestureHandlerRootView>
     </SafeAreaProvider>
   );
 }
@@ -53,7 +83,9 @@ function AppLayout() {
 export default function RootLayout() {
   return (
     <QueryClientProvider client={queryClient}>
-      <AppLayout />
+      <ThemeProvider>
+        <AppLayout />
+      </ThemeProvider>
     </QueryClientProvider>
   );
 }

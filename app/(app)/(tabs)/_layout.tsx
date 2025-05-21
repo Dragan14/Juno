@@ -1,31 +1,26 @@
 import { Tabs } from "expo-router";
-import { useThemeStore } from "@/stores/themeStore";
-import Icon from "@/components/ui/Icon";
+import { useTheme } from "@/context/ThemeContext";
+import { Ionicons } from "@expo/vector-icons";
 
 export default function TabsLayout() {
   // console.log("Tabs layout rendered");
-  const theme = useThemeStore((state) => state.theme);
+
+  const { theme } = useTheme();
 
   return (
     <Tabs
-      initialRouteName="index"
       screenOptions={{
         headerShadowVisible: false,
         tabBarActiveTintColor: theme.colors.primary,
-        tabBarInactiveTintColor: theme.colors.outline,
+        tabBarInactiveTintColor: theme.colors.onBackground,
         tabBarStyle: {
           backgroundColor: theme.colors.background,
-        },
-        tabBarLabelStyle: {
-          fontSize: 12,
         },
         headerStyle: {
           backgroundColor: theme.colors.background,
         },
         headerTitleStyle: {
-          fontSize: 24,
-          fontWeight: "bold",
-          color: theme.colors.primary,
+          color: theme.colors.onBackground,
         },
       }}
     >
@@ -35,10 +30,11 @@ export default function TabsLayout() {
           headerShown: false,
           title: "Home",
           tabBarIcon: ({ color, focused }) => (
-            <Icon
+            <Ionicons
               name={focused ? "home" : "home-outline"}
               color={color}
               allowIconScaling={false}
+              size={24}
             />
           ),
         }}
@@ -49,10 +45,26 @@ export default function TabsLayout() {
           headerShown: true,
           title: "Account",
           tabBarIcon: ({ color, focused }) => (
-            <Icon
+            <Ionicons
               name={focused ? "person" : "person-outline"}
               color={color}
               allowIconScaling={false}
+              size={24}
+            />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="settings"
+        options={{
+          headerShown: true,
+          title: "Settings",
+          tabBarIcon: ({ color, focused }) => (
+            <Ionicons
+              name="cog-outline"
+              color={color}
+              allowIconScaling={false}
+              size={24}
             />
           ),
         }}

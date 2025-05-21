@@ -1,4 +1,11 @@
-import React, { forwardRef, ComponentProps } from "react";
+// Button.tsx
+import {
+  useState,
+  cloneElement,
+  forwardRef,
+  ForwardedRef,
+  ReactElement,
+} from "react";
 import {
   Pressable,
   PressableProps,
@@ -10,150 +17,243 @@ import {
   TextStyle,
   ActivityIndicator,
   PixelRatio,
+  LayoutChangeEvent,
+  Platform,
 } from "react-native";
-import { useThemeStore } from "@/stores/themeStore";
-import { Ionicons } from "@expo/vector-icons";
+import { useTheme } from "../../context/ThemeContext";
 
+/**
+ * Props for the Button component.
+ */
 type ButtonProps = {
+  /** Text content of the button. */
   children?: string;
+  /** Custom background color for the button. Overrides variant colors. */
   color?: string;
+  /** Custom text color for the button. Overrides variant text colors. */
   textColor?: string;
-  leftIcon?: ComponentProps<typeof Ionicons>;
-  rightIcon?: ComponentProps<typeof Ionicons>;
+  /** Icon element to display on the left side of the button text. */
+  leftIcon?: ReactElement;
+  /** Icon element to display on the right side of the button text. */
+  rightIcon?: ReactElement;
+  /** If true, displays an ActivityIndicator instead of the button content. */
   loading?: boolean;
+  /** Style for the outer Pressable component. */
   style?: StyleProp<ViewStyle>;
+  /** Style for the container view wrapping the text content. */
+  textContainerStyle?: StyleProp<ViewStyle>;
+  /** Style for the inner view wrapping all content (icons and text). */
+  contentContainerStyle?: StyleProp<ViewStyle>;
+  /** Style for the view wrapping the left icon. */
+  leftIconContainerStyle?: StyleProp<ViewStyle>;
+  /** Style for the view wrapping the right icon. */
+  rightIconContainerStyle?: StyleProp<ViewStyle>;
+  /** Style for the button text. */
   textStyle?: StyleProp<TextStyle>;
-  disabled?: boolean;
-  round?: boolean;
-  variant?:
-    | "primary"
-    | "secondary"
-    | "tertiary"
-    | "outlined"
-    | "success"
-    | "error"
-    | "elevated";
+  /** If true, applies a circular border radius based on the button height. */
+  rounded?: boolean;
+  /** If true, applies an outline style with a transparent background and colored border. */
+  outlined?: boolean;
+  /** If true, applies an elevated style (often a lighter background based on the variant). */
+  elevated?: boolean;
+  /** Predefined style variant for the button. Affects background and text color. Defaults to 'primary'. */
+  variant?: "primary" | "secondary" | "tertiary" | "success" | "error";
 } & PressableProps;
 
-const Button = forwardRef<View, ButtonProps>(
+// Helper function to scale sizes based on font size
+const scaledSize = (baseSize: number) => {
+  return Math.round(baseSize * PixelRatio.getFontScale());
+};
+
+// Helper function to render icons
+const renderIcon = (icon: ReactElement<any, any>, color: string) => {
+  return cloneElement(icon, {
+    color: icon.props.color ?? color,
+    size: (icon.props.size && scaledSize(icon.props.size)) ?? scaledSize(24),
+  });
+};
+
+// Button component
+const Button = forwardRef(
   (
     {
       children,
-      color,
-      textColor,
+      color: initialColor,
+      textColor: initialTextColor,
       leftIcon,
       rightIcon,
       loading = false,
       style,
+      contentContainerStyle,
+      textContainerStyle,
+      leftIconContainerStyle,
+      rightIconContainerStyle,
       textStyle,
       disabled,
-      round = false,
+      rounded = false,
+      elevated = false,
+      outlined = false,
       variant,
       ...props
-    },
-    ref,
+    }: ButtonProps,
+    ref: ForwardedRef<View>,
   ) => {
-    const theme = useThemeStore((state) => state.theme);
+    const { theme } = useTheme();
+    const [isHovered, setIsHovered] = useState(false);
+    const [height, setHeight] = useState(0);
 
-    color = (() => {
-      if (disabled) return theme.colors.surfaceDisabled;
-      switch (variant) {
-        case "success":
-          return theme.colors.success;
-        case "error":
-          return theme.colors.error;
-        case "outlined":
-          return "transparent";
-        case "primary":
-          return theme.colors.primary;
-        case "secondary":
-          return theme.colors.secondary;
-        case "tertiary":
-          return theme.colors.tertiary;
-        case "elevated":
-          return theme.colors.elevation.level1;
-        default:
-          return color ?? theme.colors.primary;
+    const onLayout = (event: LayoutChangeEvent) => {
+      const { height: componentHeight } = event.nativeEvent.layout;
+      setHeight(componentHeight);
+    };
+
+    // Calculated background color
+    const color = (() => {
+      if (disabled) return theme.colors.backgroundDisabled;
+      if (initialColor) return initialColor;
+      if (outlined && !elevated) return "transparent";
+      if (!elevated) {
+        switch (variant) {
+          case "success":
+            return theme.colors.success;
+          case "error":
+            return theme.colors.error;
+          case "primary":
+            return theme.colors.primary;
+          case "secondary":
+            return theme.colors.secondary;
+          case "tertiary":
+            return theme.colors.tertiary;
+          default:
+            return theme.colors.primary;
+        }
+      } else {
+        switch (variant) {
+          case "success":
+            return theme.colors.elevatedSuccess;
+          case "error":
+            return theme.colors.elevatedError;
+          case "primary":
+            return theme.colors.elevatedPrimary;
+          case "secondary":
+            return theme.colors.elevatedSecondary;
+          case "tertiary":
+            return theme.colors.elevatedTertiary;
+          default:
+            return theme.colors.elevatedPrimary;
+        }
       }
     })();
 
-    textColor = (() => {
-      if (disabled) return theme.colors.onSurfaceDisabled;
+    // Calculated text color
+    const textColor = (() => {
+      if (disabled) return theme.colors.onBackgroundDisabled;
+      if (initialTextColor) return initialTextColor;
+      if (outlined || elevated) {
+        switch (variant) {
+          case "success":
+            return theme.colors.success;
+          case "error":
+            return theme.colors.error;
+          case "primary":
+            return theme.colors.primary;
+          case "secondary":
+            return theme.colors.secondary;
+          case "tertiary":
+            return theme.colors.tertiary;
+          default:
+            return theme.colors.primary;
+        }
+      }
       switch (variant) {
         case "success":
           return theme.colors.onSuccess;
         case "error":
           return theme.colors.onError;
-        case "outlined":
-          return theme.colors.primary;
         case "primary":
           return theme.colors.onPrimary;
         case "secondary":
           return theme.colors.onSecondary;
         case "tertiary":
           return theme.colors.onTertiary;
-        case "elevated":
-          return theme.colors.primary;
         default:
-          return textColor ?? theme.colors.onPrimary;
+          return theme.colors.onPrimary;
       }
     })();
 
-    const borderRadius = round ? 20 : 5;
-
-    const renderIcon = ({
-      name,
-      size = 24,
-      color,
-      style,
-      ...props
-    }: ComponentProps<typeof Ionicons>) => {
-      return (
-        <View style={styles.iconSpacing}>
-          <Ionicons
-            name={name}
-            size={scaledSize(size)}
-            color={color ?? textColor}
-            style={style}
-            {...props}
-          />
-        </View>
-      );
-    };
+    const borderRadius = rounded ? height / 2 : 5;
+    const borderColor = (() => {
+      switch (variant) {
+        case "success":
+          return theme.colors.success;
+        case "error":
+          return theme.colors.error;
+        case "primary":
+          return theme.colors.primary;
+        case "secondary":
+          return theme.colors.secondary;
+        case "tertiary":
+          return theme.colors.tertiary;
+        default:
+          return theme.colors.primary;
+      }
+    })();
 
     return (
       <Pressable
         ref={ref}
-        style={({ pressed, hovered }) => [
+        onLayout={onLayout}
+        style={({ pressed }) => [
           styles.button,
           { backgroundColor: color },
           { borderRadius: borderRadius },
-          variant === "outlined" && {
+          outlined && {
             borderWidth: 1,
-            borderColor: theme.colors.outline,
+            borderColor: borderColor,
           },
-          !disabled && hovered && styles.hovered,
+          !disabled && isHovered && styles.hovered,
           !disabled && pressed && styles.pressed,
-          disabled && styles.disabled,
           style,
         ]}
         disabled={disabled}
+        onHoverIn={() => {
+          if (!disabled) {
+            setIsHovered(true);
+          }
+        }}
+        onHoverOut={() => {
+          setIsHovered(false);
+        }}
         {...props}
       >
-        <View style={styles.contentContainer}>
+        <View style={[styles.contentContainer, contentContainerStyle]}>
           {loading ? (
             <ActivityIndicator size="small" color={textColor} />
           ) : (
             <>
-              {leftIcon && renderIcon(leftIcon)}
-              <Text
-                style={[styles.text, { color: textColor }, textStyle]}
-                numberOfLines={1}
-                ellipsizeMode="tail"
-              >
-                {children}
-              </Text>
-              {rightIcon && renderIcon(rightIcon)}
+              {leftIcon && (
+                <View style={leftIconContainerStyle}>
+                  {renderIcon(leftIcon, textColor)}
+                </View>
+              )}
+              {children && (
+                <View
+                  style={[
+                    styles.textContainer,
+                    textContainerStyle,
+                    !leftIcon && !rightIcon && { flex: 1 },
+                  ]}
+                >
+                  <Text style={[styles.text, { color: textColor }, textStyle]}>
+                    {children}
+                  </Text>
+                </View>
+              )}
+              {rightIcon && (
+                <View style={rightIconContainerStyle}>
+                  {renderIcon(rightIcon, textColor)}
+                </View>
+              )}
             </>
           )}
         </View>
@@ -166,25 +266,17 @@ Button.displayName = "Button";
 
 export default Button;
 
-const scaledSize = (baseSize: number) => {
-  return Math.round(baseSize * PixelRatio.getFontScale());
-};
-
 const styles = StyleSheet.create({
   button: {
-    height: scaledSize(40),
     justifyContent: "center",
     alignItems: "center",
-    flexDirection: "row",
-    minWidth: scaledSize(80),
   },
   contentContainer: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    marginHorizontal: scaledSize(24),
-    marginVertical: scaledSize(10),
-    flex: 1,
+    padding: 10,
+    width: "100%",
   },
   hovered: {
     opacity: 0.9,
@@ -192,15 +284,17 @@ const styles = StyleSheet.create({
   pressed: {
     opacity: 0.8,
   },
-  disabled: {
-    opacity: 0.7,
+  textContainer: {
+    alignItems: "center",
+    marginHorizontal: 4,
   },
   text: {
     fontWeight: "500",
     textAlign: "center",
-    flexShrink: 1,
-  },
-  iconSpacing: {
-    marginHorizontal: scaledSize(6),
+    ...Platform.select({
+      web: {
+        wordBreak: "break-word",
+      },
+    }),
   },
 });

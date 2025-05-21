@@ -1,117 +1,180 @@
-import React, { useRef, useState, ComponentProps } from "react";
+// TextInput.tsx
+import {
+  useRef,
+  useState,
+  useCallback,
+  cloneElement,
+  ReactElement,
+} from "react";
 import {
   View,
   ViewStyle,
   Text,
-  TextInput,
+  TextInput as RNTextInput,
   TextStyle,
   StyleSheet,
   StyleProp,
-  TextInputProps,
+  TextInputProps as RNTextInputProps,
   Pressable,
   PixelRatio,
   Platform,
+  LayoutChangeEvent,
 } from "react-native";
-import { useThemeStore } from "@/stores/themeStore";
-import { Ionicons } from "@expo/vector-icons";
+import { useTheme } from "../../context/ThemeContext";
 
-type MyTextInputProps = {
-  label?: string;
-  leftIcon?: ComponentProps<typeof Ionicons> | null;
-  rightIcon?: ComponentProps<typeof Ionicons> | null;
+/**
+ * Props for the TextInput component.
+ * Extends the standard React Native TextInputProps.
+ */
+type TextInputProps = {
+  /** Label text displayed above the input field (moves inside the border on focus/value). */
+  topLabel?: string;
+  /** Label text displayed to the left of the input field, inside the border. */
+  leftLabel?: string;
+  /** Icon element displayed on the left side, inside the border. */
+  leftIcon?: ReactElement;
+  /** Icon element displayed on the right side, inside the border. */
+  rightIcon?: ReactElement;
+  /** If true, applies error styling (e.g., red border). */
   error?: boolean;
+  /** Error message text displayed below the input field when `error` is true. */
   errorMessage?: string;
+  /** If true, reserves space below the input field for the error message even when there is no error. Defaults to true. */
   retainErrorMessageSpace?: boolean;
+  /** Visual variant of the input field. 'outlined' (default), 'solid', or 'clear'. */
   variant?: "clear" | "outlined" | "solid";
+  /** If true, displays a character counter below the input field (requires `maxLength`). */
+  counter?: boolean;
+  /** Maximum number of characters allowed in the input. Used by the `counter`. */
+  maxLength?: number;
+  /** Style for the outermost container View. */
   style?: StyleProp<ViewStyle>;
+  /** Style for the actual RNTextInput component. */
   textStyle?: StyleProp<TextStyle>;
+  /** Style for the top label Text component. */
+  topLabelStyle?: StyleProp<TextStyle>;
+  /** Style for the left label Text component. */
+  leftLabelStyle?: StyleProp<TextStyle>;
+  /** Style for the main container View that includes the border and background. */
+  containerStyle?: StyleProp<ViewStyle>;
+  /** Style for the View wrapping the left icon. */
+  leftIconStyle?: StyleProp<ViewStyle>;
+  /** Style for the View wrapping the right icon. */
+  rightIconStyle?: StyleProp<ViewStyle>;
+  /** If true, disables the text input and applies disabled styling. */
   disabled?: boolean;
-  onBlur?: (e: React.FocusEvent<TextInput>) => void;
-  onFocus?: (e: React.FocusEvent<TextInput>) => void;
-} & TextInputProps;
+} & RNTextInputProps;
 
-export default function MyTextInput({
-  label,
+// Helper function to scale sizes based on font size
+const scaledSize = (baseSize: number) => {
+  return Math.round(baseSize * PixelRatio.getFontScale());
+};
+
+// Helper function to render icons
+const renderIcon = (icon: ReactElement<any, any>, color: string) => {
+  return cloneElement(icon, {
+    color: icon.props.color ?? color,
+    size: (icon.props.size && scaledSize(icon.props.size)) ?? scaledSize(24),
+  });
+};
+
+// TextInput component
+const TextInput = ({
+  topLabel,
+  leftLabel,
   leftIcon,
   rightIcon,
   error,
   errorMessage,
   retainErrorMessageSpace = true,
   variant = "outlined",
+  counter,
+  maxLength,
   style,
   textStyle,
+  topLabelStyle,
+  leftLabelStyle,
+  containerStyle,
+  leftIconStyle,
+  rightIconStyle,
   disabled,
+  value,
   onBlur,
   onFocus,
   ...props
-}: MyTextInputProps) {
-  const { theme } = useThemeStore();
-  const inputRef = useRef<TextInput>(null);
+}: TextInputProps) => {
+  const { theme } = useTheme();
+  const inputRef = useRef<RNTextInput>(null);
   const [isFocused, setIsFocused] = useState(false);
+  const [leftIconContainerWidth, setLeftIconContainerWidth] = useState(0);
 
-  const borderColor = (() => {
-    if (disabled) return theme.colors.onBackground;
-    if (error) return theme.colors.error;
-    if (isFocused) return theme.colors.primary;
-    return theme.colors.onBackground;
-  })();
+  const handleLeftIconLayout = useCallback((event: LayoutChangeEvent) => {
+    setLeftIconContainerWidth(event.nativeEvent.layout.width);
+  }, []);
 
-  // Container border style based on variant
-  const containerBorder =
-    variant === "outlined"
-      ? {
-          ...styles.outlinedBorder,
-          borderColor,
-        }
-      : {
-          // clear and solid variants only have bottom border
-          ...styles.clearBorder,
-          borderBottomColor: borderColor,
-        };
+  const handleFocus = useCallback(
+    (e: any) => {
+      if (!disabled) {
+        setIsFocused(true);
+        onFocus?.(e);
+      }
+    },
+    [disabled, onFocus],
+  );
 
-  // Determine base text/label/icon colors based on variant
-  const baseTextColor =
-    variant === "solid"
-      ? theme.colors.onSurfaceVariant
-      : theme.colors.onBackground;
-  const containerBackgroundColor =
-    variant === "solid" ? theme.colors.surfaceVariant : "transparent";
-  const labelBackgroundColor =
-    variant === "solid" ? "transparent" : theme.colors.background;
-  const labelStyleColor = (() => {
-    if (disabled) return theme.colors.onSurfaceDisabled;
-    if (error) return theme.colors.error;
-    if (isFocused) return theme.colors.primary;
-    return baseTextColor;
-  })();
+  const handleBlur = useCallback(
+    (e: any) => {
+      setIsFocused(false);
+      onBlur?.(e);
+    },
+    [onBlur],
+  );
 
-  // Adjust padding and icon positions based on variant
+  const colors = {
+    border: disabled
+      ? theme.colors.onBackgroundDisabled
+      : error
+        ? theme.colors.error
+        : isFocused
+          ? theme.colors.primary
+          : variant === "solid"
+            ? theme.colors.onBackgroundVariant
+            : theme.colors.onBackground,
+    text: disabled
+      ? theme.colors.onBackgroundDisabled
+      : variant === "solid"
+        ? theme.colors.onBackgroundVariant
+        : theme.colors.onBackground,
+    container:
+      variant === "solid"
+        ? disabled
+          ? theme.colors.backgroundDisabled
+          : theme.colors.backgroundVariant
+        : "transparent",
+    topLabel:
+      variant === "solid" || variant === "clear"
+        ? "transparent"
+        : theme.colors.background,
+    placeholder: theme.colors.onBackgroundDisabled,
+    error: theme.colors.error,
+    counter: disabled
+      ? theme.colors.onBackgroundDisabled
+      : theme.colors.onBackground,
+  };
+
   const isOutlined = variant === "outlined";
-  const containerPaddingTop = isOutlined || !label ? 0 : scaledSize(15);
-  const labelTop = isOutlined ? scaledSize(-8) : scaledSize(4);
-  const labelLeft = isOutlined
-    ? scaledSize(9)
-    : leftIcon
-      ? scaledSize(38)
-      : scaledSize(6);
-  const iconTop = isOutlined || !label ? 0 : scaledSize(-8);
+  const hasTopLabel = !!topLabel;
+  const hasLeftLabel = !!leftLabel;
 
-  const renderIcon = ({
-    name,
-    size = 24,
-    color,
-    style,
-    ...props
-  }: ComponentProps<typeof Ionicons>) => {
-    return (
-      <Ionicons
-        name={name}
-        size={scaledSize(size)}
-        color={color ?? baseTextColor}
-        style={style}
-        {...props}
-      />
-    );
+  const layout = {
+    containerPadding: isOutlined || !topLabel ? 0 : scaledSize(15),
+    iconMargin: isOutlined || !topLabel ? 0 : scaledSize(-14),
+    labelTop: isOutlined ? scaledSize(-8) : scaledSize(4),
+    labelLeft: isOutlined
+      ? 9
+      : leftIcon && leftIconContainerWidth > 0
+        ? leftIconContainerWidth + 6
+        : 6,
   };
 
   return (
@@ -124,92 +187,167 @@ export default function MyTextInput({
         }}
         disabled={disabled}
       >
-        {label && (
+        {hasTopLabel && (
           <Text
             style={[
-              styles.label,
+              styles.topLabel,
               {
-                backgroundColor: labelBackgroundColor,
-                color: labelStyleColor,
-                top: labelTop,
-                left: labelLeft,
+                backgroundColor: colors.topLabel,
+                color: colors.border,
+                top: layout.labelTop,
+                left: layout.labelLeft,
               },
+              topLabelStyle,
             ]}
+            numberOfLines={1}
+            ellipsizeMode="tail"
           >
-            {label}
+            {topLabel}
           </Text>
         )}
         <View
           style={[
             styles.container,
-            containerBorder,
-            {
-              backgroundColor: containerBackgroundColor,
-              opacity: disabled ? 0.5 : 1,
-              paddingTop: containerPaddingTop,
-            },
+            variant === "outlined"
+              ? { ...styles.outlinedBorder, borderColor: colors.border }
+              : variant === "solid"
+                ? { ...styles.solidBorder, borderBottomColor: colors.border }
+                : { ...styles.clearBorder, borderBottomColor: colors.border },
+            { backgroundColor: colors.container },
+            containerStyle,
           ]}
         >
           {leftIcon && (
-            <View style={[styles.leftIcon, { top: iconTop }]}>
-              {renderIcon(leftIcon)}
+            <View
+              style={[
+                styles.leftIcon,
+                {
+                  marginTop: layout.iconMargin,
+                  paddingTop: layout.containerPadding,
+                },
+                leftIconStyle,
+              ]}
+              onLayout={handleLeftIconLayout}
+            >
+              {renderIcon(leftIcon, colors.text)}
             </View>
           )}
-          <TextInput
-            ref={inputRef}
-            style={[styles.textInput, { color: baseTextColor }, textStyle]}
-            placeholderTextColor={theme.colors.onSurfaceDisabled}
-            onBlur={(e) => {
-              setIsFocused(false);
-              onBlur?.(e);
-            }}
-            onFocus={(e) => {
-              setIsFocused(true);
-              onFocus?.(e);
-            }}
-            editable={!disabled}
-            {...props}
-          />
+          {hasLeftLabel && (
+            <Text
+              style={[
+                styles.leftLabel,
+                {
+                  backgroundColor: "transparent",
+                  color: colors.border,
+                  paddingTop: layout.containerPadding,
+                },
+                leftLabelStyle,
+              ]}
+              numberOfLines={1}
+              ellipsizeMode="tail"
+            >
+              {leftLabel}
+            </Text>
+          )}
+          <View
+            style={[
+              styles.textInputContainer,
+              !hasLeftLabel && { paddingTop: layout.containerPadding },
+            ]}
+          >
+            <RNTextInput
+              ref={inputRef}
+              style={[styles.textInput, { color: colors.text }, textStyle]}
+              placeholderTextColor={colors.placeholder}
+              onBlur={handleBlur}
+              onFocus={handleFocus}
+              editable={!disabled}
+              maxLength={maxLength}
+              value={value}
+              {...props}
+            />
+          </View>
           {rightIcon && (
-            <View style={[styles.rightIcon, { top: iconTop }]}>
-              {renderIcon(rightIcon)}
+            <View
+              style={[
+                styles.rightIcon,
+                {
+                  marginTop: layout.iconMargin,
+                  paddingTop: layout.containerPadding,
+                },
+                rightIconStyle,
+              ]}
+            >
+              {renderIcon(rightIcon, colors.text)}
             </View>
           )}
         </View>
       </Pressable>
-      {(error || retainErrorMessageSpace) && (
-        <View style={styles.errorContainer}>
-          {error && errorMessage ? (
-            <Text style={[styles.errorMessage, { color: theme.colors.error }]}>
+      {((error && errorMessage && !disabled) ||
+        (counter && !disabled) ||
+        (retainErrorMessageSpace && (!error || !errorMessage))) && (
+        <View style={styles.bottomContainer}>
+          {error && errorMessage && !disabled ? (
+            <Text style={[styles.errorMessage, { color: colors.error }]}>
               {errorMessage}
             </Text>
           ) : (
-            retainErrorMessageSpace && <View style={styles.errorPlaceholder} />
+            <View style={{ flex: 1 }} />
+          )}
+          {counter && !disabled && (
+            <Text style={[styles.counter, { color: colors.counter }]}>
+              {maxLength
+                ? `${value?.length ?? 0}/${maxLength}`
+                : `${value?.length ?? 0}`}
+            </Text>
           )}
         </View>
       )}
     </View>
   );
-}
-
-const scaledSize = (baseSize: number) => {
-  // Consider adding Math.max(1, ...) if you never want scaled size to be 0 or negative unexpectedly
-  return Math.round(baseSize * PixelRatio.getFontScale());
 };
+
+TextInput.displayName = "TextInput";
+
+export default TextInput;
 
 const styles = StyleSheet.create({
   container: {
-    height: scaledSize(50),
+    minHeight: scaledSize(50),
     flexDirection: "row",
     alignItems: "center",
     paddingHorizontal: 10,
   },
-  label: {
+  textInputContainer: {
+    flex: 1,
+    marginVertical: 5,
+  },
+  bottomContainer: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    paddingHorizontal: 13,
+    minHeight: scaledSize(16),
+  },
+  errorMessage: {
+    fontSize: 12,
+    textAlign: "left",
+    flex: 1,
+  },
+  counter: {
+    fontSize: 12,
+    textAlign: "right",
+    marginLeft: 5,
+  },
+  topLabel: {
     position: "absolute",
     paddingHorizontal: 4,
-    fontWeight: "500",
+    fontWeight: "bold",
     fontSize: 12,
     zIndex: 1,
+  },
+  leftLabel: {
+    fontWeight: "bold",
+    paddingRight: 8,
   },
   leftIcon: {
     flexDirection: "row",
@@ -220,30 +358,23 @@ const styles = StyleSheet.create({
     paddingLeft: 8,
   },
   textInput: {
-    flex: 1,
-    height: "100%",
     ...Platform.select({
       web: {
         outlineStyle: "none",
-      },
+      } as any,
     }),
-    textAlignVertical: "center",
+    paddingVertical: 0,
+    paddingHorizontal: 0,
+    textAlignVertical: "top",
   },
   outlinedBorder: {
     borderRadius: 5,
     borderWidth: 1,
   },
+  solidBorder: {
+    borderRadius: 5,
+  },
   clearBorder: {
     borderBottomWidth: 1,
-  },
-  errorContainer: {
-    height: scaledSize(23),
-    paddingHorizontal: 10,
-  },
-  errorMessage: {
-    fontSize: 12,
-  },
-  errorPlaceholder: {
-    height: "100%",
   },
 });

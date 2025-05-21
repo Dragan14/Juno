@@ -3,12 +3,12 @@ import { supabase } from "@/utils/supabase";
 import { Profile } from "@/types/profileTypes";
 import { PROFILE_KEYS } from "@/constants/queryKeys";
 import { useGetUser } from "./useUser";
-import { useToastStore } from "@/stores/toastStore";
+import { useToast } from "../context/ToastContext";
 
 // Hook for getting the user profile
 export const useGetProfile = () => {
   const { data: user } = useGetUser();
-  const showToast = useToastStore((state) => state.showToast);
+  const { showToast } = useToast();
 
   return useQuery({
     queryKey: PROFILE_KEYS.profile,
@@ -23,7 +23,10 @@ export const useGetProfile = () => {
         .eq("id", user.id)
         .single();
       if (error) {
-        showToast(error.message || "Failed to fetch profile");
+        showToast({
+          message: error.message || "Failed to fetch profile",
+          variant: "error",
+        });
         throw error;
       }
       return data as Profile;
@@ -39,7 +42,7 @@ export const useGetProfile = () => {
 export const useUpdateProfile = () => {
   const queryClient = useQueryClient();
   const { data: user } = useGetUser();
-  const showToast = useToastStore((state) => state.showToast);
+  const { showToast } = useToast();
 
   return useMutation({
     mutationFn: async (updates: Partial<Profile>) => {
@@ -61,7 +64,10 @@ export const useUpdateProfile = () => {
       queryClient.setQueryData(PROFILE_KEYS.profile, data);
     },
     onError: (error) => {
-      showToast(error.message || "Failed to update profile");
+      showToast({
+        message: error.message || "Failed to update profile",
+        variant: "error",
+      });
     },
   });
 };

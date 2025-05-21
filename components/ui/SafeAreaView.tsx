@@ -1,18 +1,31 @@
-// https://github.com/AppAndFlow/react-native-safe-area-context/issues/114
-import React, { FunctionComponent } from "react";
+// SafeAreaView.tsx
+/*
+Reimplemented SafeAreaView due to issues with react-native-safe-area-context
+https://github.com/AppAndFlow/react-native-safe-area-context/issues/114
+*/
+import { ReactNode } from "react";
 import { View, ViewStyle, StyleSheet } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useThemeStore } from "@/stores/themeStore";
+import { useTheme } from "../../context/ThemeContext";
 
+/**
+ * Props for the SafeAreaView component.
+ * Extends ViewStyle to allow direct style application.
+ */
 type SafeAreaViewProps = {
+  /** If true, disables safe area padding at the bottom. */
   disableBottomSafeArea?: boolean;
+  /** If true, disables safe area padding at the top. */
   disableTopSafeArea?: boolean;
+  /** If true, disables safe area padding on the left and right sides. */
   disableSidesSafeArea?: boolean;
-  children: React.ReactNode;
+  /** The content to be rendered within the safe area view. */
+  children: ReactNode;
+  /** Custom style for the outer View component. */
   style?: ViewStyle;
 } & ViewStyle;
 
-export const SafeAreaView: FunctionComponent<SafeAreaViewProps> = ({
+const SafeAreaView = ({
   disableBottomSafeArea,
   disableTopSafeArea,
   disableSidesSafeArea,
@@ -20,31 +33,45 @@ export const SafeAreaView: FunctionComponent<SafeAreaViewProps> = ({
   style,
   ...props
 }: SafeAreaViewProps) => {
-  const theme = useThemeStore((state) => state.theme);
+  const { theme } = useTheme();
 
   const insets = useSafeAreaInsets();
 
-  style = StyleSheet.flatten([
-    { flex: 1, backgroundColor: theme.colors.background },
-    style,
-  ]);
+  const backgroundColor = theme.colors.background;
+  const safeAreaStyle: ViewStyle = {};
 
   if (!disableBottomSafeArea) {
-    style.paddingBottom = insets.bottom;
+    safeAreaStyle.paddingBottom = insets.bottom;
   }
 
   if (!disableTopSafeArea) {
-    style.paddingTop = insets.top;
+    safeAreaStyle.paddingTop = insets.top;
   }
 
   if (!disableSidesSafeArea) {
-    style.paddingRight = insets.right;
-    style.paddingLeft = insets.left;
+    safeAreaStyle.paddingRight = insets.right;
+    safeAreaStyle.paddingLeft = insets.left;
   }
 
   return (
-    <View style={style} {...props}>
+    <View
+      style={[
+        styles.container,
+        { backgroundColor: backgroundColor },
+        safeAreaStyle,
+        style,
+      ]}
+      {...props}
+    >
       {children}
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+});
+
+export default SafeAreaView;

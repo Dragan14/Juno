@@ -10,7 +10,6 @@ import { ToastProvider } from "@/context/ToastContext";
 import { AlertProvider } from "@/context/AlertContext";
 import { useAuthStateChange } from "@/utils/authStateChange";
 import { useGetSession } from "@/api/useSession";
-import { Platform } from "react-native";
 import { useNetworkStatus } from "@/hooks/useNetworkStatus";
 
 const queryClient = new QueryClient({});
@@ -35,7 +34,7 @@ function AppLayout() {
 
   useAuthStateChange();
 
-  if (Platform.OS !== "web" && (session.isPending || network.isLoading)) {
+  if (session.isPending || network.isLoading) {
     return null;
   }
 

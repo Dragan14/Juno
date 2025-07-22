@@ -63,6 +63,7 @@ export default function SignInForm() {
         autoComplete="email"
         error={!!errors.email}
         errorMessage={errors.email}
+        retainErrorMessageSpace={true}
       />
       <TextInput
         topLabel="Password"

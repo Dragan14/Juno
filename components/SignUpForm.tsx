@@ -170,6 +170,7 @@ export default function SignUpForm() {
         autoCapitalize="words"
         error={!!errors.name}
         errorMessage={errors.name}
+        retainErrorMessageSpace={true}
         autoComplete="name"
       />
       <TextInput
@@ -183,6 +184,7 @@ export default function SignUpForm() {
         keyboardType="email-address"
         error={!!errors.email}
         errorMessage={errors.email}
+        retainErrorMessageSpace={true}
         autoComplete="email"
       />
       <TextInput
@@ -203,6 +205,7 @@ export default function SignUpForm() {
         autoCapitalize="none"
         error={!!errors.password}
         errorMessage={errors.password}
+        retainErrorMessageSpace={true}
         autoComplete="password-new"
       />
       <TextInput
@@ -225,6 +228,7 @@ export default function SignUpForm() {
         autoCapitalize="none"
         error={!!errors.confirmPassword}
         errorMessage={errors.confirmPassword}
+        retainErrorMessageSpace={true}
       />
       <Button
         disabled={signUp.isPending}

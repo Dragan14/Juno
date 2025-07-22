@@ -148,6 +148,7 @@ export default function Account() {
           autoCapitalize="words"
           error={!!errors.name}
           errorMessage={errors.name}
+          retainErrorMessageSpace={true}
           leftIcon={
             <Ionicons
               name={isEditing ? "checkmark-circle" : "pencil"}

@@ -52,7 +52,11 @@ export default function Account() {
   const handleSave = async () => {
     Keyboard.dismiss();
     if (validateName()) {
-      await updateProfile.mutateAsync({ name });
+      // Only update if name has changed
+      if (name !== (profile.data?.name || "")) {
+        console.log("Updating name to:", name);
+        await updateProfile.mutateAsync({ name });
+      }
       setIsEditing(false);
       showToast({
         message: "Name updated successfully",

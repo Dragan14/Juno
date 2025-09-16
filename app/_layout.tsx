@@ -41,43 +41,32 @@ function AppLayout() {
   }
 
   return (
-    <SafeAreaProvider>
-      <GestureHandlerRootView>
-        <ToastProvider>
-          <AlertProvider>
-            <StatusBar style={isDark ? "light" : "dark"} />
-            <Stack
-              screenOptions={{
-                navigationBarColor: theme.colors.background,
-                headerStyle: {
-                  backgroundColor: theme.colors.background,
-                },
-                headerTintColor: theme.colors.primary,
-                headerTitleStyle: { color: theme.colors.onBackground },
-              }}
-            >
-              <Stack.Protected
-                guard={!network.isConnected && !network.isLoading}
-              >
-                <Stack.Screen
-                  name="noconnection"
-                  options={{ headerShown: false }}
-                />
-              </Stack.Protected>
-              <Stack.Protected guard={session.isError && !session.isPending}>
-                <Stack.Screen name="error" options={{ headerShown: false }} />
-              </Stack.Protected>
-              <Stack.Protected guard={!session.data && !session.isPending}>
-                <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-              </Stack.Protected>
-              <Stack.Protected guard={!!session.data && !session.isPending}>
-                <Stack.Screen name="(app)" options={{ headerShown: false }} />
-              </Stack.Protected>
-            </Stack>
-          </AlertProvider>
-        </ToastProvider>
-      </GestureHandlerRootView>
-    </SafeAreaProvider>
+    <>
+      <StatusBar style={isDark ? "light" : "dark"} />
+      <Stack
+        screenOptions={{
+          navigationBarColor: theme.colors.background,
+          headerStyle: {
+            backgroundColor: theme.colors.background,
+          },
+          headerTintColor: theme.colors.primary,
+          headerTitleStyle: { color: theme.colors.onBackground },
+        }}
+      >
+        <Stack.Protected guard={!network.isConnected && !network.isLoading}>
+          <Stack.Screen name="noconnection" options={{ headerShown: false }} />
+        </Stack.Protected>
+        <Stack.Protected guard={session.isError && !session.isPending}>
+          <Stack.Screen name="error" options={{ headerShown: false }} />
+        </Stack.Protected>
+        <Stack.Protected guard={!session.data && !session.isPending}>
+          <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+        </Stack.Protected>
+        <Stack.Protected guard={!!session.data && !session.isPending}>
+          <Stack.Screen name="(app)" options={{ headerShown: false }} />
+        </Stack.Protected>
+      </Stack>
+    </>
   );
 }
 
@@ -85,7 +74,15 @@ export default function RootLayout() {
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
-        <AppLayout />
+        <SafeAreaProvider>
+          <GestureHandlerRootView>
+            <ToastProvider>
+              <AlertProvider>
+                <AppLayout />
+              </AlertProvider>
+            </ToastProvider>
+          </GestureHandlerRootView>
+        </SafeAreaProvider>
       </ThemeProvider>
     </QueryClientProvider>
   );

@@ -2,7 +2,7 @@ import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 
 export default function AuthLayout() {
-  // console.log("Auth layout rendered");
+  console.log("Auth layout rendered");
 
   SplashScreen.hide();
 

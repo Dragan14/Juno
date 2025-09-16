@@ -2,7 +2,7 @@ import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 
 export default function AppLayout() {
-  // console.log("App layout rendered");
+  console.log("App layout rendered");
 
   SplashScreen.hide();
 

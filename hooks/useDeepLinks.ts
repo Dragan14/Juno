@@ -1,34 +1,36 @@
-import * as Linking from "expo-linking";
-import { useEffect } from "react";
+import { useEffect, useRef, useCallback } from "react";
 import { useSetSession } from "@/api/useSession";
+import * as Linking from "expo-linking";
+import * as QueryParams from "expo-auth-session/build/QueryParams";
 
 export function useDeepLinks() {
   const setSession = useSetSession();
 
+  const url = Linking.useLinkingURL();
+  const lastProcessedUrl = useRef<string | null>(null);
+
+  const createSessionFromUrl = useCallback(
+    async (url: string) => {
+      const { params } = QueryParams.getQueryParams(url);
+      const { access_token, refresh_token } = params;
+      if (access_token && refresh_token) {
+        console.log(
+          "Setting access_token and refresh_token",
+          access_token,
+          refresh_token,
+        );
+        await setSession.mutateAsync({
+          accessToken: access_token,
+          refreshToken: refresh_token,
+        });
+      }
+    },
+    [setSession],
+  );
+
   useEffect(() => {
-    const handleDeepLink = ({ url }: { url: string }) => {
-      const hashIndex = url.indexOf("#");
-      if (hashIndex !== -1) {
-        const hashString = url.substring(hashIndex + 1);
-        const params = new URLSearchParams(hashString);
-        const accessToken = params.get("access_token");
-        const refreshToken = params.get("refresh_token");
-        if (accessToken && refreshToken) {
-          setSession.mutateAsync({ accessToken, refreshToken });
-        }
-      }
-    };
-
-    Linking.getInitialURL().then((initialUrl) => {
-      if (initialUrl) {
-        handleDeepLink({ url: initialUrl });
-      }
-    });
-
-    const subscription = Linking.addEventListener("url", handleDeepLink);
-
-    return () => {
-      subscription.remove();
-    };
-  }, [setSession]);
+    if (!url || lastProcessedUrl.current === url) return;
+    lastProcessedUrl.current = url;
+    createSessionFromUrl(url);
+  }, [url, createSessionFromUrl]);
 }

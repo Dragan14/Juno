@@ -5,7 +5,7 @@ import RadioButton from "@/components/ui/RadioButton";
 import { useTheme } from "@/context/ThemeContext";
 
 export default function SettingsScreen() {
-  // console.log("Settings screen rendered");
+  console.log("Settings screen rendered");
 
   const { themeMode, setThemeMode } = useTheme();
 

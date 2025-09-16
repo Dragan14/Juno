@@ -7,7 +7,7 @@ import View from "@/components/ui/View";
 import SegmentedControl from "@/components/ui/SegmentedControl";
 
 export default function AuthenticationScreen() {
-  // console.log("Authentication screen rendered");
+  console.log("Authentication screen rendered");
 
   const [selectedIndices, setSelectedIndices] = useState<number[]>([0]);
 

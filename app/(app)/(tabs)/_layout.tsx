@@ -3,7 +3,7 @@ import { useTheme } from "@/context/ThemeContext";
 import { Ionicons } from "@expo/vector-icons";
 
 export default function TabsLayout() {
-  // console.log("Tabs layout rendered");
+  console.log("Tabs layout rendered");
 
   const { theme } = useTheme();
 

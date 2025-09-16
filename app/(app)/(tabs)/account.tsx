@@ -15,7 +15,7 @@ import { useToast } from "@/context/ToastContext";
 import ErrorScreen from "@/components/ErrorScreen";
 
 export default function Account() {
-  // console.log("Account screen rendered");
+  console.log("Account screen rendered");
 
   const { showToast } = useToast();
 

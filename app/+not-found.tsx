@@ -6,7 +6,7 @@ import MyView from "@/components/ui/View";
 import * as SplashScreen from "expo-splash-screen";
 
 export default function NotFoundScreen() {
-  // console.log("Not Found screen rendered");
+  console.log("Not Found screen rendered");
   SplashScreen.hide();
 
   return (

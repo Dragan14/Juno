@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/utils/supabase";
 import { AUTH_KEYS } from "@/constants/queryKeys";
-import { getDeepLink } from "@/utils/deepLinkUtils";
+import { makeRedirectUri } from "expo-auth-session";
 import type { SignInCredentials, SignUpCredentials } from "@/types/authTypes";
 import { useClearProfile } from "./useProfile";
 import { useToast } from "@/context/ToastContext";
@@ -46,7 +46,7 @@ export const useSignUp = () => {
         password,
         options: {
           data: { name },
-          emailRedirectTo: getDeepLink(),
+          emailRedirectTo: makeRedirectUri(),
         },
       });
       if (error) throw error;

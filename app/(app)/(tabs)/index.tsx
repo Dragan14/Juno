@@ -6,7 +6,7 @@ import Button from "@/components/ui/Button";
 import { Ionicons } from "@expo/vector-icons";
 
 export default function HomeScreen() {
-  // console.log("Home screen rendered");
+  console.log("Home screen rendered");
 
   return (
     <SafeAreaView disableBottomSafeArea>

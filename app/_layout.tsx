@@ -10,8 +10,8 @@ import { AlertProvider } from "@/context/AlertContext";
 import { useAuthStateChange } from "@/utils/authStateChange";
 import { useGetSession } from "@/api/useSession";
 import { useNetworkStatus } from "@/hooks/useNetworkStatus";
-import * as WebBrowser from "expo-web-browser";
 import { useDeepLinks } from "@/hooks/useDeepLinks";
+import * as WebBrowser from "expo-web-browser";
 
 const queryClient = new QueryClient({});
 

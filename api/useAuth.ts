@@ -1,9 +1,8 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/utils/supabase";
-import { AUTH_KEYS } from "@/constants/queryKeys";
+import { AUTH_KEYS, PROFILE_KEYS } from "@/constants/queryKeys";
 import { makeRedirectUri } from "expo-auth-session";
 import type { SignInCredentials, SignUpCredentials } from "@/types/authTypes";
-import { useClearProfile } from "./useProfile";
 import { useToast } from "@/context/ToastContext";
 
 // Hook for sign in functionality
@@ -76,7 +75,6 @@ export const useSignUp = () => {
 // Hook for sign out functionality
 export const useSignOut = () => {
   const queryClient = useQueryClient();
-  const clearProfile = useClearProfile();
   const { showToast } = useToast();
 
   return useMutation({
@@ -95,7 +93,7 @@ export const useSignOut = () => {
     onSettled: () => {
       queryClient.setQueryData(AUTH_KEYS.session, null);
       queryClient.setQueryData(AUTH_KEYS.user, null);
-      clearProfile();
+      queryClient.setQueryData(PROFILE_KEYS.profile, null);
     },
   });
 };

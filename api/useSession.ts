@@ -10,6 +10,7 @@ export const useGetSession = () => {
       const { data, error } = await supabase.auth.getSession();
       if (error) {
         console.error("Get session error:", error);
+        throw error;
       }
       return data.session;
     },
@@ -34,20 +35,18 @@ export const useSetSession = () => {
         access_token: accessToken,
         refresh_token: refreshToken,
       });
-      if (error) {
-        throw error;
-      }
+      if (error) throw error;
       return data;
     },
     retry: false,
+    onSuccess: (data) => {
+      queryClient.setQueryData(AUTH_KEYS.session, data.session);
+      queryClient.setQueryData(AUTH_KEYS.user, data.user);
+    },
     onError: (error) => {
       console.error("Set session error:", error);
       queryClient.setQueryData(AUTH_KEYS.session, null);
       queryClient.setQueryData(AUTH_KEYS.user, null);
-    },
-    onSuccess: (data) => {
-      queryClient.setQueryData(AUTH_KEYS.session, data.session);
-      queryClient.setQueryData(AUTH_KEYS.user, data.user);
     },
   });
 };

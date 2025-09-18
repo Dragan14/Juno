@@ -45,8 +45,6 @@ export const useSetSession = () => {
     },
     onError: (error) => {
       console.error("Set session error:", error);
-      queryClient.setQueryData(AUTH_KEYS.session, null);
-      queryClient.setQueryData(AUTH_KEYS.user, null);
     },
   });
 };

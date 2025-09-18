@@ -3,12 +3,10 @@ import { supabase } from "@/utils/supabase";
 import { AUTH_KEYS, PROFILE_KEYS } from "@/constants/queryKeys";
 import { makeRedirectUri } from "expo-auth-session";
 import type { SignInCredentials, SignUpCredentials } from "@/types/authTypes";
-import { useToast } from "@/context/ToastContext";
 
 // Hook for sign in functionality
 export const useSignIn = () => {
   const queryClient = useQueryClient();
-  const { showToast } = useToast();
 
   return useMutation({
     mutationFn: async ({ email, password }: SignInCredentials) => {
@@ -25,10 +23,10 @@ export const useSignIn = () => {
       queryClient.setQueryData(AUTH_KEYS.user, data.user);
     },
     onError: (error) => {
-      showToast({
-        message: error.message || "Failed to sign in",
-        variant: "error",
-      });
+      console.error("Sign in error:", error);
+      queryClient.setQueryData(AUTH_KEYS.session, null);
+      queryClient.setQueryData(AUTH_KEYS.user, null);
+      queryClient.setQueryData(PROFILE_KEYS.profile, null);
     },
   });
 };
@@ -36,7 +34,6 @@ export const useSignIn = () => {
 // Hook for sign up functionality
 export const useSignUp = () => {
   const queryClient = useQueryClient();
-  const { showToast } = useToast();
 
   return useMutation({
     mutationFn: async ({ email, password, name }: SignUpCredentials) => {
@@ -49,25 +46,21 @@ export const useSignUp = () => {
         },
       });
       if (error) throw error;
+      if (!data.session && data?.user && data.user?.identities?.length === 0) {
+        throw new Error("An account with this email already exists");
+      }
       return data;
     },
     retry: false,
     onSuccess: (data) => {
-      if (data.session) {
-        queryClient.setQueryData(AUTH_KEYS.session, data.session);
-        queryClient.setQueryData(AUTH_KEYS.user, data.user);
-      } else if (data?.user && data.user?.identities?.length === 0) {
-        showToast({
-          message: "An account with this email already exists. Please sign in.",
-          variant: "error",
-        });
-      }
+      queryClient.setQueryData(AUTH_KEYS.session, data.session);
+      queryClient.setQueryData(AUTH_KEYS.user, data.user);
     },
     onError: (error) => {
-      showToast({
-        message: error.message || "Failed to sign up",
-        variant: "error",
-      });
+      console.error("Sign up error:", error);
+      queryClient.setQueryData(AUTH_KEYS.session, null);
+      queryClient.setQueryData(AUTH_KEYS.user, null);
+      queryClient.setQueryData(PROFILE_KEYS.profile, null);
     },
   });
 };
@@ -75,7 +68,6 @@ export const useSignUp = () => {
 // Hook for sign out functionality
 export const useSignOut = () => {
   const queryClient = useQueryClient();
-  const { showToast } = useToast();
 
   return useMutation({
     mutationFn: async () => {
@@ -85,10 +77,7 @@ export const useSignOut = () => {
     },
     retry: false,
     onError: (error) => {
-      showToast({
-        message: error.message || "Failed to sign out",
-        variant: "error",
-      });
+      console.error("Sign out error:", error);
     },
     onSettled: () => {
       queryClient.setQueryData(AUTH_KEYS.session, null);

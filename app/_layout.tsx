@@ -40,6 +40,20 @@ function AppLayout() {
     return null;
   }
 
+  const showNoConnection = !network.isConnected && !network.isLoading;
+  const showError =
+    session.isError && !session.isPending && network.isConnected;
+  const showAuth =
+    !session.data &&
+    !session.isPending &&
+    !session.isError &&
+    network.isConnected;
+  const showApp =
+    !!session.data &&
+    !session.isPending &&
+    !session.isError &&
+    network.isConnected;
+
   return (
     <>
       <StatusBar style={isDark ? "light" : "dark"} />
@@ -53,16 +67,16 @@ function AppLayout() {
           headerTitleStyle: { color: theme.colors.onBackground },
         }}
       >
-        <Stack.Protected guard={!network.isConnected && !network.isLoading}>
+        <Stack.Protected guard={showNoConnection}>
           <Stack.Screen name="noconnection" options={{ headerShown: false }} />
         </Stack.Protected>
-        <Stack.Protected guard={session.isError && !session.isPending}>
+        <Stack.Protected guard={showError}>
           <Stack.Screen name="error" options={{ headerShown: false }} />
         </Stack.Protected>
-        <Stack.Protected guard={!session.data && !session.isPending}>
+        <Stack.Protected guard={showAuth}>
           <Stack.Screen name="(auth)" options={{ headerShown: false }} />
         </Stack.Protected>
-        <Stack.Protected guard={!!session.data && !session.isPending}>
+        <Stack.Protected guard={showApp}>
           <Stack.Screen name="(app)" options={{ headerShown: false }} />
         </Stack.Protected>
       </Stack>

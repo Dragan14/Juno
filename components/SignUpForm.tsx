@@ -11,11 +11,13 @@ import TextInput from "@/components/ui/TextInput";
 import Button from "@/components/ui/Button";
 import { CircleUser, Mail, Lock, Eye, EyeOff } from "lucide-react-native";
 import { useAlert } from "../context/AlertContext";
+import { useToast } from "../context/ToastContext";
 import Text from "@/components/ui/Text";
 import View from "@/components/ui/View";
 
 export default function SignUpForm() {
   const { showAlert, hideAlert } = useAlert();
+  const { showToast } = useToast();
 
   const signUp = useSignUp();
 
@@ -115,44 +117,54 @@ export default function SignUpForm() {
   const handleSignUp = async () => {
     Keyboard.dismiss();
     if (validateForm()) {
-      const { session, user } = await signUp.mutateAsync({
-        email,
-        password,
-        name,
-      });
-      // Reset form
-      setName("");
-      setEmail("");
-      setPassword("");
-      setConfirmPassword("");
-      setErrors({ name: "", email: "", password: "", confirmPassword: "" });
-      if (!session && !(user && user?.identities?.length === 0)) {
-        showAlert({
-          content: (
-            <View style={{ gap: 10 }}>
-              <Text>
-                Check your Email for a verification link to complete your sign
-                up.
-              </Text>
-              <View style={{ flexDirection: "row", gap: 10 }}>
-                <Button
-                  onPress={hideAlert}
-                  variant="secondary"
-                  outlined={true}
-                  style={{ flex: 1 }}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  onPress={hideAlert}
-                  variant="primary"
-                  style={{ flex: 1 }}
-                >
-                  Confirm
-                </Button>
+      try {
+        const { session, user } = await signUp.mutateAsync({
+          email,
+          password,
+          name,
+        });
+        // Reset form
+        setName("");
+        setEmail("");
+        setPassword("");
+        setConfirmPassword("");
+        setErrors({ name: "", email: "", password: "", confirmPassword: "" });
+        if (!session && !(user && user?.identities?.length === 0)) {
+          showAlert({
+            content: (
+              <View style={{ gap: 10 }}>
+                <Text>
+                  Check your Email for a verification link to complete your sign
+                  up.
+                </Text>
+                <View style={{ flexDirection: "row", gap: 10 }}>
+                  <Button
+                    onPress={hideAlert}
+                    variant="secondary"
+                    outlined={true}
+                    style={{ flex: 1 }}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    onPress={hideAlert}
+                    variant="primary"
+                    style={{ flex: 1 }}
+                  >
+                    Confirm
+                  </Button>
+                </View>
               </View>
-            </View>
-          ),
+            ),
+          });
+        }
+      } catch (error) {
+        showToast({
+          message:
+            error instanceof Error
+              ? error.message
+              : "Failed to sign up. Please try again.",
+          variant: "error",
         });
       }
     }

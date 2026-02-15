@@ -54,15 +54,26 @@ export default function Account() {
     if (validateName()) {
       // Only update if name has changed
       if (name !== (profile.data?.name || "")) {
-        console.log("Updating name to:", name);
-        await updateProfile.mutateAsync({ name });
+        try {
+          console.log("Updating name to:", name);
+          await updateProfile.mutateAsync({ name });
+          setIsEditing(false);
+          showToast({
+            message: "Name updated successfully",
+            position: "top",
+            variant: "success",
+          });
+        } catch (error) {
+          console.error("Failed to update name:", error);
+          showToast({
+            message: "Failed to update name. Please try again.",
+            position: "top",
+            variant: "error",
+          });
+        }
+      } else {
+        setIsEditing(false);
       }
-      setIsEditing(false);
-      showToast({
-        message: "Name updated successfully",
-        position: "top",
-        variant: "success",
-      });
     }
   };
 
@@ -99,8 +110,17 @@ export default function Account() {
         <ErrorScreen
           text="Error loading profile"
           onPress={async () => {
-            if (profile.isError) await profile.refetch();
-            if (user.isError) await user.refetch();
+            try {
+              if (profile.isError) await profile.refetch();
+              if (user.isError) await user.refetch();
+            } catch (error) {
+              console.error("Failed to refetch profile:", error);
+              showToast({
+                message: "Failed to reload. Please try again.",
+                position: "top",
+                variant: "error",
+              });
+            }
           }}
         />
       </SafeAreaView>
@@ -180,7 +200,16 @@ export default function Account() {
         />
         <Button
           onPress={async () => {
-            await signOut.mutateAsync();
+            try {
+              await signOut.mutateAsync();
+            } catch (error) {
+              console.error("Failed to sign out:", error);
+              showToast({
+                message: "Failed to sign out. Please try again.",
+                position: "top",
+                variant: "error",
+              });
+            }
           }}
           style={{
             width: 300,

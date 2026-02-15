@@ -6,8 +6,10 @@ import Button from "@/components/ui/Button";
 import { emailSchema } from "@/schemas/auth-schemas";
 import { z } from "zod";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react-native";
+import { useToast } from "@/context/ToastContext";
 
 export default function SignInForm() {
+  const { showToast } = useToast();
   const signIn = useSignIn();
 
   // Form state
@@ -41,11 +43,21 @@ export default function SignInForm() {
   const handleSignIn = async () => {
     Keyboard.dismiss();
     if (validateEmail()) {
-      await signIn.mutateAsync({ email, password });
-      // Reset form
-      setEmail("");
-      setPassword("");
-      setErrors({ email: "" });
+      try {
+        await signIn.mutateAsync({ email, password });
+        // Reset form
+        setEmail("");
+        setPassword("");
+        setErrors({ email: "" });
+      } catch (error) {
+        showToast({
+          message:
+            error instanceof Error
+              ? error.message
+              : "Failed to sign in. Please try again.",
+          variant: "error",
+        });
+      }
     }
   };
 

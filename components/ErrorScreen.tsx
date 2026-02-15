@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useSignOut } from "@/api/useAuth";
+import { useToast } from "@/context/ToastContext";
 import View from "@/components/ui/View";
 import Button from "@/components/ui/Button";
 import Text from "@/components/ui/Text";
@@ -15,6 +16,7 @@ export default function ErrorScreen({
 }: ErrorScreenProps) {
   console.log("Error screen rendered");
   const signOut = useSignOut();
+  const { showToast } = useToast();
   const [isRetrying, setIsRetrying] = useState(false);
 
   return (
@@ -33,8 +35,17 @@ export default function ErrorScreen({
         <Button
           onPress={async () => {
             setIsRetrying(true);
-            await onPress();
-            setIsRetrying(false);
+            try {
+              await onPress();
+            } catch (error) {
+              console.error("Retry failed:", error);
+              showToast({
+                message: "Failed to retry. Please try again.",
+                variant: "error",
+              });
+            } finally {
+              setIsRetrying(false);
+            }
           }}
           style={{ width: "75%" }}
           loading={isRetrying}
@@ -44,7 +55,15 @@ export default function ErrorScreen({
       )}
       <Button
         onPress={async () => {
-          await signOut.mutateAsync();
+          try {
+            await signOut.mutateAsync();
+          } catch (error) {
+            console.error("Sign out failed:", error);
+            showToast({
+              message: "Failed to sign out. Please try again.",
+              variant: "error",
+            });
+          }
         }}
         style={{ width: "75%" }}
       >

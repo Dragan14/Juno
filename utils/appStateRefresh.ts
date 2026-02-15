@@ -7,15 +7,23 @@ export function useAppStateRefresh() {
     const appStateSubscription = AppState.addEventListener(
       "change",
       (state) => {
-        if (state === "active") {
-          supabase.auth.startAutoRefresh();
-        } else {
-          supabase.auth.stopAutoRefresh();
+        try {
+          if (state === "active") {
+            supabase.auth.startAutoRefresh();
+          } else {
+            supabase.auth.stopAutoRefresh();
+          }
+        } catch (error) {
+          console.error("Error handling app state change:", error);
         }
       },
     );
     return () => {
-      appStateSubscription.remove();
+      try {
+        appStateSubscription.remove();
+      } catch (error) {
+        console.error("Error removing app state listener:", error);
+      }
     };
   }, []);
 }

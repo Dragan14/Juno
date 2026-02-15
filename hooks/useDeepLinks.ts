@@ -27,7 +27,8 @@ export function useDeepLinks() {
             refreshToken: refresh_token,
           });
         }
-      } catch {
+      } catch (error) {
+        console.error("Deep link error:", error);
         showToast({
           message: "Failed to authenticate from deep link",
           variant: "error",
@@ -40,6 +41,16 @@ export function useDeepLinks() {
   useEffect(() => {
     if (!url || lastProcessedUrl.current === url) return;
     lastProcessedUrl.current = url;
-    createSessionFromUrl(url);
-  }, [url, createSessionFromUrl]);
+
+    // Wrap in try-catch to handle any unexpected errors
+    try {
+      createSessionFromUrl(url);
+    } catch (error) {
+      console.error("Unexpected error processing deep link:", error);
+      showToast({
+        message: "An error occurred while processing the link",
+        variant: "error",
+      });
+    }
+  }, [url, createSessionFromUrl, showToast]);
 }

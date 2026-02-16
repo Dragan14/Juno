@@ -36,10 +36,7 @@ function AppLayout() {
 
   useAuthStateChange();
 
-  if (session.isPending || network.isLoading) {
-    return null;
-  }
-
+  const showLoading = session.isPending || network.isLoading;
   const showNoConnection = !network.isConnected && !network.isLoading;
   const showError =
     session.isError && !session.isPending && network.isConnected;
@@ -67,6 +64,9 @@ function AppLayout() {
           headerTitleStyle: { color: theme.colors.onBackground },
         }}
       >
+        <Stack.Protected guard={showLoading}>
+          <Stack.Screen name="loading" options={{ headerShown: false }} />
+        </Stack.Protected>
         <Stack.Protected guard={showNoConnection}>
           <Stack.Screen name="noconnection" options={{ headerShown: false }} />
         </Stack.Protected>

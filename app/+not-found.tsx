@@ -11,7 +11,7 @@ export default function NotFoundScreen() {
 
   return (
     <>
-      <Stack.Screen name="+not-found" options={{ headerShown: false }} />
+      <Stack.Screen options={{ headerShown: false }} />
       <SafeAreaView>
         <MyView
           style={{

@@ -1,14 +1,15 @@
 import { useState } from "react";
-import { Keyboard } from "react-native";
+import { Keyboard, ViewProps } from "react-native";
 import { useSignIn } from "@/api/useAuth";
 import TextInput from "@/components/ui/TextInput";
 import Button from "@/components/ui/Button";
+import View from "@/components/ui/View";
 import { emailSchema } from "@/schemas/auth-schemas";
 import { z } from "zod";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react-native";
 import { useToast } from "@/context/ToastContext";
 
-export default function SignInForm() {
+export default function SignInForm({ style }: Pick<ViewProps, "style">) {
   const { showToast } = useToast();
   const signIn = useSignIn();
 
@@ -62,7 +63,7 @@ export default function SignInForm() {
   };
 
   return (
-    <>
+    <View style={style}>
       <TextInput
         topLabel="Email"
         leftIcon={<Mail />}
@@ -100,6 +101,6 @@ export default function SignInForm() {
       >
         Sign In
       </Button>
-    </>
+    </View>
   );
 }

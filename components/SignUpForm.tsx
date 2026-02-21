@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Keyboard } from "react-native";
+import { Keyboard, ViewProps } from "react-native";
 import {
   emailSchema,
   passwordSchema,
@@ -15,7 +15,7 @@ import { useToast } from "../context/ToastContext";
 import Text from "@/components/ui/Text";
 import View from "@/components/ui/View";
 
-export default function SignUpForm() {
+export default function SignUpForm({ style }: Pick<ViewProps, "style">) {
   const { showAlert, hideAlert } = useAlert();
   const { showToast } = useToast();
 
@@ -171,7 +171,7 @@ export default function SignUpForm() {
   };
 
   return (
-    <>
+    <View style={style}>
       <TextInput
         topLabel="Name"
         leftIcon={<CircleUser />}
@@ -249,6 +249,6 @@ export default function SignUpForm() {
       >
         Sign Up
       </Button>
-    </>
+    </View>
   );
 }

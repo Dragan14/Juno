@@ -34,7 +34,8 @@ export default function AuthenticationScreen() {
           }}
           style={{ marginBottom: 20, minHeight: 40 }}
         />
-        {selectedIndices[0] === 0 ? <SignInForm /> : <SignUpForm />}
+        <SignInForm style={{ display: selectedIndices[0] === 0 ? "flex" : "none" }} />
+        <SignUpForm style={{ display: selectedIndices[0] === 1 ? "flex" : "none" }} />
       </View>
     </SafeAreaView>
   );

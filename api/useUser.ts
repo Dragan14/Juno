@@ -9,7 +9,7 @@ export const useGetUser = () => {
     queryFn: async () => {
       const { data, error } = await supabase.auth.getUser();
       if (error) {
-        console.error("Get user error:", error);
+        console.log("Get user error:", error);
         throw error;
       }
       return data.user;

@@ -28,7 +28,7 @@ export function useDeepLinks() {
           });
         }
       } catch (error) {
-        console.error("Deep link error:", error);
+        console.log("Deep link error:", error);
         showToast({
           message: "Failed to authenticate from deep link",
           variant: "error",
@@ -46,7 +46,7 @@ export function useDeepLinks() {
     try {
       createSessionFromUrl(url);
     } catch (error) {
-      console.error("Unexpected error processing deep link:", error);
+      console.log("Unexpected error processing deep link:", error);
       showToast({
         message: "An error occurred while processing the link",
         variant: "error",

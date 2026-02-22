@@ -14,7 +14,7 @@ export function useAppStateRefresh() {
             supabase.auth.stopAutoRefresh();
           }
         } catch (error) {
-          console.error("Error handling app state change:", error);
+          console.log("Error handling app state change:", error);
         }
       },
     );
@@ -22,7 +22,7 @@ export function useAppStateRefresh() {
       try {
         appStateSubscription.remove();
       } catch (error) {
-        console.error("Error removing app state listener:", error);
+        console.log("Error removing app state listener:", error);
       }
     };
   }, []);

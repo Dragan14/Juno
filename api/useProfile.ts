@@ -11,7 +11,7 @@ export const useGetProfile = () => {
       const { data: userData, error: userError } =
         await supabase.auth.getUser();
       if (userError) {
-        console.error("Get user error:", userError);
+        console.log("Get user error:", userError);
         throw userError;
       }
       if (!userData.user) {
@@ -23,7 +23,7 @@ export const useGetProfile = () => {
         .eq("id", userData.user.id)
         .single();
       if (error) {
-        console.error("Get profile error:", error);
+        console.log("Get profile error:", error);
         throw error;
       }
       return data as Profile;
@@ -42,7 +42,7 @@ export const useUpdateProfile = () => {
       const { data: userData, error: userError } =
         await supabase.auth.getUser();
       if (userError) {
-        console.error("Get user error:", userError);
+        console.log("Get user error:", userError);
         throw userError;
       }
       if (!userData.user) {
@@ -62,7 +62,7 @@ export const useUpdateProfile = () => {
       queryClient.setQueryData(PROFILE_KEYS.profile, data);
     },
     onError: (error) => {
-      console.error("Update profile error:", error);
+      console.log("Update profile error:", error);
     },
   });
 };

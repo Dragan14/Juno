@@ -40,7 +40,7 @@ export default function ErrorScreen({
             try {
               await onPress();
             } catch (error) {
-              console.error("Retry failed:", error);
+              console.log("Retry failed:", error);
               showToast({
                 message: "Failed to retry. Please try again.",
                 variant: "error",
@@ -61,7 +61,7 @@ export default function ErrorScreen({
             try {
               await signOut.mutateAsync();
             } catch (error) {
-              console.error("Sign out failed:", error);
+              console.log("Sign out failed:", error);
               showToast({
                 message: "Failed to sign out. Please try again.",
                 variant: "error",

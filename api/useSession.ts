@@ -9,7 +9,7 @@ export const useGetSession = () => {
     queryFn: async () => {
       const { data, error } = await supabase.auth.getSession();
       if (error) {
-        console.error("Get session error:", error);
+        console.log("Get session error:", error);
         throw error;
       }
       return data.session;
@@ -44,7 +44,7 @@ export const useSetSession = () => {
       queryClient.setQueryData(AUTH_KEYS.user, data.user);
     },
     onError: (error) => {
-      console.error("Set session error:", error);
+      console.log("Set session error:", error);
     },
   });
 };

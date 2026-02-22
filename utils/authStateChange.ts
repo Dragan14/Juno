@@ -37,7 +37,7 @@ export const useAuthStateChange = () => {
             break;
         }
       } catch (error) {
-        console.error("Error handling auth state change:", error);
+        console.log("Error handling auth state change:", error);
       }
     });
     return () => {
@@ -45,7 +45,7 @@ export const useAuthStateChange = () => {
         subscription.unsubscribe();
         console.log("Unsubscribed from auth state changes");
       } catch (error) {
-        console.error("Error unsubscribing from auth state changes:", error);
+        console.log("Error unsubscribing from auth state changes:", error);
       }
     };
   }, [queryClient]);

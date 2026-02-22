@@ -64,7 +64,7 @@ export default function Account() {
             variant: "success",
           });
         } catch (error) {
-          console.error("Failed to update name:", error);
+          console.log("Failed to update name:", error);
           showToast({
             message: "Failed to update name. Please try again.",
             position: "top",
@@ -114,7 +114,7 @@ export default function Account() {
               if (profile.isError) await profile.refetch();
               if (user.isError) await user.refetch();
             } catch (error) {
-              console.error("Failed to refetch profile:", error);
+              console.log("Failed to refetch profile:", error);
               showToast({
                 message: "Failed to reload. Please try again.",
                 position: "top",
@@ -203,7 +203,7 @@ export default function Account() {
             try {
               await signOut.mutateAsync();
             } catch (error) {
-              console.error("Failed to sign out:", error);
+              console.log("Failed to sign out:", error);
               showToast({
                 message: "Failed to sign out. Please try again.",
                 position: "top",

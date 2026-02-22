@@ -8,11 +8,13 @@ import Text from "@/components/ui/Text";
 interface ErrorScreenProps {
   text?: string;
   onPress?: () => Promise<any>;
+  signOutButton?: boolean;
 }
 
 export default function ErrorScreen({
   text = "Error Loading...",
   onPress = async () => {},
+  signOutButton = true,
 }: ErrorScreenProps) {
   console.log("Error screen rendered");
   const signOut = useSignOut();
@@ -53,22 +55,24 @@ export default function ErrorScreen({
           Retry
         </Button>
       )}
-      <Button
-        onPress={async () => {
-          try {
-            await signOut.mutateAsync();
-          } catch (error) {
-            console.error("Sign out failed:", error);
-            showToast({
-              message: "Failed to sign out. Please try again.",
-              variant: "error",
-            });
-          }
-        }}
-        style={{ width: "75%" }}
-      >
-        Sign Out
-      </Button>
+      {signOutButton && (
+        <Button
+          onPress={async () => {
+            try {
+              await signOut.mutateAsync();
+            } catch (error) {
+              console.error("Sign out failed:", error);
+              showToast({
+                message: "Failed to sign out. Please try again.",
+                variant: "error",
+              });
+            }
+          }}
+          style={{ width: "75%" }}
+        >
+          Sign Out
+        </Button>
+      )}
     </View>
   );
 }

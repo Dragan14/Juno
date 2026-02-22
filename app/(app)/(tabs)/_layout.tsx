@@ -1,6 +1,17 @@
-import { Tabs } from "expo-router";
+import { Tabs, type ErrorBoundaryProps } from "expo-router";
 import { useTheme } from "@/context/ThemeContext";
 import { Ionicons } from "@expo/vector-icons";
+import ErrorScreen from "@/components/ErrorScreen";
+
+export function ErrorBoundary({ error, retry }: ErrorBoundaryProps) {
+  return (
+    <ErrorScreen
+      text={error.message || "An unexpected error has occurred."}
+      onPress={retry}
+      signOutButton={true}
+    />
+  );
+}
 
 export default function TabsLayout() {
   console.log("Tabs layout rendered");

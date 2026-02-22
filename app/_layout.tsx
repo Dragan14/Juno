@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { Stack } from "expo-router";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -36,7 +37,15 @@ function AppLayout() {
 
   useAuthStateChange();
 
-  const showLoading = session.isPending || network.isLoading;
+  const [minLoadingElapsed, setMinLoadingElapsed] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setMinLoadingElapsed(true), 1500);
+    return () => clearTimeout(timer);
+  }, []);
+
+  const showLoading =
+    session.isPending || network.isLoading || !minLoadingElapsed;
   const showNoConnection = !network.isConnected && !network.isLoading;
   const showError =
     session.isError && !session.isPending && network.isConnected;

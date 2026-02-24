@@ -7,7 +7,6 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { ThemeProvider, useTheme } from "@/context/ThemeContext";
 import { ToastProvider } from "@/context/ToastContext";
 import { AlertProvider } from "@/context/AlertContext";
-import { LoadingProvider, useLoading } from "@/context/LoadingContext";
 import { useAuthStateChange } from "@/utils/authStateChange";
 import { useGetSession } from "@/api/useSession";
 import { useNetworkStatus } from "@/hooks/useNetworkStatus";
@@ -37,10 +36,7 @@ function AppLayout() {
 
   useAuthStateChange();
 
-  const { minLoadingElapsed } = useLoading();
-
-  const showLoading =
-    session.isPending || network.isLoading || !minLoadingElapsed;
+  const isLoading = session.isPending || network.isLoading;
   const showNoConnection = !network.isConnected && !network.isLoading;
   const showError =
     session.isError && !session.isPending && network.isConnected;
@@ -68,9 +64,6 @@ function AppLayout() {
           headerTitleStyle: { color: theme.colors.onBackground },
         }}
       >
-        <Stack.Protected guard={showLoading}>
-          <Stack.Screen name="loading" options={{ headerShown: false }} />
-        </Stack.Protected>
         <Stack.Protected guard={showNoConnection}>
           <Stack.Screen name="noconnection" options={{ headerShown: false }} />
         </Stack.Protected>
@@ -83,6 +76,9 @@ function AppLayout() {
         <Stack.Protected guard={showApp}>
           <Stack.Screen name="(app)" options={{ headerShown: false }} />
         </Stack.Protected>
+        <Stack.Protected guard={!isLoading}>
+          <Stack.Screen name="+not-found" />
+        </Stack.Protected>
       </Stack>
     </>
   );
@@ -94,13 +90,11 @@ export default function RootLayout() {
       <ThemeProvider>
         <SafeAreaProvider>
           <GestureHandlerRootView>
-            <LoadingProvider>
-              <ToastProvider>
-                <AlertProvider>
-                  <AppLayout />
-                </AlertProvider>
-              </ToastProvider>
-            </LoadingProvider>
+            <ToastProvider>
+              <AlertProvider>
+                <AppLayout />
+              </AlertProvider>
+            </ToastProvider>
           </GestureHandlerRootView>
         </SafeAreaProvider>
       </ThemeProvider>

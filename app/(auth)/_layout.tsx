@@ -1,14 +1,22 @@
 import { Stack, type ErrorBoundaryProps } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import Error from "@/components/Error";
+import SafeAreaView from "@/components/ui/SafeAreaView";
 
 export function ErrorBoundary({ error, retry }: ErrorBoundaryProps) {
   return (
-    <Error
-      text={error.message || "An unexpected error has occurred."}
-      onPress={retry}
-      signOutButton={false}
-    />
+    <SafeAreaView
+      style={{
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      <Error
+        text={error.message || "An unexpected error has occurred."}
+        onPress={retry}
+        signOutButton={false}
+      />
+    </SafeAreaView>
   );
 }
 

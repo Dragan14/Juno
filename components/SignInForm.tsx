@@ -19,6 +19,9 @@ export default function SignInForm() {
   const [errors, setErrors] = useState({
     email: "",
   });
+  const [touched, setTouched] = useState({
+    email: false,
+  });
 
   // Toggle password visibility
   const togglePasswordVisibility = () => {
@@ -49,6 +52,7 @@ export default function SignInForm() {
         setEmail("");
         setPassword("");
         setErrors({ email: "" });
+        setTouched({ email: false });
       } catch (error) {
         showToast({
           message:
@@ -66,8 +70,11 @@ export default function SignInForm() {
       <TextInput
         topLabel="Email"
         leftIcon={<Mail />}
-        onChangeText={setEmail}
-        onBlur={validateEmail}
+        onChangeText={(val) => {
+          setTouched((prev) => ({ ...prev, email: true }));
+          setEmail(val);
+        }}
+        onBlur={() => touched.email && validateEmail()}
         value={email}
         placeholder="email@address.com"
         autoCapitalize="none"

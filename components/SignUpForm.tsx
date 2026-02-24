@@ -32,6 +32,12 @@ export default function SignUpForm() {
     password: "",
     confirmPassword: "",
   });
+  const [touched, setTouched] = useState({
+    name: false,
+    email: false,
+    password: false,
+    confirmPassword: false,
+  });
 
   // Password visibility state
   const [passwordVisibility, setPasswordVisibility] = useState({
@@ -129,6 +135,12 @@ export default function SignUpForm() {
         setPassword("");
         setConfirmPassword("");
         setErrors({ name: "", email: "", password: "", confirmPassword: "" });
+        setTouched({
+          name: false,
+          email: false,
+          password: false,
+          confirmPassword: false,
+        });
         if (!session && !(user && user?.identities?.length === 0)) {
           showAlert({
             content: (
@@ -175,8 +187,11 @@ export default function SignUpForm() {
       <TextInput
         topLabel="Name"
         leftIcon={<CircleUser />}
-        onChangeText={setName}
-        onBlur={validateName}
+        onChangeText={(val) => {
+          setTouched((prev) => ({ ...prev, name: true }));
+          setName(val);
+        }}
+        onBlur={() => touched.name && validateName()}
         value={name}
         placeholder="Name"
         autoCapitalize="words"
@@ -188,8 +203,11 @@ export default function SignUpForm() {
       <TextInput
         topLabel="Email"
         leftIcon={<Mail />}
-        onChangeText={setEmail}
-        onBlur={validateEmail}
+        onChangeText={(val) => {
+          setTouched((prev) => ({ ...prev, email: true }));
+          setEmail(val);
+        }}
+        onBlur={() => touched.email && validateEmail()}
         value={email}
         placeholder="email@address.com"
         autoCapitalize="none"
@@ -209,8 +227,11 @@ export default function SignUpForm() {
             <EyeOff onPress={() => togglePasswordVisibility("password")} />
           )
         }
-        onChangeText={setPassword}
-        onBlur={validatePassword}
+        onChangeText={(val) => {
+          setTouched((prev) => ({ ...prev, password: true }));
+          setPassword(val);
+        }}
+        onBlur={() => touched.password && validatePassword()}
         value={password}
         secureTextEntry={!passwordVisibility.password}
         placeholder="Password"
@@ -232,8 +253,11 @@ export default function SignUpForm() {
             />
           )
         }
-        onChangeText={setConfirmPassword}
-        onBlur={validateConfirmPassword}
+        onChangeText={(val) => {
+          setTouched((prev) => ({ ...prev, confirmPassword: true }));
+          setConfirmPassword(val);
+        }}
+        onBlur={() => touched.confirmPassword && validateConfirmPassword()}
         value={confirmPassword}
         secureTextEntry={!passwordVisibility.confirmPassword}
         placeholder="Confirm Password"

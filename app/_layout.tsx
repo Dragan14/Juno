@@ -1,4 +1,3 @@
-import { useState, useEffect } from "react";
 import { Stack } from "expo-router";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -8,6 +7,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { ThemeProvider, useTheme } from "@/context/ThemeContext";
 import { ToastProvider } from "@/context/ToastContext";
 import { AlertProvider } from "@/context/AlertContext";
+import { LoadingProvider, useLoading } from "@/context/LoadingContext";
 import { useAuthStateChange } from "@/utils/authStateChange";
 import { useGetSession } from "@/api/useSession";
 import { useNetworkStatus } from "@/hooks/useNetworkStatus";
@@ -37,12 +37,7 @@ function AppLayout() {
 
   useAuthStateChange();
 
-  const [minLoadingElapsed, setMinLoadingElapsed] = useState(false);
-
-  useEffect(() => {
-    const timer = setTimeout(() => setMinLoadingElapsed(true), 1500);
-    return () => clearTimeout(timer);
-  }, []);
+  const { minLoadingElapsed } = useLoading();
 
   const showLoading =
     session.isPending || network.isLoading || !minLoadingElapsed;
@@ -99,11 +94,13 @@ export default function RootLayout() {
       <ThemeProvider>
         <SafeAreaProvider>
           <GestureHandlerRootView>
-            <ToastProvider>
-              <AlertProvider>
-                <AppLayout />
-              </AlertProvider>
-            </ToastProvider>
+            <LoadingProvider>
+              <ToastProvider>
+                <AlertProvider>
+                  <AppLayout />
+                </AlertProvider>
+              </ToastProvider>
+            </LoadingProvider>
           </GestureHandlerRootView>
         </SafeAreaProvider>
       </ThemeProvider>

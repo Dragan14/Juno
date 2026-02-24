@@ -12,7 +12,7 @@ import Text from "@/components/ui/Text";
 import View from "@/components/ui/View";
 import { Ionicons } from "@expo/vector-icons";
 import { useToast } from "@/context/ToastContext";
-import ErrorScreen from "@/components/ErrorScreen";
+import Error from "@/components/Error";
 
 export default function Account() {
   console.log("Account screen rendered");
@@ -107,7 +107,7 @@ export default function Account() {
   ) {
     return (
       <SafeAreaView disableBottomSafeArea={true} disableTopSafeArea={true}>
-        <ErrorScreen
+        <Error
           text="Error loading profile"
           onPress={async () => {
             try {

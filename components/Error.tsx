@@ -5,17 +5,17 @@ import View from "@/components/ui/View";
 import Button from "@/components/ui/Button";
 import Text from "@/components/ui/Text";
 
-interface ErrorScreenProps {
+interface ErrorProps {
   text?: string;
   onPress?: () => Promise<any>;
   signOutButton?: boolean;
 }
 
-export default function ErrorScreen({
+export default function Error({
   text = "Error Loading...",
   onPress = async () => {},
   signOutButton = true,
-}: ErrorScreenProps) {
+}: ErrorProps) {
   console.log("Error screen rendered");
   const signOut = useSignOut();
   const { showToast } = useToast();

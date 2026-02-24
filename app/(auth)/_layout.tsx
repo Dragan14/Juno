@@ -1,10 +1,10 @@
 import { Stack, type ErrorBoundaryProps } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
-import ErrorScreen from "@/components/ErrorScreen";
+import Error from "@/components/Error";
 
 export function ErrorBoundary({ error, retry }: ErrorBoundaryProps) {
   return (
-    <ErrorScreen
+    <Error
       text={error.message || "An unexpected error has occurred."}
       onPress={retry}
       signOutButton={false}

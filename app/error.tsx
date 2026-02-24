@@ -1,8 +1,8 @@
 import SafeAreaView from "@/components/ui/SafeAreaView";
 import * as SplashScreen from "expo-splash-screen";
-import ErrorScreen from "@/components/ErrorScreen";
+import Error from "@/components/Error";
 
-export default function Error() {
+export default function ErrorScreen() {
   SplashScreen.hide();
 
   return (
@@ -12,7 +12,7 @@ export default function Error() {
         alignItems: "center",
       }}
     >
-      <ErrorScreen text="Error" />
+      <Error text="Error" />
     </SafeAreaView>
   );
 }

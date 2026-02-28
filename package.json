@@ -9,7 +9,7 @@
     "web": "expo start --web",
     "lint": "expo lint",
     "clean": "rm -rf .expo ios android",
-    "clean-all": "watchman watch-del-all && rm -rf node_modules .expo ios android && rm -rf $TMPDIR/react-native-packager-cache-* $TMPDIR/metro-* && rm -f tsconfig.tsbuildinfo && npm cache clean --force && npm install",
+    "clean-all": "watchman watch-del-all && rm -rf node_modules .expo ios android && rm -rf $TMPDIR/react-native-packager-cache-* $TMPDIR/metro-* $TMPDIR/haste-* && rm -f tsconfig.tsbuildinfo && npm cache clean --force",
     "typecheck": "tsc --noEmit",
     "typecheck:watch": "tsc --noEmit --watch"
   },

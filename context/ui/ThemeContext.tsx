@@ -8,7 +8,7 @@ import {
 } from "react";
 import { useColorScheme } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { blueLight, blueDark } from "../themes/blueTheme";
+import { blueLight, blueDark } from "../../themes/blueTheme";
 
 type ThemeType = typeof blueLight;
 type ThemeMode = "light" | "dark" | "system";
@@ -48,9 +48,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
         if (stored === "light" || stored === "dark" || stored === "system") {
           setThemeMode(stored);
         }
-      } catch (e) {
-        console.log("Failed to load theme mode:", e);
-      }
+      } catch {}
     })();
   }, []);
 
@@ -59,9 +57,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     (async () => {
       try {
         await AsyncStorage.setItem(THEME_MODE_KEY, themeMode);
-      } catch (e) {
-        console.log("Failed to save theme mode:", e);
-      }
+      } catch {}
     })();
   }, [themeMode]);
 

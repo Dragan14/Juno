@@ -11,9 +11,10 @@ import {
   ViewStyle,
   TextStyle,
   PressableProps,
+  useWindowDimensions,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useTheme } from "../../context/ThemeContext";
+import { useTheme } from "../../context/ui/ThemeContext";
 import Animated, {
   runOnJS,
   SlideInDown,
@@ -94,6 +95,9 @@ const Toast = ({
 }: ToastProps) => {
   const { theme } = useTheme();
   const insets = useSafeAreaInsets();
+  const { width: screenWidth } = useWindowDimensions();
+  const toastMargin = 20;
+  const maxToastWidth = screenWidth - toastMargin * 2;
 
   const offset = Platform.OS === "web" ? 20 : 0;
   const basePositionStyle =
@@ -223,6 +227,8 @@ const Toast = ({
             borderWidth: 1,
             borderColor: borderColor,
           },
+          { width: maxToastWidth },
+          { maxWidth: maxToastWidth > 450 ? 450 : maxToastWidth },
           basePositionStyle,
           style,
         ]}

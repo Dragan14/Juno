@@ -18,7 +18,7 @@ import {
   PixelRatio,
   LayoutChangeEvent,
 } from "react-native";
-import { useTheme } from "../../context/ThemeContext";
+import { useTheme } from "../../context/ui/ThemeContext";
 
 /**
  * Props for the SegmentedControl component.
@@ -174,6 +174,7 @@ const styles = StyleSheet.create({
   tabBase: {
     flex: 1,
     padding: 5,
+    minHeight: scaledSize(45),
     justifyContent: "center",
     alignItems: "center",
     borderWidth: 1,

@@ -20,7 +20,7 @@ import {
   LayoutChangeEvent,
   Platform,
 } from "react-native";
-import { useTheme } from "../../context/ThemeContext";
+import { useTheme } from "../../context/ui/ThemeContext";
 
 /**
  * Props for the Button component.
@@ -277,6 +277,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     padding: 10,
     width: "100%",
+    minHeight: scaledSize(20),
   },
   hovered: {
     opacity: 0.9,

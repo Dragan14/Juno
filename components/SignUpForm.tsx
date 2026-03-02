@@ -10,8 +10,8 @@ import { z } from "zod";
 import TextInput from "@/components/ui/TextInput";
 import Button from "@/components/ui/Button";
 import { CircleUser, Mail, Lock, Eye, EyeOff } from "lucide-react-native";
-import { useAlert } from "../context/AlertContext";
-import { useToast } from "../context/ToastContext";
+import { useAlert } from "@/context/ui/AlertContext";
+import { useToast } from "@/context/ui/ToastContext";
 import Text from "@/components/ui/Text";
 import View from "@/components/ui/View";
 

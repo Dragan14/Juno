@@ -6,7 +6,7 @@ import Button from "@/components/ui/Button";
 import { emailSchema } from "@/schemas/auth-schemas";
 import { z } from "zod";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react-native";
-import { useToast } from "@/context/ToastContext";
+import { useToast } from "@/context/ui/ToastContext";
 
 export default function SignInForm() {
   const { showToast } = useToast();

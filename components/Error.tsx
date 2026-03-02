@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useSignOut } from "@/api/useAuth";
-import { useToast } from "@/context/ToastContext";
+import { useToast } from "@/context/ui/ToastContext";
 import View from "@/components/ui/View";
 import Button from "@/components/ui/Button";
 import Text from "@/components/ui/Text";

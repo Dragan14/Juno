@@ -11,7 +11,7 @@ import Button from "@/components/ui/Button";
 import Text from "@/components/ui/Text";
 import View from "@/components/ui/View";
 import { Ionicons } from "@expo/vector-icons";
-import { useToast } from "@/context/ToastContext";
+import { useToast } from "@/context/ui/ToastContext";
 import Error from "@/components/Error";
 
 export default function Account() {

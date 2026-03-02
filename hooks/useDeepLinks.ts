@@ -1,6 +1,6 @@
 import { useEffect, useRef, useCallback } from "react";
 import { useSetSession } from "@/api/useSession";
-import { useToast } from "@/context/ToastContext";
+import { useToast } from "@/context/ui/ToastContext";
 import * as Linking from "expo-linking";
 import * as QueryParams from "expo-auth-session/build/QueryParams";
 

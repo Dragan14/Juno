@@ -2,7 +2,7 @@ import SafeAreaView from "@/components/ui/SafeAreaView";
 import View from "@/components/ui/View";
 import Text from "@/components/ui/Text";
 import RadioButton from "@/components/ui/RadioButton";
-import { useTheme } from "@/context/ThemeContext";
+import { useTheme } from "@/context/ui/ThemeContext";
 
 export default function SettingsScreen() {
   console.log("Settings screen rendered");

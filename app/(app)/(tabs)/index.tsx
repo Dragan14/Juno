@@ -4,7 +4,7 @@ import { Link } from "expo-router";
 import Text from "@/components/ui/Text";
 import Button from "@/components/ui/Button";
 import { Ionicons } from "@expo/vector-icons";
-import { useToast } from "@/context/ToastContext";
+import { useToast } from "@/context/ui/ToastContext";
 
 export default function HomeScreen() {
   console.log("Home screen rendered");

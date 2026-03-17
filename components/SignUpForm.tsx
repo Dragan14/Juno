@@ -37,15 +37,10 @@ function VerificationAlertContent({
 
   return (
     <View style={{ gap: 20 }}>
-      <Text style={{ textAlign: "center", fontSize: 20 }}>
+      <Text style={{ textAlign: "center", fontSize: 18, fontWeight: "bold" }}>
         Check your Email for a verification link
       </Text>
-      <Button
-        onPress={onClose}
-        variant="primary"
-        outlined={true}
-        style={{ flex: 1 }}
-      >
+      <Button onPress={onClose} variant="primary" outlined={true}>
         Ok
       </Button>
       {cooldown > 0 && (
@@ -53,12 +48,7 @@ function VerificationAlertContent({
           Resend the verification email in {cooldown} seconds.
         </Text>
       )}
-      <Button
-        onPress={handleResend}
-        variant="primary"
-        style={{ flex: 1 }}
-        disabled={cooldown > 0}
-      >
+      <Button onPress={handleResend} variant="primary" disabled={cooldown > 0}>
         Resend Verification Email
       </Button>
     </View>
@@ -73,10 +63,10 @@ export default function SignUpForm() {
   const resendVerificationEmail = useResendVerificationEmail();
 
   // Form state
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [name, setName] = useState("Juno User");
+  const [email, setEmail] = useState(process.env.EXPO_PUBLIC_DEMO_EMAIL!);
+  const [password, setPassword] = useState("Password123!");
+  const [confirmPassword, setConfirmPassword] = useState("Password123!");
   const [errors, setErrors] = useState({
     name: "",
     email: "",

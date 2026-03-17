@@ -79,6 +79,7 @@ Go to the **Authentication** tab → **URL Configuration** in your Supabase dash
    juno://
    juno-dev://
    localhost:8081
+   http://localhost:8081
    ```
 
 ---

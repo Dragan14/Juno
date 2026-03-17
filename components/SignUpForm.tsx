@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Keyboard } from "react-native";
 import {
   emailSchema,
   passwordSchema,
   nameSchema,
 } from "@/schemas/auth-schemas";
-import { useSignUp } from "@/api/useAuth";
+import { useSignUp, useResendVerificationEmail } from "@/api/useAuth";
 import { z } from "zod";
 import TextInput from "@/components/ui/TextInput";
 import Button from "@/components/ui/Button";
@@ -15,11 +15,62 @@ import { useToast } from "@/context/ui/ToastContext";
 import Text from "@/components/ui/Text";
 import View from "@/components/ui/View";
 
+function VerificationAlertContent({
+  onClose,
+  onResend,
+}: {
+  onClose: () => void;
+  onResend: () => Promise<void>;
+}) {
+  const [cooldown, setCooldown] = useState(60);
+
+  useEffect(() => {
+    if (cooldown <= 0) return;
+    const timer = setTimeout(() => setCooldown((c) => c - 1), 1000);
+    return () => clearTimeout(timer);
+  }, [cooldown]);
+
+  const handleResend = async () => {
+    await onResend();
+    setCooldown(60);
+  };
+
+  return (
+    <View style={{ gap: 20 }}>
+      <Text style={{ textAlign: "center", fontSize: 20 }}>
+        Check your Email for a verification link
+      </Text>
+      <Button
+        onPress={onClose}
+        variant="primary"
+        outlined={true}
+        style={{ flex: 1 }}
+      >
+        Ok
+      </Button>
+      {cooldown > 0 && (
+        <Text style={{ textAlign: "center" }}>
+          Resend the verification email in {cooldown} seconds.
+        </Text>
+      )}
+      <Button
+        onPress={handleResend}
+        variant="primary"
+        style={{ flex: 1 }}
+        disabled={cooldown > 0}
+      >
+        Resend Verification Email
+      </Button>
+    </View>
+  );
+}
+
 export default function SignUpForm() {
   const { showAlert, hideAlert } = useAlert();
   const { showToast } = useToast();
 
   const signUp = useSignUp();
+  const resendVerificationEmail = useResendVerificationEmail();
 
   // Form state
   const [name, setName] = useState("");
@@ -129,6 +180,23 @@ export default function SignUpForm() {
           password,
           name,
         });
+        if (!session && !(user && user?.identities?.length === 0)) {
+          showAlert({
+            content: (
+              <VerificationAlertContent
+                onClose={hideAlert}
+                onResend={async () => {
+                  await resendVerificationEmail.mutateAsync(email);
+                  showToast({
+                    message:
+                      "Verification email resent. Please check your inbox.",
+                    variant: "success",
+                  });
+                }}
+              />
+            ),
+          });
+        }
         // Reset form
         setName("");
         setEmail("");
@@ -141,35 +209,6 @@ export default function SignUpForm() {
           password: false,
           confirmPassword: false,
         });
-        if (!session && !(user && user?.identities?.length === 0)) {
-          showAlert({
-            content: (
-              <View style={{ gap: 10 }}>
-                <Text>
-                  Check your Email for a verification link to complete your sign
-                  up.
-                </Text>
-                <View style={{ flexDirection: "row", gap: 10 }}>
-                  <Button
-                    onPress={hideAlert}
-                    variant="secondary"
-                    outlined={true}
-                    style={{ flex: 1 }}
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    onPress={hideAlert}
-                    variant="primary"
-                    style={{ flex: 1 }}
-                  >
-                    Confirm
-                  </Button>
-                </View>
-              </View>
-            ),
-          });
-        }
       } catch (error) {
         showToast({
           message:

@@ -37,12 +37,14 @@ export const useSignUp = () => {
 
   return useMutation({
     mutationFn: async ({ email, password, name }: SignUpCredentials) => {
+      const redirectUri = makeRedirectUri();
+      console.log("Redirect URI for email verification:", redirectUri);
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
           data: { name },
-          emailRedirectTo: makeRedirectUri(),
+          emailRedirectTo: redirectUri,
         },
       });
       if (error) throw error;
@@ -68,11 +70,13 @@ export const useSignUp = () => {
 export const useResendVerificationEmail = () => {
   return useMutation({
     mutationFn: async (email: string) => {
+      const redirectUri = makeRedirectUri();
+      console.log("Redirect URI for email verification:", redirectUri);
       const { error } = await supabase.auth.resend({
         type: "signup",
         email: email,
         options: {
-          emailRedirectTo: makeRedirectUri(),
+          emailRedirectTo: redirectUri,
         },
       });
       if (error) throw error;

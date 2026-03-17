@@ -65,6 +65,25 @@ export const useSignUp = () => {
   });
 };
 
+export const useResendVerificationEmail = () => {
+  return useMutation({
+    mutationFn: async (email: string) => {
+      const { error } = await supabase.auth.resend({
+        type: "signup",
+        email: email,
+        options: {
+          emailRedirectTo: makeRedirectUri(),
+        },
+      });
+      if (error) throw error;
+    },
+    retry: false,
+    onError: (error) => {
+      console.log("Resend verification email error:", error);
+    },
+  });
+};
+
 // Hook for sign out functionality
 export const useSignOut = () => {
   const queryClient = useQueryClient();

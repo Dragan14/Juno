@@ -16,12 +16,14 @@ import Text from "@/components/ui/Text";
 import View from "@/components/ui/View";
 
 function VerificationAlertContent({
+  email,
   onClose,
-  onResend,
 }: {
+  email: string;
   onClose: () => void;
-  onResend: () => Promise<void>;
 }) {
+  const { showToast } = useToast();
+  const resendVerificationEmail = useResendVerificationEmail();
   const [cooldown, setCooldown] = useState(60);
 
   useEffect(() => {
@@ -31,8 +33,22 @@ function VerificationAlertContent({
   }, [cooldown]);
 
   const handleResend = async () => {
-    await onResend();
-    setCooldown(60);
+    try {
+      await resendVerificationEmail.mutateAsync(email);
+      showToast({
+        message: "Verification email resent. Please check your inbox.",
+        variant: "success",
+      });
+      setCooldown(60);
+    } catch (error) {
+      showToast({
+        message:
+          error instanceof Error
+            ? error.message
+            : "Failed to resend verification email. Please try again.",
+        variant: "error",
+      });
+    }
   };
 
   return (
@@ -48,7 +64,12 @@ function VerificationAlertContent({
           Resend the verification email in {cooldown} seconds.
         </Text>
       )}
-      <Button onPress={handleResend} variant="primary" disabled={cooldown > 0}>
+      <Button
+        onPress={handleResend}
+        variant="primary"
+        disabled={cooldown > 0 || resendVerificationEmail.isPending}
+        loading={resendVerificationEmail.isPending}
+      >
         Resend Verification Email
       </Button>
     </View>
@@ -60,7 +81,6 @@ export default function SignUpForm() {
   const { showToast } = useToast();
 
   const signUp = useSignUp();
-  const resendVerificationEmail = useResendVerificationEmail();
 
   // Form state
   const [name, setName] = useState("Juno User");
@@ -164,6 +184,7 @@ export default function SignUpForm() {
   const handleSignUp = async () => {
     Keyboard.dismiss();
     if (validateForm()) {
+      const submittedEmail = email;
       try {
         const { session, user } = await signUp.mutateAsync({
           email,
@@ -174,24 +195,17 @@ export default function SignUpForm() {
           showAlert({
             content: (
               <VerificationAlertContent
+                email={submittedEmail}
                 onClose={hideAlert}
-                onResend={async () => {
-                  await resendVerificationEmail.mutateAsync(email);
-                  showToast({
-                    message:
-                      "Verification email resent. Please check your inbox.",
-                    variant: "success",
-                  });
-                }}
               />
             ),
           });
         }
         // Reset form
-        setName("");
-        setEmail("");
-        setPassword("");
-        setConfirmPassword("");
+        setName("Juno User");
+        setEmail(process.env.EXPO_PUBLIC_DEMO_EMAIL!);
+        setPassword("Password123!");
+        setConfirmPassword("Password123!");
         setErrors({ name: "", email: "", password: "", confirmPassword: "" });
         setTouched({
           name: false,

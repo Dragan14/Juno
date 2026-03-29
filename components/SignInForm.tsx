@@ -3,12 +3,14 @@ import { Keyboard } from "react-native";
 import { useSignIn } from "@/api/useAuth";
 import TextInput from "@/components/ui/TextInput";
 import Button from "@/components/ui/Button";
+import View from "@/components/ui/View";
 import { emailSchema } from "@/schemas/auth-schemas";
 import { z } from "zod";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react-native";
 import { useAlert } from "@/context/ui/AlertContext";
 import { useToast } from "@/context/ui/ToastContext";
-import VerificationAlertContent from "@/components/VerificationAlertContent";
+import EmailVerificationAlert from "@/components/alerts/EmailVerificationAlert";
+import ForgotPasswordAlert from "@/components/alerts/ForgotPasswordAlert";
 
 export default function SignInForm() {
   const { showAlert, hideAlert } = useAlert();
@@ -45,6 +47,14 @@ export default function SignInForm() {
     }
   };
 
+  // Handle forgot password
+  const handleForgotPassword = () => {
+    Keyboard.dismiss();
+    showAlert({
+      content: <ForgotPasswordAlert initialEmail={email} onClose={hideAlert} />,
+    });
+  };
+
   // Handle sign in
   const handleSignIn = async () => {
     Keyboard.dismiss();
@@ -64,7 +74,7 @@ export default function SignInForm() {
         ) {
           showAlert({
             content: (
-              <VerificationAlertContent
+              <EmailVerificationAlert
                 email={submittedEmail}
                 onClose={hideAlert}
                 initialCooldown={0}
@@ -119,13 +129,24 @@ export default function SignInForm() {
         placeholder="Password"
         autoCapitalize="none"
       />
-      <Button
-        disabled={signIn.isPending}
-        onPress={handleSignIn}
-        loading={signIn.isPending}
-      >
-        Sign In
-      </Button>
+      <View style={{ gap: 15, marginTop: 15 }}>
+        <Button
+          disabled={signIn.isPending}
+          onPress={handleSignIn}
+          loading={signIn.isPending}
+          style={{ width: 200, alignSelf: "center" }}
+        >
+          Sign In
+        </Button>
+        <Button
+          variant="secondary"
+          elevated
+          onPress={handleForgotPassword}
+          style={{ width: 200, alignSelf: "center" }}
+        >
+          Forgot your password?
+        </Button>
+      </View>
     </>
   );
 }

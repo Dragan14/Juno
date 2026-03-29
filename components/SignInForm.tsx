@@ -6,15 +6,18 @@ import Button from "@/components/ui/Button";
 import { emailSchema } from "@/schemas/auth-schemas";
 import { z } from "zod";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react-native";
+import { useAlert } from "@/context/ui/AlertContext";
 import { useToast } from "@/context/ui/ToastContext";
+import VerificationAlertContent from "@/components/VerificationAlertContent";
 
 export default function SignInForm() {
+  const { showAlert, hideAlert } = useAlert();
   const { showToast } = useToast();
   const signIn = useSignIn();
 
   // Form state
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState(process.env.EXPO_PUBLIC_DEMO_EMAIL!);
+  const [password, setPassword] = useState("Password123!");
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [errors, setErrors] = useState({
     email: "",
@@ -46,6 +49,7 @@ export default function SignInForm() {
   const handleSignIn = async () => {
     Keyboard.dismiss();
     if (validateEmail()) {
+      const submittedEmail = email;
       try {
         await signIn.mutateAsync({ email, password });
         // Reset form
@@ -54,13 +58,28 @@ export default function SignInForm() {
         setErrors({ email: "" });
         setTouched({ email: false });
       } catch (error) {
-        showToast({
-          message:
-            error instanceof Error
-              ? error.message
-              : "Failed to sign in. Please try again.",
-          variant: "error",
-        });
+        if (
+          error instanceof Error &&
+          error.message.toLowerCase().includes("email not confirmed")
+        ) {
+          showAlert({
+            content: (
+              <VerificationAlertContent
+                email={submittedEmail}
+                onClose={hideAlert}
+                initialCooldown={0}
+              />
+            ),
+          });
+        } else {
+          showToast({
+            message:
+              error instanceof Error
+                ? error.message
+                : "Failed to sign in. Please try again.",
+            variant: "error",
+          });
+        }
       }
     }
   };

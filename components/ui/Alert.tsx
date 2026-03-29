@@ -1,7 +1,6 @@
 // Alert.tsx
 import { ReactNode } from "react";
 import {
-  Modal,
   StyleSheet,
   StyleProp,
   ViewStyle,
@@ -9,6 +8,7 @@ import {
   View,
   Platform,
 } from "react-native";
+import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 import { useTheme } from "../../context/ui/ThemeContext";
 
 /**
@@ -36,28 +36,27 @@ const Alert = ({
 }: AlertProps) => {
   const { theme } = useTheme();
 
+  if (!visible) return null;
+
   return (
-    <Modal
-      animationType="fade"
-      transparent={true}
-      visible={visible}
-      onRequestClose={onDismiss}
+    <Animated.View
+      entering={FadeIn.duration(200)}
+      exiting={FadeOut.duration(200)}
+      style={[StyleSheet.absoluteFill, styles.backdrop]}
     >
-      <View style={styles.backdrop}>
-        {dismissOnBackdropPress && (
-          <Pressable style={StyleSheet.absoluteFill} onPress={onDismiss} />
-        )}
-        <View
-          style={[
-            styles.alertContainer,
-            { backgroundColor: theme.colors.background },
-            style,
-          ]}
-        >
-          {children}
-        </View>
+      {dismissOnBackdropPress && (
+        <Pressable style={StyleSheet.absoluteFill} onPress={onDismiss} />
+      )}
+      <View
+        style={[
+          styles.alertContainer,
+          { backgroundColor: theme.colors.background },
+          style,
+        ]}
+      >
+        {children}
       </View>
-    </Modal>
+    </Animated.View>
   );
 };
 

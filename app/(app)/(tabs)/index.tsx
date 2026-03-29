@@ -4,11 +4,9 @@ import { Link } from "expo-router";
 import Text from "@/components/ui/Text";
 import Button from "@/components/ui/Button";
 import { Ionicons } from "@expo/vector-icons";
-import { useToast } from "@/context/ui/ToastContext";
 
 export default function HomeScreen() {
   console.log("Home screen rendered");
-  const { showToast } = useToast();
 
   return (
     <SafeAreaView disableBottomSafeArea>
@@ -22,15 +20,6 @@ export default function HomeScreen() {
           justifyContent: "center",
         }}
       >
-        <Button
-          leftIcon={<Ionicons name="notifications-outline" />}
-          style={{ width: 300, marginHorizontal: "auto", marginBottom: 10 }}
-          onPress={() =>
-            showToast({ message: "An account with that email already exists!" })
-          }
-        >
-          Show Test Toast
-        </Button>
         <Link href="/+not-found" asChild>
           <Button
             style={{ width: 300, marginHorizontal: "auto", marginBottom: 10 }}

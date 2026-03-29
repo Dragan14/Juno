@@ -12,7 +12,7 @@ import Button from "@/components/ui/Button";
 import { CircleUser, Mail, Lock, Eye, EyeOff } from "lucide-react-native";
 import { useAlert } from "@/context/ui/AlertContext";
 import { useToast } from "@/context/ui/ToastContext";
-import VerificationAlertContent from "@/components/VerificationAlertContent";
+import EmailVerificationAlert from "@/components/alerts/EmailVerificationAlert";
 
 export default function SignUpForm() {
   const { showAlert, hideAlert } = useAlert();
@@ -132,7 +132,7 @@ export default function SignUpForm() {
         if (!session && !(user && user?.identities?.length === 0)) {
           showAlert({
             content: (
-              <VerificationAlertContent
+              <EmailVerificationAlert
                 email={submittedEmail}
                 onClose={hideAlert}
               />

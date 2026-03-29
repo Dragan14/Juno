@@ -88,6 +88,23 @@ export const useResendVerificationEmail = () => {
   });
 };
 
+export const useResetPassword = () => {
+  return useMutation({
+    mutationFn: async (email: string) => {
+      const redirectUri = makeRedirectUri();
+      const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: redirectUri,
+      });
+      if (error) throw error;
+      return data;
+    },
+    retry: false,
+    onError: (error) => {
+      console.log("Reset password error:", error);
+    },
+  });
+};
+
 // Hook for sign out functionality
 export const useSignOut = () => {
   const queryClient = useQueryClient();

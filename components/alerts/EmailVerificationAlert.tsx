@@ -5,7 +5,7 @@ import Text from "@/components/ui/Text";
 import View from "@/components/ui/View";
 import { useToast } from "@/context/ui/ToastContext";
 
-export default function VerificationAlertContent({
+export default function EmailVerificationAlert({
   email,
   onClose,
   initialCooldown = 60,

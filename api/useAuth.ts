@@ -105,6 +105,20 @@ export const useResetPassword = () => {
   });
 };
 
+export const useUpdatePassword = () => {
+  return useMutation({
+    mutationFn: async (password: string) => {
+      const { data, error } = await supabase.auth.updateUser({ password });
+      if (error) throw error;
+      return data;
+    },
+    retry: false,
+    onError: (error) => {
+      console.log("Update password error:", error);
+    },
+  });
+};
+
 // Hook for sign out functionality
 export const useSignOut = () => {
   const queryClient = useQueryClient();

@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/utils/supabase";
 import { AUTH_KEYS, PROFILE_KEYS } from "@/constants/queryKeys";
 import { makeRedirectUri } from "expo-auth-session";
@@ -93,7 +93,8 @@ export const useResendVerificationEmail = () => {
 export const useResetPassword = () => {
   return useMutation({
     mutationFn: async (email: string) => {
-      const redirectUri = makeRedirectUri();
+      const redirectUri = makeRedirectUri() + "/reset-password";
+      console.log("Redirect URI for password reset:", redirectUri);
       const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
         redirectTo: redirectUri,
       });
@@ -107,7 +108,17 @@ export const useResetPassword = () => {
   });
 };
 
+export const useIsPasswordRecovery = () => {
+  const { data } = useQuery({
+    queryKey: AUTH_KEYS.isPasswordRecovery,
+    queryFn: () => false,
+    staleTime: Infinity,
+  });
+  return !!data;
+};
+
 export const useUpdatePassword = () => {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (password: string) => {
       const { data, error } = await supabase.auth.updateUser({ password });
@@ -115,6 +126,9 @@ export const useUpdatePassword = () => {
       return data;
     },
     retry: false,
+    onSuccess: () => {
+      queryClient.setQueryData(AUTH_KEYS.isPasswordRecovery, false);
+    },
     onError: (error) => {
       console.log("Update password error:", error);
     },

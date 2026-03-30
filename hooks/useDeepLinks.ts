@@ -1,12 +1,15 @@
 import { useEffect, useRef, useCallback, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { useSetSession } from "@/api/useSession";
 import { useToast } from "@/context/ui/ToastContext";
+import { AUTH_KEYS } from "@/constants/queryKeys";
 import * as Linking from "expo-linking";
 import * as QueryParams from "expo-auth-session/build/QueryParams";
 
 export function useDeepLinks() {
   const setSession = useSetSession();
   const { showToast } = useToast();
+  const queryClient = useQueryClient();
   const [isProcessingDeepLink, setIsProcessingDeepLink] = useState(false);
 
   const url = Linking.useLinkingURL();
@@ -16,7 +19,7 @@ export function useDeepLinks() {
     async (url: string) => {
       try {
         const { params } = QueryParams.getQueryParams(url);
-        const { access_token, refresh_token } = params;
+        const { access_token, refresh_token, type } = params;
         if (access_token && refresh_token) {
           setIsProcessingDeepLink(true);
           console.log(
@@ -28,6 +31,10 @@ export function useDeepLinks() {
             accessToken: access_token,
             refreshToken: refresh_token,
           });
+          if (type === "recovery") {
+            queryClient.setQueryData(AUTH_KEYS.isPasswordRecovery, true);
+            console.log("Password recovery deep link detected");
+          }
         }
       } catch (error) {
         console.log("Deep link error:", error);
@@ -40,7 +47,7 @@ export function useDeepLinks() {
         console.log("Finished processing deep link");
       }
     },
-    [setSession, showToast],
+    [setSession, showToast, queryClient],
   );
 
   useEffect(() => {

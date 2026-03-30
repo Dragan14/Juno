@@ -34,6 +34,13 @@ export default function HomeScreen() {
             Go to the Authentication screen!
           </Button>
         </Link>
+        <Link href="/(app)/reset-password" asChild>
+          <Button
+            style={{ width: 300, marginHorizontal: "auto", marginBottom: 20 }}
+          >
+            Go to the Reset Password screen!
+          </Button>
+        </Link>
         <Text
           style={{
             textAlign: "center",

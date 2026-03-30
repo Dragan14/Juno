@@ -1,14 +1,11 @@
 import { useEffect, useRef, useCallback, useState } from "react";
-import { useQueryClient } from "@tanstack/react-query";
 import { useSetSession } from "@/api/useSession";
 import { useToast } from "@/context/ui/ToastContext";
-import { AUTH_KEYS } from "@/constants/queryKeys";
 import * as Linking from "expo-linking";
 import * as QueryParams from "expo-auth-session/build/QueryParams";
 
 export function useDeepLinks() {
   const setSession = useSetSession();
-  const queryClient = useQueryClient();
   const { showToast } = useToast();
   const [isProcessingDeepLink, setIsProcessingDeepLink] = useState(false);
 
@@ -27,13 +24,10 @@ export function useDeepLinks() {
             access_token,
             refresh_token,
           );
-          const data = await setSession.mutateAsync({
+          await setSession.mutateAsync({
             accessToken: access_token,
             refreshToken: refresh_token,
           });
-          if (data.session) {
-            queryClient.setQueryData(AUTH_KEYS.session, data.session);
-          }
         }
       } catch (error) {
         console.log("Deep link error:", error);
@@ -46,7 +40,7 @@ export function useDeepLinks() {
         console.log("Finished processing deep link");
       }
     },
-    [queryClient, setSession, showToast],
+    [setSession, showToast],
   );
 
   useEffect(() => {

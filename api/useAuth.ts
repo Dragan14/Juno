@@ -18,6 +18,10 @@ export const useSignIn = () => {
       return data;
     },
     retry: false,
+    onSuccess: (data) => {
+      queryClient.setQueryData(AUTH_KEYS.session, data.session);
+      queryClient.setQueryData(AUTH_KEYS.user, data.user);
+    },
     onError: (error) => {
       console.log("Sign in error:", error);
       queryClient.setQueryData(AUTH_KEYS.session, null);
@@ -51,6 +55,10 @@ export const useSignUp = () => {
       return data;
     },
     retry: false,
+    onSuccess: (data) => {
+      queryClient.setQueryData(AUTH_KEYS.session, data.session);
+      queryClient.setQueryData(AUTH_KEYS.user, data.user);
+    },
     onError: (error) => {
       console.log("Sign up error:", error);
       queryClient.setQueryData(AUTH_KEYS.session, null);
@@ -126,6 +134,8 @@ export const useSignOut = () => {
     retry: false,
     onError: (error) => {
       console.log("Sign out error:", error);
+    },
+    onSettled: () => {
       queryClient.setQueryData(AUTH_KEYS.session, null);
       queryClient.setQueryData(AUTH_KEYS.user, null);
       queryClient.setQueryData(PROFILE_KEYS.profile, null);

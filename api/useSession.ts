@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/utils/supabase";
 import { AUTH_KEYS } from "@/constants/queryKeys";
 
@@ -21,6 +21,8 @@ export const useGetSession = () => {
 
 // Hook for setting the session with tokens
 export const useSetSession = () => {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: async ({
       accessToken,
@@ -37,6 +39,10 @@ export const useSetSession = () => {
       return data;
     },
     retry: false,
+    onSuccess: (data) => {
+      queryClient.setQueryData(AUTH_KEYS.session, data.session);
+      queryClient.setQueryData(AUTH_KEYS.user, data.user);
+    },
     onError: (error) => {
       console.log("Set session error:", error);
     },

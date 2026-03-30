@@ -83,3 +83,38 @@ Go to the **Authentication** tab → **URL Configuration** in your Supabase dash
    ```
 
 ---
+
+## Local Development with Mailpit
+
+Supabase CLI automatically captures emails locally using Mailpit — no real emails are sent.
+
+### Prerequisites
+
+- Docker Desktop running
+- Supabase CLI installed
+- Mailpit installed
+
+### Setup
+
+1. Create a `.env.local` file in the project root (overrides `.env` automatically in Expo):
+
+   ```
+   EXPO_PUBLIC_SUPABASE_URL=http://127.0.0.1:54321
+   EXPO_PUBLIC_SUPABASE_ANON_KEY=<publishable key from supabase status>
+   ```
+
+2. Start local Supabase:
+
+   ```
+   supabase start
+   ```
+
+3. Open **http://127.0.0.1:54324** to view captured emails (confirmations, magic links, password resets, etc.)
+   Open **http://127.0.0.1:54323** to view the supabase studio
+   API / Project URL: **http://127.0.0.1:54321**
+
+4. Run `supabase status` at any time to see all local URLs and keys.
+
+### Switching back to production
+
+Delete `.env.local` — Expo will fall back to the production values in `.env`.

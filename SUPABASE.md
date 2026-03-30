@@ -77,9 +77,13 @@ Go to the **Authentication** tab → **URL Configuration** in your Supabase dash
 2. **Add the following redirect URLs:**
    ```
    juno://
+   juno://*
    juno-dev://
+   juno-dev://*
    localhost:8081
+   localhost:8081/*
    http://localhost:8081
+   http://localhost:8081/*
    ```
 
 ---

@@ -32,24 +32,18 @@ function AppLayout() {
 
   const session = useGetSession();
 
-  useDeepLinks();
+  const { isProcessingDeepLink } = useDeepLinks();
 
   useAuthStateChange();
 
-  const isLoading = session.isPending || network.isLoading;
+  const isLoading =
+    session.isPending || network.isLoading || isProcessingDeepLink;
   const showNoConnection = !network.isConnected && !network.isLoading;
-  const showError =
-    session.isError && !session.isPending && network.isConnected;
+  const showError = !isLoading && session.isError && network.isConnected;
   const showAuth =
-    !session.data &&
-    !session.isPending &&
-    !session.isError &&
-    network.isConnected;
+    !isLoading && !session.data && !session.isError && network.isConnected;
   const showApp =
-    !!session.data &&
-    !session.isPending &&
-    !session.isError &&
-    network.isConnected;
+    !isLoading && !!session.data && !session.isError && network.isConnected;
 
   return (
     <>

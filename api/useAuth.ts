@@ -18,15 +18,12 @@ export const useSignIn = () => {
       return data;
     },
     retry: false,
-    onSuccess: (data) => {
-      queryClient.setQueryData(AUTH_KEYS.session, data.session);
-      queryClient.setQueryData(AUTH_KEYS.user, data.user);
-    },
     onError: (error) => {
       console.log("Sign in error:", error);
       queryClient.setQueryData(AUTH_KEYS.session, null);
       queryClient.setQueryData(AUTH_KEYS.user, null);
       queryClient.setQueryData(PROFILE_KEYS.profile, null);
+      queryClient.clear();
     },
   });
 };
@@ -37,7 +34,7 @@ export const useSignUp = () => {
 
   return useMutation({
     mutationFn: async ({ email, password, name }: SignUpCredentials) => {
-      const redirectUri = makeRedirectUri();
+      const redirectUri = makeRedirectUri() + "/account";
       console.log("Redirect URI for email verification:", redirectUri);
       const { data, error } = await supabase.auth.signUp({
         email,
@@ -54,15 +51,12 @@ export const useSignUp = () => {
       return data;
     },
     retry: false,
-    onSuccess: (data) => {
-      queryClient.setQueryData(AUTH_KEYS.session, data.session);
-      queryClient.setQueryData(AUTH_KEYS.user, data.user);
-    },
     onError: (error) => {
       console.log("Sign up error:", error);
       queryClient.setQueryData(AUTH_KEYS.session, null);
       queryClient.setQueryData(AUTH_KEYS.user, null);
       queryClient.setQueryData(PROFILE_KEYS.profile, null);
+      queryClient.clear();
     },
   });
 };
@@ -70,7 +64,7 @@ export const useSignUp = () => {
 export const useResendVerificationEmail = () => {
   return useMutation({
     mutationFn: async (email: string) => {
-      const redirectUri = makeRedirectUri();
+      const redirectUri = makeRedirectUri() + "/account";
       console.log("Redirect URI for email verification:", redirectUri);
       const { error } = await supabase.auth.resend({
         type: "signup",
@@ -132,11 +126,10 @@ export const useSignOut = () => {
     retry: false,
     onError: (error) => {
       console.log("Sign out error:", error);
-    },
-    onSettled: () => {
       queryClient.setQueryData(AUTH_KEYS.session, null);
       queryClient.setQueryData(AUTH_KEYS.user, null);
       queryClient.setQueryData(PROFILE_KEYS.profile, null);
+      queryClient.clear();
     },
   });
 };

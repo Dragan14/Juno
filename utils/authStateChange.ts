@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { supabase } from "./supabase";
-import { AUTH_KEYS } from "@/constants/queryKeys";
+import { AUTH_KEYS, PROFILE_KEYS } from "@/constants/queryKeys";
 
 // Hook to listen for auth state changes and update the query cache accordingly and redirect the user
 export const useAuthStateChange = () => {
@@ -17,6 +17,7 @@ export const useAuthStateChange = () => {
           case "SIGNED_OUT":
             queryClient.setQueryData(AUTH_KEYS.session, null);
             queryClient.setQueryData(AUTH_KEYS.user, null);
+            queryClient.setQueryData(PROFILE_KEYS.profile, null);
             queryClient.clear();
             console.log("User signed out");
             break;

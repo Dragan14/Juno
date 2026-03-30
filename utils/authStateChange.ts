@@ -8,6 +8,7 @@ export const useAuthStateChange = () => {
   const queryClient = useQueryClient();
 
   useEffect(() => {
+    console.log("Setting up auth state change listener");
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((event, session) => {
@@ -27,9 +28,15 @@ export const useAuthStateChange = () => {
             break;
           case "INITIAL_SESSION":
           case "SIGNED_IN":
-            queryClient.setQueryData(AUTH_KEYS.session, session);
-            queryClient.setQueryData(AUTH_KEYS.user, session?.user || null);
-            console.log("User signed in or initial session:", session);
+            if (session) {
+              queryClient.setQueryData(AUTH_KEYS.session, session);
+              queryClient.setQueryData(AUTH_KEYS.user, session?.user || null);
+              console.log("User signed in or initial session:", session);
+            } else {
+              console.log(
+                "No session data available on sign-in / initial session event",
+              );
+            }
             break;
           case "TOKEN_REFRESHED":
             queryClient.setQueryData(AUTH_KEYS.session, session);

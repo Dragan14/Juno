@@ -127,7 +127,10 @@ export const useUpdatePassword = () => {
     },
     retry: false,
     onSuccess: () => {
-      queryClient.setQueryData(AUTH_KEYS.isPasswordRecovery, false);
+      setTimeout(() => {
+        console.log("Password updated, resetting password recovery state");
+        queryClient.setQueryData(AUTH_KEYS.isPasswordRecovery, false);
+      }, 2000);
     },
     onError: (error) => {
       console.log("Update password error:", error);

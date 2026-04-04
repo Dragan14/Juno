@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Keyboard } from "react-native";
+import { Keyboard, Platform } from "react-native";
 import { useSignIn } from "@/api/useAuth";
 import TextInput from "@/components/ui/TextInput";
 import Button from "@/components/ui/Button";
@@ -94,7 +94,7 @@ export default function SignInForm() {
     }
   };
 
-  return (
+  const content = (
     <>
       <TextInput
         topLabel="Email"
@@ -149,4 +149,9 @@ export default function SignInForm() {
       </View>
     </>
   );
+
+  if (Platform.OS === "web") {
+    return <form onSubmit={(e) => e.preventDefault()}>{content}</form>;
+  }
+  return content;
 }

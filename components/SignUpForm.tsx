@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Keyboard } from "react-native";
+import { Keyboard, Platform } from "react-native";
 import {
   emailSchema,
   passwordSchema,
@@ -163,7 +163,7 @@ export default function SignUpForm() {
     }
   };
 
-  return (
+  const content = (
     <>
       <TextInput
         topLabel="Name"
@@ -256,4 +256,9 @@ export default function SignUpForm() {
       </Button>
     </>
   );
+
+  if (Platform.OS === "web") {
+    return <form onSubmit={(e) => e.preventDefault()}>{content}</form>;
+  }
+  return content;
 }

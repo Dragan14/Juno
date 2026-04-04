@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Keyboard } from "react-native";
+import { Keyboard, Platform } from "react-native";
 import { router } from "expo-router";
 import { passwordSchema } from "@/schemas/auth-schemas";
 import { useUpdatePassword } from "@/api/useAuth";
@@ -85,7 +85,7 @@ export default function ResetPasswordScreen() {
     }
   };
 
-  return (
+  const content = (
     <SafeAreaView>
       <View
         style={{
@@ -172,4 +172,9 @@ export default function ResetPasswordScreen() {
       </View>
     </SafeAreaView>
   );
+
+  if (Platform.OS === "web") {
+    return <form onSubmit={(e) => e.preventDefault()}>{content}</form>;
+  }
+  return content;
 }

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Platform } from "react-native";
 import { useResetPassword } from "@/api/useAuth";
 import { emailSchema } from "@/schemas/auth-schemas";
 import { z } from "zod";
@@ -54,7 +55,7 @@ export default function ForgotPasswordAlert({
     }
   };
 
-  return (
+  const content = (
     <View style={{ gap: 16 }}>
       <Text style={{ textAlign: "center", fontSize: 18, fontWeight: "bold" }}>
         Reset your password
@@ -91,4 +92,9 @@ export default function ForgotPasswordAlert({
       </Button>
     </View>
   );
+
+  if (Platform.OS === "web") {
+    return <form onSubmit={(e) => e.preventDefault()}>{content}</form>;
+  }
+  return content;
 }

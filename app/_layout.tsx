@@ -9,6 +9,7 @@ import { ToastProvider } from "@/context/ui/ToastContext";
 import { AlertProvider } from "@/context/ui/AlertContext";
 import { useAuthStateChange } from "@/utils/authStateChange";
 import { useGetSession } from "@/api/useSession";
+import { useIsPasswordRecovery } from "@/api/useAuth";
 import { useNetworkStatus } from "@/hooks/useNetworkStatus";
 import { useDeepLinks } from "@/hooks/useDeepLinks";
 import * as WebBrowser from "expo-web-browser";
@@ -33,6 +34,7 @@ function AppLayout() {
   const session = useGetSession();
 
   const { isProcessingDeepLink } = useDeepLinks();
+  const isPasswordRecovery = useIsPasswordRecovery();
 
   useAuthStateChange();
 
@@ -69,6 +71,15 @@ function AppLayout() {
         </Stack.Protected>
         <Stack.Protected guard={showApp}>
           <Stack.Screen name="(app)" options={{ headerShown: false }} />
+        </Stack.Protected>
+        <Stack.Protected guard={showApp && isPasswordRecovery}>
+          <Stack.Screen
+            name="reset-password"
+            options={{
+              title: "Reset Password",
+              headerBackVisible: false,
+            }}
+          />
         </Stack.Protected>
         <Stack.Protected guard={!isLoading}>
           <Stack.Screen name="+not-found" />

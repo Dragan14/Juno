@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { Text } from "react-native";
+import { Image } from "react-native";
 import SignInForm from "@/components/SignInForm";
 import SignUpForm from "@/components/SignUpForm";
 import SafeAreaView from "@/components/ui/SafeAreaView";
 import View from "@/components/ui/View";
+import Text from "@/components/ui/Text";
 import SegmentedControl from "@/components/ui/SegmentedControl";
 
 export default function AuthenticationScreen() {
@@ -20,20 +21,43 @@ export default function AuthenticationScreen() {
           maxWidth: 800,
           paddingHorizontal: 10,
           marginHorizontal: "auto",
-          marginTop: 10,
+          justifyContent: "center",
         }}
       >
-        <SegmentedControl
-          values={[
-            <Text key="tab1">Sign In</Text>,
-            <Text key="tab2">Sign Up</Text>,
-          ]}
-          selectedIndices={selectedIndices}
-          onTabPress={(index) => {
-            setSelectedIndices([index]);
+        <View
+          style={{
+            alignItems: "center",
+            justifyContent: "center",
+            marginBottom: 75,
           }}
-          style={{ marginBottom: 20, minHeight: 40 }}
-        />
+        >
+          <View style={{ position: "relative" }}>
+            <Image
+              source={require("@/assets/images/splash-icon.png")}
+              style={{
+                width: 60,
+                height: 60,
+                position: "absolute",
+                left: -75,
+                top: -10,
+              }}
+            />
+            <SegmentedControl
+              values={[
+                <Text key="tab1">Sign In</Text>,
+                <Text key="tab2">Sign Up</Text>,
+              ]}
+              selectedIndices={selectedIndices}
+              onTabPress={(index) => {
+                setSelectedIndices([index]);
+              }}
+              style={{
+                minHeight: 40,
+                width: 400,
+              }}
+            />
+          </View>
+        </View>
         <View style={{ display: selectedIndices[0] === 0 ? "flex" : "none" }}>
           <SignInForm />
         </View>

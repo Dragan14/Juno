@@ -96,45 +96,47 @@ export default function SignInForm() {
 
   const content = (
     <>
-      <TextInput
-        topLabel="Email"
-        leftIcon={<Mail />}
-        onChangeText={(val) => {
-          setTouched((prev) => ({ ...prev, email: true }));
-          setEmail(val);
-        }}
-        onBlur={() => touched.email && validateEmail()}
-        value={email}
-        placeholder="email@address.com"
-        autoCapitalize="none"
-        keyboardType="email-address"
-        autoComplete="email"
-        error={!!errors.email}
-        errorMessage={errors.email}
-        retainErrorMessageSpace={true}
-      />
-      <TextInput
-        topLabel="Password"
-        leftIcon={<Lock />}
-        rightIcon={
-          passwordVisible ? (
-            <Eye onPress={togglePasswordVisibility} />
-          ) : (
-            <EyeOff onPress={togglePasswordVisibility} />
-          )
-        }
-        onChangeText={setPassword}
-        value={password}
-        secureTextEntry={!passwordVisible}
-        placeholder="Password"
-        autoCapitalize="none"
-      />
-      <View style={{ gap: 15, marginTop: 15 }}>
+      <View style={{ gap: 5 }}>
+        <TextInput
+          topLabel="Email"
+          leftIcon={<Mail />}
+          onChangeText={(val) => {
+            setTouched((prev) => ({ ...prev, email: true }));
+            setEmail(val);
+          }}
+          onBlur={() => touched.email && validateEmail()}
+          value={email}
+          placeholder="email@address.com"
+          autoCapitalize="none"
+          keyboardType="email-address"
+          autoComplete="email"
+          error={!!errors.email}
+          errorMessage={errors.email}
+          retainErrorMessageSpace={true}
+        />
+        <TextInput
+          topLabel="Password"
+          leftIcon={<Lock />}
+          rightIcon={
+            passwordVisible ? (
+              <Eye onPress={togglePasswordVisibility} />
+            ) : (
+              <EyeOff onPress={togglePasswordVisibility} />
+            )
+          }
+          onChangeText={setPassword}
+          value={password}
+          secureTextEntry={!passwordVisible}
+          placeholder="Password"
+          autoCapitalize="none"
+        />
+      </View>
+      <View style={{ gap: 15, marginTop: 75 }}>
         <Button
           disabled={signIn.isPending}
           onPress={handleSignIn}
           loading={signIn.isPending}
-          style={{ width: 200, alignSelf: "center" }}
+          style={{ width: 400, alignSelf: "center" }}
         >
           Sign In
         </Button>
@@ -142,7 +144,7 @@ export default function SignInForm() {
           variant="secondary"
           elevated
           onPress={handleForgotPassword}
-          style={{ width: 200, alignSelf: "center" }}
+          style={{ width: 400, alignSelf: "center" }}
         >
           Forgot your password?
         </Button>

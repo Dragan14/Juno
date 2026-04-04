@@ -251,6 +251,7 @@ export default function SignUpForm() {
         disabled={signUp.isPending}
         onPress={handleSignUp}
         loading={signUp.isPending}
+        style={{ marginTop: 20 }}
       >
         Sign Up
       </Button>

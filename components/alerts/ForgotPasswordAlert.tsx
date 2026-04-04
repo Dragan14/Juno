@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Platform } from "react-native";
 import { useResetPassword } from "@/api/useAuth";
 import { emailSchema } from "@/schemas/auth-schemas";
@@ -21,6 +21,13 @@ export default function ForgotPasswordAlert({
   const resetPassword = useResetPassword();
   const [email, setEmail] = useState(initialEmail);
   const [emailError, setEmailError] = useState("");
+  const [cooldown, setCooldown] = useState(0);
+
+  useEffect(() => {
+    if (cooldown <= 0) return;
+    const timer = setTimeout(() => setCooldown((c) => c - 1), 1000);
+    return () => clearTimeout(timer);
+  }, [cooldown]);
 
   const validateEmail = () => {
     try {
@@ -39,11 +46,12 @@ export default function ForgotPasswordAlert({
     if (!validateEmail()) return;
     try {
       await resetPassword.mutateAsync(email);
+      setCooldown(60);
       showToast({
-        message: "Password reset email sent. Check your inbox.",
+        message:
+          "Password reset email sent. You will receive an email if an account exists with that email exists.",
         variant: "success",
       });
-      onClose();
     } catch (error) {
       showToast({
         message:
@@ -80,9 +88,14 @@ export default function ForgotPasswordAlert({
         errorMessage={emailError}
         retainErrorMessageSpace={true}
       />
+      {cooldown > 0 && (
+        <Text style={{ textAlign: "center" }}>
+          Resend the reset password email in {cooldown} seconds.
+        </Text>
+      )}
       <Button
         onPress={handleSend}
-        disabled={resetPassword.isPending}
+        disabled={cooldown > 0 || resetPassword.isPending}
         loading={resetPassword.isPending}
       >
         Send Reset Password Email

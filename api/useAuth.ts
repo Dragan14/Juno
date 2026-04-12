@@ -6,7 +6,7 @@ import { Platform } from "react-native";
 import type { SignInCredentials, SignUpCredentials } from "@/types/authTypes";
 import {
   GoogleSignin,
-  statusCodes,
+  isCancelledResponse,
 } from "@react-native-google-signin/google-signin";
 import * as AppleAuthentication from "expo-apple-authentication";
 import * as Crypto from "expo-crypto";
@@ -179,8 +179,12 @@ export const useGoogleSignIn = () => {
         scopes: ["profile", "email"],
       });
       await GoogleSignin.hasPlayServices();
-      const userInfo = await GoogleSignin.signIn();
-      const idToken = userInfo.data?.idToken;
+      const response = await GoogleSignin.signIn();
+      if (isCancelledResponse(response)) {
+        console.log("Google sign in cancelled by user");
+        return;
+      }
+      const idToken = response.data?.idToken;
       if (!idToken) throw new Error("No ID token received from Google");
       const { data, error } = await supabase.auth.signInWithIdToken({
         provider: "google",
@@ -196,7 +200,6 @@ export const useGoogleSignIn = () => {
       queryClient.setQueryData(AUTH_KEYS.user, data.user);
     },
     onError: (error: any) => {
-      if (error?.code === statusCodes.SIGN_IN_CANCELLED) return;
       console.log("Google sign in error:", error);
     },
   });
@@ -220,6 +223,7 @@ export const useAppleSignIn = () => {
           nonce: hashedNonce,
         });
       } catch (error: any) {
+        if (error?.code === "ERR_REQUEST_CANCELED") return;
         throw error;
       }
       if (!credential.identityToken)
@@ -234,11 +238,11 @@ export const useAppleSignIn = () => {
     },
     retry: false,
     onSuccess: (data) => {
+      if (!data?.session) return;
       queryClient.setQueryData(AUTH_KEYS.session, data.session);
       queryClient.setQueryData(AUTH_KEYS.user, data.user);
     },
     onError: (error: any) => {
-      if (error?.code === "ERR_REQUEST_CANCELED") return;
       console.log("Apple sign in error:", error);
     },
   });

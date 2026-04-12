@@ -210,14 +210,18 @@ export const useAppleSignIn = () => {
     mutationFn: async () => {
       const rawNonce = generateRawNonce();
       const hashedNonce = await sha256(rawNonce);
-
-      const credential = await AppleAuthentication.signInAsync({
-        requestedScopes: [
-          AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
-          AppleAuthentication.AppleAuthenticationScope.EMAIL,
-        ],
-        nonce: hashedNonce,
-      });
+      let credential: AppleAuthentication.AppleAuthenticationCredential;
+      try {
+        credential = await AppleAuthentication.signInAsync({
+          requestedScopes: [
+            AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
+            AppleAuthentication.AppleAuthenticationScope.EMAIL,
+          ],
+          nonce: hashedNonce,
+        });
+      } catch (error: any) {
+        throw error;
+      }
       if (!credential.identityToken)
         throw new Error("No identity token received from Apple");
       const { data, error } = await supabase.auth.signInWithIdToken({

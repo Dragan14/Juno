@@ -8,7 +8,6 @@
     "scheme": "juno",
     "userInterfaceStyle": "automatic",
     "owner": "dragan14",
-    "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.juno.app",
@@ -16,12 +15,12 @@
     },
     "android": {
       "package": "com.juno.app",
+      "googleServicesFile": "./google-services.json",
       "versionCode": 1,
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/app-icon.png",
         "backgroundColor": "#ffffff"
-      },
-      "edgeToEdgeEnabled": true
+      }
     },
     "web": {
       "favicon": "./assets/images/splash-icon.png"
@@ -42,7 +41,14 @@
         }
       ],
       "expo-font",
-      "expo-web-browser"
+      "expo-web-browser",
+      [
+        "@react-native-google-signin/google-signin",
+        {
+          "iosUrlScheme": "com.googleusercontent.apps.300472453678-1e4hgl6i1v618odrni23j86ubv8nuv13"
+        }
+      ],
+      "expo-apple-authentication"
     ]
   }
 }

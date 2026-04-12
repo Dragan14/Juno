@@ -2,7 +2,13 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/utils/supabase";
 import { AUTH_KEYS, PROFILE_KEYS } from "@/constants/queryKeys";
 import { makeRedirectUri } from "expo-auth-session";
+import { Platform } from "react-native";
 import type { SignInCredentials, SignUpCredentials } from "@/types/authTypes";
+import {
+  GoogleSignin,
+  statusCodes,
+} from "@react-native-google-signin/google-signin";
+import * as AppleAuthentication from "expo-apple-authentication";
 
 // Hook for sign in functionality
 export const useSignIn = () => {
@@ -134,6 +140,86 @@ export const useUpdatePassword = () => {
     },
     onError: (error) => {
       console.log("Update password error:", error);
+    },
+  });
+};
+
+// Hook for Google Sign-In
+export const useGoogleSignIn = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async () => {
+      if (Platform.OS === "web") {
+        const redirectUri = makeRedirectUri();
+        const { error } = await supabase.auth.signInWithOAuth({
+          provider: "google",
+          options: {
+            redirectTo: redirectUri,
+          },
+        });
+        if (error) throw error;
+        return null;
+      }
+
+      GoogleSignin.configure({
+        iosClientId: process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID,
+        webClientId: process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID,
+        scopes: ["profile", "email"],
+      });
+      await GoogleSignin.hasPlayServices();
+      const userInfo = await GoogleSignin.signIn();
+      const idToken = userInfo.data?.idToken;
+      if (!idToken) throw new Error("No ID token received from Google");
+      const { data, error } = await supabase.auth.signInWithIdToken({
+        provider: "google",
+        token: idToken,
+      });
+      if (error) throw error;
+      return data;
+    },
+    retry: false,
+    onSuccess: (data) => {
+      if (!data?.session) return;
+      queryClient.setQueryData(AUTH_KEYS.session, data.session);
+      queryClient.setQueryData(AUTH_KEYS.user, data.user);
+    },
+    onError: (error: any) => {
+      if (error?.code === statusCodes.SIGN_IN_CANCELLED) return;
+      console.log("Google sign in error:", error);
+    },
+  });
+};
+
+// Hook for Apple Sign-In (iOS only)
+export const useAppleSignIn = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async () => {
+      const credential = await AppleAuthentication.signInAsync({
+        requestedScopes: [
+          AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
+          AppleAuthentication.AppleAuthenticationScope.EMAIL,
+        ],
+      });
+      if (!credential.identityToken)
+        throw new Error("No identity token received from Apple");
+      const { data, error } = await supabase.auth.signInWithIdToken({
+        provider: "apple",
+        token: credential.identityToken,
+      });
+      if (error) throw error;
+      return data;
+    },
+    retry: false,
+    onSuccess: (data) => {
+      queryClient.setQueryData(AUTH_KEYS.session, data.session);
+      queryClient.setQueryData(AUTH_KEYS.user, data.user);
+    },
+    onError: (error: any) => {
+      if (error?.code === "ERR_REQUEST_CANCELED") return;
+      console.log("Apple sign in error:", error);
     },
   });
 };

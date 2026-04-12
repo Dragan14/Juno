@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Keyboard, Platform } from "react-native";
-import { useSignIn } from "@/api/useAuth";
+import { useSignIn, useGoogleSignIn, useAppleSignIn } from "@/api/useAuth";
 import TextInput from "@/components/ui/TextInput";
 import Button from "@/components/ui/Button";
 import View from "@/components/ui/View";
@@ -11,11 +11,14 @@ import { useAlert } from "@/context/ui/AlertContext";
 import { useToast } from "@/context/ui/ToastContext";
 import EmailVerificationAlert from "@/components/alerts/EmailVerificationAlert";
 import ForgotPasswordAlert from "@/components/alerts/ForgotPasswordAlert";
+import * as AppleAuthentication from "expo-apple-authentication";
 
 export default function SignInForm() {
   const { showAlert, hideAlert } = useAlert();
   const { showToast } = useToast();
   const signIn = useSignIn();
+  const googleSignIn = useGoogleSignIn();
+  const appleSignIn = useAppleSignIn();
 
   // Form state
   const [email, setEmail] = useState(process.env.EXPO_PUBLIC_DEMO_EMAIL!);
@@ -53,6 +56,38 @@ export default function SignInForm() {
     showAlert({
       content: <ForgotPasswordAlert initialEmail={email} onClose={hideAlert} />,
     });
+  };
+
+  // Handle Google sign in
+  const handleGoogleSignIn = async () => {
+    Keyboard.dismiss();
+    try {
+      await googleSignIn.mutateAsync();
+    } catch (error) {
+      showToast({
+        message:
+          error instanceof Error
+            ? error.message
+            : "Failed to sign in with Google. Please try again.",
+        variant: "error",
+      });
+    }
+  };
+
+  // Handle Apple sign in
+  const handleAppleSignIn = async () => {
+    Keyboard.dismiss();
+    try {
+      await appleSignIn.mutateAsync();
+    } catch (error) {
+      showToast({
+        message:
+          error instanceof Error
+            ? error.message
+            : "Failed to sign in with Apple. Please try again.",
+        variant: "error",
+      });
+    }
   };
 
   // Handle sign in
@@ -148,6 +183,31 @@ export default function SignInForm() {
         >
           Forgot your password?
         </Button>
+        <Button
+          variant="secondary"
+          elevated
+          onPress={handleGoogleSignIn}
+          loading={googleSignIn.isPending}
+          disabled={
+            googleSignIn.isPending || appleSignIn.isPending || signIn.isPending
+          }
+          style={{ width: 400, alignSelf: "center" }}
+        >
+          Continue with Google
+        </Button>
+        {Platform.OS === "ios" && (
+          <AppleAuthentication.AppleAuthenticationButton
+            buttonType={
+              AppleAuthentication.AppleAuthenticationButtonType.SIGN_IN
+            }
+            buttonStyle={
+              AppleAuthentication.AppleAuthenticationButtonStyle.BLACK
+            }
+            cornerRadius={5}
+            style={{ width: 400, height: 44, alignSelf: "center" }}
+            onPress={handleAppleSignIn}
+          />
+        )}
       </View>
     </>
   );

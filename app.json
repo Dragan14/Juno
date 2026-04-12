@@ -11,6 +11,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.juno.app",
+      "appleTeamId": "FKRV7V88Y2",
       "buildNumber": "1"
     },
     "android": {

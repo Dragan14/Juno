@@ -4,8 +4,8 @@
   "main": "expo-router/entry",
   "scripts": {
     "start": "expo start",
-    "android": "expo run:android",
-    "copy-debug-keystore": "cp ~/debug.keystore.bak android/app/debug.keystore",
+    "copy-debug-keystore": "cp debug.keystore android/app/debug.keystore",
+    "android": "npx expo prebuild --platform android && npm run copy-debug-keystore && expo run:android",
     "ios": "expo run:ios",
     "web": "expo start --web",
     "lint": "expo lint",
@@ -27,6 +27,7 @@
     "expo-auth-session": "~7.0.10",
     "expo-constants": "~18.0.13",
     "expo-crypto": "~15.0.8",
+    "expo-dev-client": "~6.0.20",
     "expo-linking": "~8.0.11",
     "expo-router": "~6.0.23",
     "expo-splash-screen": "~31.0.13",

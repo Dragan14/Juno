@@ -9,6 +9,17 @@ import {
   statusCodes,
 } from "@react-native-google-signin/google-signin";
 import * as AppleAuthentication from "expo-apple-authentication";
+import * as Crypto from "expo-crypto";
+
+const generateRawNonce = () => {
+  const bytes = Crypto.getRandomBytes(32);
+  return Array.from(bytes, (byte) => byte.toString(16).padStart(2, "0")).join(
+    "",
+  );
+};
+
+const sha256 = async (value: string) =>
+  Crypto.digestStringAsync(Crypto.CryptoDigestAlgorithm.SHA256, value);
 
 // Hook for sign in functionality
 export const useSignIn = () => {
@@ -197,17 +208,22 @@ export const useAppleSignIn = () => {
 
   return useMutation({
     mutationFn: async () => {
+      const rawNonce = generateRawNonce();
+      const hashedNonce = await sha256(rawNonce);
+
       const credential = await AppleAuthentication.signInAsync({
         requestedScopes: [
           AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
           AppleAuthentication.AppleAuthenticationScope.EMAIL,
         ],
+        nonce: hashedNonce,
       });
       if (!credential.identityToken)
         throw new Error("No identity token received from Apple");
       const { data, error } = await supabase.auth.signInWithIdToken({
         provider: "apple",
         token: credential.identityToken,
+        nonce: rawNonce,
       });
       if (error) throw error;
       return data;

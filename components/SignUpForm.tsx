@@ -169,11 +169,13 @@ export default function SignUpForm() {
     if (validateForm()) {
       const submittedEmail = email;
       try {
-        const { session, user } = await signUp.mutateAsync({
+        const signUpResult = await signUp.mutateAsync({
           email,
           password,
           name,
         });
+        if (!signUpResult) return;
+        const { session, user } = signUpResult;
         if (!session && !(user && user?.identities?.length === 0)) {
           showAlert({
             content: (

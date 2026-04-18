@@ -182,14 +182,6 @@ export default function SignInForm() {
         <Button
           variant="secondary"
           elevated
-          onPress={handleForgotPassword}
-          style={{ width: "65%", alignSelf: "center" }}
-        >
-          Forgot your password?
-        </Button>
-        <Button
-          variant="secondary"
-          elevated
           onPress={handleGoogleSignIn}
           loading={googleSignIn.isPending}
           disabled={
@@ -202,7 +194,7 @@ export default function SignInForm() {
         {Platform.OS === "ios" && (
           <AppleAuthentication.AppleAuthenticationButton
             buttonType={
-              AppleAuthentication.AppleAuthenticationButtonType.SIGN_IN
+              AppleAuthentication.AppleAuthenticationButtonType.CONTINUE
             }
             buttonStyle={
               isDark
@@ -218,6 +210,14 @@ export default function SignInForm() {
             onPress={handleAppleSignIn}
           />
         )}
+        <Button
+          variant="secondary"
+          elevated
+          onPress={handleForgotPassword}
+          style={{ width: "65%", alignSelf: "center" }}
+        >
+          Forgot your password?
+        </Button>
       </View>
     </>
   );

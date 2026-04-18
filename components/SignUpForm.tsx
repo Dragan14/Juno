@@ -1,11 +1,11 @@
 import { useState } from "react";
-import { Keyboard, Platform } from "react-native";
+import { Keyboard, PixelRatio, Platform } from "react-native";
 import {
   emailSchema,
   passwordSchema,
   nameSchema,
 } from "@/schemas/auth-schemas";
-import { useSignUp } from "@/api/useAuth";
+import { useSignUp, useGoogleSignIn, useAppleSignIn } from "@/api/useAuth";
 import { z } from "zod";
 import TextInput from "@/components/ui/TextInput";
 import Button from "@/components/ui/Button";
@@ -13,13 +13,20 @@ import View from "@/components/ui/View";
 import { CircleUser, Mail, Lock, Eye, EyeOff } from "lucide-react-native";
 import { useAlert } from "@/context/ui/AlertContext";
 import { useToast } from "@/context/ui/ToastContext";
+import { useTheme } from "@/context/ui/ThemeContext";
 import EmailVerificationAlert from "@/components/alerts/EmailVerificationAlert";
+import * as AppleAuthentication from "expo-apple-authentication";
 
 export default function SignUpForm() {
   const { showAlert, hideAlert } = useAlert();
   const { showToast } = useToast();
+  const { isDark } = useTheme();
 
   const signUp = useSignUp();
+  const googleSignIn = useGoogleSignIn();
+  const appleSignIn = useAppleSignIn();
+
+  const appleButtonHeight = Math.round(34 * PixelRatio.getFontScale());
 
   // Form state
   const [name, setName] = useState("Juno User");
@@ -117,6 +124,38 @@ export default function SignUpForm() {
     return (
       isNameValid && isEmailValid && isPasswordValid && isConfirmPasswordValid
     );
+  };
+
+  // Handle Google sign up
+  const handleGoogleSignUp = async () => {
+    Keyboard.dismiss();
+    try {
+      await googleSignIn.mutateAsync();
+    } catch (error) {
+      showToast({
+        message:
+          error instanceof Error
+            ? error.message
+            : "Failed to sign up with Google. Please try again.",
+        variant: "error",
+      });
+    }
+  };
+
+  // Handle Apple sign up
+  const handleAppleSignUp = async () => {
+    Keyboard.dismiss();
+    try {
+      await appleSignIn.mutateAsync();
+    } catch (error) {
+      showToast({
+        message:
+          error instanceof Error
+            ? error.message
+            : "Failed to sign up with Apple. Please try again.",
+        variant: "error",
+      });
+    }
   };
 
   // Handle sign up
@@ -248,7 +287,7 @@ export default function SignUpForm() {
         errorMessage={errors.confirmPassword}
         retainErrorMessageSpace={true}
       />
-      <View style={{ marginTop: 50 }}>
+      <View style={{ gap: 15, marginTop: 50 }}>
         <Button
           disabled={signUp.isPending}
           onPress={handleSignUp}
@@ -257,6 +296,37 @@ export default function SignUpForm() {
         >
           Sign Up
         </Button>
+        <Button
+          variant="secondary"
+          elevated
+          onPress={handleGoogleSignUp}
+          loading={googleSignIn.isPending}
+          disabled={
+            googleSignIn.isPending || appleSignIn.isPending || signUp.isPending
+          }
+          style={{ width: "65%", alignSelf: "center" }}
+        >
+          Continue with Google
+        </Button>
+        {Platform.OS === "ios" && (
+          <AppleAuthentication.AppleAuthenticationButton
+            buttonType={
+              AppleAuthentication.AppleAuthenticationButtonType.CONTINUE
+            }
+            buttonStyle={
+              isDark
+                ? AppleAuthentication.AppleAuthenticationButtonStyle.WHITE
+                : AppleAuthentication.AppleAuthenticationButtonStyle.BLACK
+            }
+            cornerRadius={5}
+            style={{
+              width: "65%",
+              minHeight: appleButtonHeight,
+              alignSelf: "center",
+            }}
+            onPress={handleAppleSignUp}
+          />
+        )}
       </View>
     </>
   );

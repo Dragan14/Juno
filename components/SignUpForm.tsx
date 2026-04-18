@@ -51,6 +51,8 @@ export default function SignUpForm() {
 
   const shouldScroll = contentHeight > containerHeight + 1;
   const isWeb = Platform.OS === "web";
+  const isAnyAuthPending =
+    signUp.isPending || googleSignIn.isPending || appleSignIn.isPending;
 
   // Password visibility state
   const [passwordVisibility, setPasswordVisibility] = useState({
@@ -302,7 +304,9 @@ export default function SignUpForm() {
       />
       <View style={{ gap: 15, marginTop: 50 }}>
         <Button
-          disabled={signUp.isPending}
+          disabled={
+            signUp.isPending || googleSignIn.isPending || appleSignIn.isPending
+          }
           onPress={handleSignUp}
           loading={signUp.isPending}
           style={{ width: "65%", alignSelf: "center" }}
@@ -321,23 +325,32 @@ export default function SignUpForm() {
           Continue with Google
         </Button>
         {Platform.OS === "ios" && (
-          <AppleAuthentication.AppleAuthenticationButton
-            buttonType={
-              AppleAuthentication.AppleAuthenticationButtonType.CONTINUE
-            }
-            buttonStyle={
-              isDark
-                ? AppleAuthentication.AppleAuthenticationButtonStyle.WHITE
-                : AppleAuthentication.AppleAuthenticationButtonStyle.BLACK
-            }
-            cornerRadius={5}
+          <View
             style={{
               width: "65%",
-              minHeight: appleButtonHeight,
               alignSelf: "center",
+              opacity: isAnyAuthPending ? 0.5 : 1,
             }}
-            onPress={handleAppleSignUp}
-          />
+            pointerEvents={isAnyAuthPending ? "none" : "auto"}
+          >
+            <AppleAuthentication.AppleAuthenticationButton
+              buttonType={
+                AppleAuthentication.AppleAuthenticationButtonType.CONTINUE
+              }
+              buttonStyle={
+                isDark
+                  ? AppleAuthentication.AppleAuthenticationButtonStyle.WHITE
+                  : AppleAuthentication.AppleAuthenticationButtonStyle.BLACK
+              }
+              cornerRadius={5}
+              style={{
+                width: "100%",
+                minHeight: appleButtonHeight,
+                alignSelf: "center",
+              }}
+              onPress={handleAppleSignUp}
+            />
+          </View>
         )}
       </View>
     </ScrollView>

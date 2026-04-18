@@ -28,7 +28,7 @@ export default function AuthenticationScreen() {
           style={{
             alignItems: "center",
             justifyContent: "center",
-            paddingTop: 50,
+            paddingTop: 25,
           }}
         >
           <Image
@@ -36,7 +36,7 @@ export default function AuthenticationScreen() {
             style={{
               width: 100,
               height: 100,
-              marginBottom: 50,
+              marginBottom: 25,
             }}
           />
           <SegmentedControl
@@ -55,10 +55,20 @@ export default function AuthenticationScreen() {
             }}
           />
         </View>
-        <View style={{ display: selectedIndices[0] === 0 ? "flex" : "none" }}>
+        <View
+          style={{
+            display: selectedIndices[0] === 0 ? "flex" : "none",
+            flex: 1,
+          }}
+        >
           <SignInForm />
         </View>
-        <View style={{ display: selectedIndices[0] === 1 ? "flex" : "none" }}>
+        <View
+          style={{
+            display: selectedIndices[0] === 1 ? "flex" : "none",
+            flex: 1,
+          }}
+        >
           <SignUpForm />
         </View>
       </View>

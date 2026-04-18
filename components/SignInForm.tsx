@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Keyboard, PixelRatio, Platform } from "react-native";
+import { Keyboard, PixelRatio, Platform, ScrollView } from "react-native";
 import { useSignIn, useGoogleSignIn, useAppleSignIn } from "@/api/useAuth";
 import TextInput from "@/components/ui/TextInput";
 import Button from "@/components/ui/Button";
@@ -35,6 +35,11 @@ export default function SignInForm() {
   const [touched, setTouched] = useState({
     email: false,
   });
+  const [containerHeight, setContainerHeight] = useState(0);
+  const [contentHeight, setContentHeight] = useState(0);
+
+  const shouldScroll = contentHeight > containerHeight + 1;
+  const isWeb = Platform.OS === "web";
 
   // Toggle password visibility
   const togglePasswordVisibility = () => {
@@ -135,7 +140,14 @@ export default function SignInForm() {
   };
 
   const content = (
-    <>
+    <ScrollView
+      scrollEnabled={isWeb || shouldScroll}
+      style={{ flex: 1 }}
+      onLayout={(e) => setContainerHeight(e.nativeEvent.layout.height)}
+      onContentSizeChange={(_, height) => setContentHeight(height)}
+      keyboardShouldPersistTaps="handled"
+      contentContainerStyle={{ flexGrow: 1 }}
+    >
       <View>
         <TextInput
           topLabel="Email"
@@ -219,11 +231,18 @@ export default function SignInForm() {
           Forgot your password?
         </Button>
       </View>
-    </>
+    </ScrollView>
   );
 
-  if (Platform.OS === "web") {
-    return <form onSubmit={(e) => e.preventDefault()}>{content}</form>;
+  if (isWeb) {
+    return (
+      <form
+        onSubmit={(e) => e.preventDefault()}
+        style={{ flex: 1, minHeight: 0 }}
+      >
+        {content}
+      </form>
+    );
   }
   return content;
 }

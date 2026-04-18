@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Keyboard, PixelRatio, Platform } from "react-native";
+import { Keyboard, PixelRatio, Platform, ScrollView } from "react-native";
 import {
   emailSchema,
   passwordSchema,
@@ -46,6 +46,11 @@ export default function SignUpForm() {
     password: false,
     confirmPassword: false,
   });
+  const [containerHeight, setContainerHeight] = useState(0);
+  const [contentHeight, setContentHeight] = useState(0);
+
+  const shouldScroll = contentHeight > containerHeight + 1;
+  const isWeb = Platform.OS === "web";
 
   // Password visibility state
   const [passwordVisibility, setPasswordVisibility] = useState({
@@ -205,7 +210,14 @@ export default function SignUpForm() {
   };
 
   const content = (
-    <>
+    <ScrollView
+      scrollEnabled={isWeb || shouldScroll}
+      style={{ flex: 1 }}
+      onLayout={(e) => setContainerHeight(e.nativeEvent.layout.height)}
+      onContentSizeChange={(_, height) => setContentHeight(height)}
+      keyboardShouldPersistTaps="handled"
+      contentContainerStyle={{ flexGrow: 1 }}
+    >
       <TextInput
         topLabel="Name"
         leftIcon={<CircleUser />}
@@ -328,11 +340,18 @@ export default function SignUpForm() {
           />
         )}
       </View>
-    </>
+    </ScrollView>
   );
 
-  if (Platform.OS === "web") {
-    return <form onSubmit={(e) => e.preventDefault()}>{content}</form>;
+  if (isWeb) {
+    return (
+      <form
+        onSubmit={(e) => e.preventDefault()}
+        style={{ display: "flex", flex: 1, minHeight: 0 }}
+      >
+        {content}
+      </form>
+    );
   }
   return content;
 }

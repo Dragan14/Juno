@@ -235,7 +235,7 @@ export default function SignInForm() {
     return (
       <form
         onSubmit={(e) => e.preventDefault()}
-        style={{ flex: 1, minHeight: 0 }}
+        style={{ display: "flex", flex: 1, minHeight: 0 }}
       >
         {content}
       </form>

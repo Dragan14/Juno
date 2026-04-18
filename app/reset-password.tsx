@@ -173,7 +173,14 @@ export default function ResetPasswordScreen() {
   );
 
   if (Platform.OS === "web") {
-    return <form onSubmit={(e) => e.preventDefault()}>{content}</form>;
+    return (
+      <form
+        onSubmit={(e) => e.preventDefault()}
+        style={{ display: "flex", flex: 1 }}
+      >
+        {content}
+      </form>
+    );
   }
   return content;
 }

@@ -224,9 +224,9 @@ export default function SignInForm() {
         )}
         <Button
           variant="secondary"
-          elevated
+          outlined
           onPress={handleForgotPassword}
-          style={{ width: "65%", alignSelf: "center" }}
+          style={{ width: "65%", alignSelf: "center", marginTop: 30 }}
         >
           Forgot your password?
         </Button>

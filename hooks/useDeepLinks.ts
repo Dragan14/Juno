@@ -5,6 +5,7 @@ import { useToast } from "@/context/ui/ToastContext";
 import { AUTH_KEYS } from "@/constants/queryKeys";
 import * as Linking from "expo-linking";
 import * as QueryParams from "expo-auth-session/build/QueryParams";
+import { broadcastNewTabOpened } from "@/hooks/useTabSync";
 
 export function useDeepLinks() {
   const setSession = useSetSession();
@@ -22,6 +23,7 @@ export function useDeepLinks() {
         const { access_token, refresh_token, type } = params;
         if (access_token && refresh_token) {
           setIsProcessingDeepLink(true);
+          broadcastNewTabOpened();
           console.log(
             "Setting access_token and refresh_token",
             access_token,

@@ -12,6 +12,7 @@ import { useGetSession } from "@/api/useSession";
 import { useIsPasswordRecovery } from "@/api/useAuth";
 import { useNetworkStatus } from "@/hooks/useNetworkStatus";
 import { useDeepLinks } from "@/hooks/useDeepLinks";
+import { useTabSync } from "@/hooks/useTabSync";
 import * as WebBrowser from "expo-web-browser";
 
 const queryClient = new QueryClient({});
@@ -35,6 +36,7 @@ function AppLayout() {
 
   const { isProcessingDeepLink } = useDeepLinks();
   const isPasswordRecovery = useIsPasswordRecovery();
+  useTabSync();
 
   useAuthStateChange();
 

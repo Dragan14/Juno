@@ -1,6 +1,11 @@
 import { useState } from "react";
 import { Keyboard, PixelRatio, Platform, ScrollView } from "react-native";
-import { useSignIn, useGoogleSignIn, useAppleSignIn } from "@/api/useAuth";
+import {
+  useSignIn,
+  useGoogleSignIn,
+  useAppleSignIn,
+  useIsAuthPending,
+} from "@/api/useAuth";
 import TextInput from "@/components/ui/TextInput";
 import Button from "@/components/ui/Button";
 import View from "@/components/ui/View";
@@ -22,6 +27,7 @@ export default function SignInForm() {
   const signIn = useSignIn();
   const googleSignIn = useGoogleSignIn();
   const appleSignIn = useAppleSignIn();
+  const isAuthPending = useIsAuthPending();
 
   const appleButtonHeight = Math.round(34 * PixelRatio.getFontScale());
 
@@ -40,8 +46,6 @@ export default function SignInForm() {
 
   const shouldScroll = contentHeight > containerHeight + 1;
   const isWeb = Platform.OS === "web";
-  const isAnyAuthPending =
-    signIn.isPending || googleSignIn.isPending || appleSignIn.isPending;
 
   // Toggle password visibility
   const togglePasswordVisibility = () => {
@@ -187,9 +191,7 @@ export default function SignInForm() {
       </View>
       <View style={{ gap: 15, marginTop: 50 }}>
         <Button
-          disabled={
-            signIn.isPending || googleSignIn.isPending || appleSignIn.isPending
-          }
+          disabled={isAuthPending}
           onPress={handleSignIn}
           loading={signIn.isPending}
           style={{ width: "65%", alignSelf: "center" }}
@@ -200,9 +202,7 @@ export default function SignInForm() {
           leftIcon={<Ionicons name="logo-google" />}
           onPress={handleGoogleSignIn}
           loading={googleSignIn.isPending}
-          disabled={
-            googleSignIn.isPending || appleSignIn.isPending || signIn.isPending
-          }
+          disabled={isAuthPending}
           style={{ width: "65%", alignSelf: "center" }}
         >
           Continue with Google
@@ -212,9 +212,9 @@ export default function SignInForm() {
             style={{
               width: "65%",
               alignSelf: "center",
-              opacity: isAnyAuthPending ? 0.5 : 1,
+              opacity: isAuthPending ? 0.5 : 1,
             }}
-            pointerEvents={isAnyAuthPending ? "none" : "auto"}
+            pointerEvents={isAuthPending ? "none" : "auto"}
           >
             <AppleAuthentication.AppleAuthenticationButton
               buttonType={
@@ -240,9 +240,7 @@ export default function SignInForm() {
           outlined
           onPress={handleForgotPassword}
           style={{ width: "65%", alignSelf: "center", marginTop: 30 }}
-          disabled={
-            signIn.isPending || googleSignIn.isPending || appleSignIn.isPending
-          }
+          disabled={isAuthPending}
         >
           Forgot your password?
         </Button>

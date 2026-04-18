@@ -21,6 +21,15 @@ const generateRawNonce = () => {
 const sha256 = async (value: string) =>
   Crypto.digestStringAsync(Crypto.CryptoDigestAlgorithm.SHA256, value);
 
+export const useIsAuthPending = () => {
+  const { data } = useQuery({
+    queryKey: AUTH_KEYS.isAuthPending,
+    queryFn: () => false,
+    staleTime: Infinity,
+  });
+  return !!data;
+};
+
 // Hook for sign in functionality
 export const useSignIn = () => {
   const queryClient = useQueryClient();
@@ -35,6 +44,12 @@ export const useSignIn = () => {
       return data;
     },
     retry: false,
+    onMutate: () => {
+      queryClient.setQueryData(AUTH_KEYS.isAuthPending, true);
+    },
+    onSettled: () => {
+      queryClient.setQueryData(AUTH_KEYS.isAuthPending, false);
+    },
     onSuccess: (data) => {
       queryClient.setQueryData(AUTH_KEYS.session, data.session);
       queryClient.setQueryData(AUTH_KEYS.user, data.user);
@@ -72,6 +87,12 @@ export const useSignUp = () => {
       return data;
     },
     retry: false,
+    onMutate: () => {
+      queryClient.setQueryData(AUTH_KEYS.isAuthPending, true);
+    },
+    onSettled: () => {
+      queryClient.setQueryData(AUTH_KEYS.isAuthPending, false);
+    },
     onSuccess: (data) => {
       queryClient.setQueryData(AUTH_KEYS.session, data.session);
       queryClient.setQueryData(AUTH_KEYS.user, data.user);
@@ -87,6 +108,7 @@ export const useSignUp = () => {
 };
 
 export const useResendVerificationEmail = () => {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (email: string) => {
       const redirectUri = makeRedirectUri() + "/account";
@@ -101,6 +123,12 @@ export const useResendVerificationEmail = () => {
       if (error) throw error;
     },
     retry: false,
+    onMutate: () => {
+      queryClient.setQueryData(AUTH_KEYS.isAuthPending, true);
+    },
+    onSettled: () => {
+      queryClient.setQueryData(AUTH_KEYS.isAuthPending, false);
+    },
     onError: (error) => {
       console.log("Resend verification email error:", error);
     },
@@ -108,6 +136,7 @@ export const useResendVerificationEmail = () => {
 };
 
 export const useResetPassword = () => {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (email: string) => {
       const redirectUri = makeRedirectUri() + "/reset-password";
@@ -119,6 +148,12 @@ export const useResetPassword = () => {
       return data;
     },
     retry: false,
+    onMutate: () => {
+      queryClient.setQueryData(AUTH_KEYS.isAuthPending, true);
+    },
+    onSettled: () => {
+      queryClient.setQueryData(AUTH_KEYS.isAuthPending, false);
+    },
     onError: (error) => {
       console.log("Reset password error:", error);
     },
@@ -143,6 +178,12 @@ export const useUpdatePassword = () => {
       return data;
     },
     retry: false,
+    onMutate: () => {
+      queryClient.setQueryData(AUTH_KEYS.isAuthPending, true);
+    },
+    onSettled: () => {
+      queryClient.setQueryData(AUTH_KEYS.isAuthPending, false);
+    },
     onSuccess: () => {
       setTimeout(() => {
         console.log("Password updated, resetting password recovery state");
@@ -194,6 +235,12 @@ export const useGoogleSignIn = () => {
       return data;
     },
     retry: false,
+    onMutate: () => {
+      queryClient.setQueryData(AUTH_KEYS.isAuthPending, true);
+    },
+    onSettled: () => {
+      queryClient.setQueryData(AUTH_KEYS.isAuthPending, false);
+    },
     onSuccess: (data) => {
       if (!data?.session) return;
       queryClient.setQueryData(AUTH_KEYS.session, data.session);
@@ -237,6 +284,12 @@ export const useAppleSignIn = () => {
       return data;
     },
     retry: false,
+    onMutate: () => {
+      queryClient.setQueryData(AUTH_KEYS.isAuthPending, true);
+    },
+    onSettled: () => {
+      queryClient.setQueryData(AUTH_KEYS.isAuthPending, false);
+    },
     onSuccess: (data) => {
       if (!data?.session) return;
       queryClient.setQueryData(AUTH_KEYS.session, data.session);
@@ -259,10 +312,14 @@ export const useSignOut = () => {
       return null;
     },
     retry: false,
+    onMutate: () => {
+      queryClient.setQueryData(AUTH_KEYS.isAuthPending, true);
+    },
     onError: (error) => {
       console.log("Sign out error:", error);
     },
     onSettled: () => {
+      queryClient.setQueryData(AUTH_KEYS.isAuthPending, false);
       queryClient.setQueryData(AUTH_KEYS.session, null);
       queryClient.setQueryData(AUTH_KEYS.user, null);
       queryClient.setQueryData(PROFILE_KEYS.profile, null);

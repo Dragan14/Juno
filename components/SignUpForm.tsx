@@ -5,7 +5,12 @@ import {
   passwordSchema,
   nameSchema,
 } from "@/schemas/auth-schemas";
-import { useSignUp, useGoogleSignIn, useAppleSignIn } from "@/api/useAuth";
+import {
+  useSignUp,
+  useGoogleSignIn,
+  useAppleSignIn,
+  useIsAuthPending,
+} from "@/api/useAuth";
 import { z } from "zod";
 import TextInput from "@/components/ui/TextInput";
 import Button from "@/components/ui/Button";
@@ -26,6 +31,7 @@ export default function SignUpForm() {
   const signUp = useSignUp();
   const googleSignIn = useGoogleSignIn();
   const appleSignIn = useAppleSignIn();
+  const isAuthPending = useIsAuthPending();
 
   const appleButtonHeight = Math.round(34 * PixelRatio.getFontScale());
 
@@ -51,8 +57,6 @@ export default function SignUpForm() {
 
   const shouldScroll = contentHeight > containerHeight + 1;
   const isWeb = Platform.OS === "web";
-  const isAnyAuthPending =
-    signUp.isPending || googleSignIn.isPending || appleSignIn.isPending;
 
   // Password visibility state
   const [passwordVisibility, setPasswordVisibility] = useState({
@@ -304,9 +308,7 @@ export default function SignUpForm() {
       />
       <View style={{ gap: 15, marginTop: 50 }}>
         <Button
-          disabled={
-            signUp.isPending || googleSignIn.isPending || appleSignIn.isPending
-          }
+          disabled={isAuthPending}
           onPress={handleSignUp}
           loading={signUp.isPending}
           style={{ width: "65%", alignSelf: "center" }}
@@ -317,9 +319,7 @@ export default function SignUpForm() {
           leftIcon={<Ionicons name="logo-google" />}
           onPress={handleGoogleSignUp}
           loading={googleSignIn.isPending}
-          disabled={
-            googleSignIn.isPending || appleSignIn.isPending || signUp.isPending
-          }
+          disabled={isAuthPending}
           style={{ width: "65%", alignSelf: "center" }}
         >
           Continue with Google
@@ -329,9 +329,9 @@ export default function SignUpForm() {
             style={{
               width: "65%",
               alignSelf: "center",
-              opacity: isAnyAuthPending ? 0.5 : 1,
+              opacity: isAuthPending ? 0.5 : 1,
             }}
-            pointerEvents={isAnyAuthPending ? "none" : "auto"}
+            pointerEvents={isAuthPending ? "none" : "auto"}
           >
             <AppleAuthentication.AppleAuthenticationButton
               buttonType={

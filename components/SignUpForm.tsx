@@ -16,6 +16,7 @@ import { useToast } from "@/context/ui/ToastContext";
 import { useTheme } from "@/context/ui/ThemeContext";
 import EmailVerificationAlert from "@/components/alerts/EmailVerificationAlert";
 import * as AppleAuthentication from "expo-apple-authentication";
+import { Ionicons } from "@expo/vector-icons";
 
 export default function SignUpForm() {
   const { showAlert, hideAlert } = useAlert();
@@ -297,8 +298,7 @@ export default function SignUpForm() {
           Sign Up
         </Button>
         <Button
-          variant="secondary"
-          elevated
+          leftIcon={<Ionicons name="logo-google" />}
           onPress={handleGoogleSignUp}
           loading={googleSignIn.isPending}
           disabled={

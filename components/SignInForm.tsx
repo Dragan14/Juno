@@ -13,6 +13,7 @@ import { useTheme } from "@/context/ui/ThemeContext";
 import EmailVerificationAlert from "@/components/alerts/EmailVerificationAlert";
 import ForgotPasswordAlert from "@/components/alerts/ForgotPasswordAlert";
 import * as AppleAuthentication from "expo-apple-authentication";
+import { Ionicons } from "@expo/vector-icons";
 
 export default function SignInForm() {
   const { showAlert, hideAlert } = useAlert();
@@ -180,8 +181,7 @@ export default function SignInForm() {
           Sign In
         </Button>
         <Button
-          variant="secondary"
-          elevated
+          leftIcon={<Ionicons name="logo-google" />}
           onPress={handleGoogleSignIn}
           loading={googleSignIn.isPending}
           disabled={

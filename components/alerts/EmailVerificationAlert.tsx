@@ -59,7 +59,7 @@ export default function EmailVerificationAlert({
       <Button
         onPress={handleResend}
         variant="primary"
-        disabled={cooldown > 0 || resendVerificationEmail.isPending}
+        disabled={cooldown > 0}
         loading={resendVerificationEmail.isPending}
       >
         Resend Verification Email

@@ -95,7 +95,7 @@ export default function ForgotPasswordAlert({
       )}
       <Button
         onPress={handleSend}
-        disabled={cooldown > 0 || resetPassword.isPending}
+        disabled={cooldown > 0}
         loading={resetPassword.isPending}
       >
         Send Reset Password Email

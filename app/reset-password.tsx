@@ -163,7 +163,6 @@ export default function ResetPasswordScreen() {
         />
         <Button
           onPress={handleSubmit}
-          disabled={updatePassword.isPending}
           loading={updatePassword.isPending}
           style={{ marginTop: 15 }}
         >

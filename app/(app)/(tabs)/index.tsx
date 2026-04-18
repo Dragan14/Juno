@@ -29,14 +29,14 @@ export default function HomeScreen() {
         </Link>
         <Link href="/(auth)" asChild>
           <Button
-            style={{ width: 300, marginHorizontal: "auto", marginBottom: 20 }}
+            style={{ width: 300, marginHorizontal: "auto", marginBottom: 10 }}
           >
             Go to the Authentication screen!
           </Button>
         </Link>
         <Link href="/reset-password" asChild>
           <Button
-            style={{ width: 300, marginHorizontal: "auto", marginBottom: 20 }}
+            style={{ width: 300, marginHorizontal: "auto", marginBottom: 10 }}
           >
             Go to the Reset Password screen!
           </Button>

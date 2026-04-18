@@ -79,7 +79,7 @@ function AppLayout() {
             name="reset-password"
             options={{
               title: "Reset Password",
-              headerBackVisible: false,
+              headerShown: false,
             }}
           />
         </Stack.Protected>

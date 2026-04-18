@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Keyboard, Platform } from "react-native";
+import { Keyboard, Platform, ScrollView } from "react-native";
 import { router } from "expo-router";
 import { passwordSchema } from "@/schemas/auth-schemas";
 import { useUpdatePassword } from "@/api/useAuth";
@@ -28,6 +28,11 @@ export default function ResetPasswordScreen() {
     password: false,
     confirmPassword: false,
   });
+  const [containerHeight, setContainerHeight] = useState(0);
+  const [contentHeight, setContentHeight] = useState(0);
+
+  const shouldScroll = contentHeight > containerHeight + 1;
+  const isWeb = Platform.OS === "web";
 
   const togglePasswordVisibility = (field: "password" | "confirmPassword") => {
     setPasswordVisible((prev) => ({ ...prev, [field]: !prev[field] }));
@@ -94,89 +99,103 @@ export default function ResetPasswordScreen() {
           maxWidth: 800,
           paddingHorizontal: 10,
           marginHorizontal: "auto",
-          marginTop: 10,
+          alignSelf: "center",
         }}
       >
-        <Text
-          style={{
-            textAlign: "center",
-            fontSize: 24,
-            fontWeight: "bold",
-            marginBottom: 8,
+        <ScrollView
+          scrollEnabled={isWeb || shouldScroll}
+          style={{ flex: 1 }}
+          onLayout={(e) => setContainerHeight(e.nativeEvent.layout.height)}
+          onContentSizeChange={(_, height) => setContentHeight(height)}
+          keyboardShouldPersistTaps="handled"
+          contentContainerStyle={{
+            flexGrow: 1,
+            justifyContent: shouldScroll ? "flex-start" : "center",
           }}
         >
-          Set new password
-        </Text>
-        <Text style={{ textAlign: "center", marginBottom: 24 }}>
-          Choose a strong password for your account.
-        </Text>
-        <TextInput
-          topLabel="New Password"
-          leftIcon={<Lock />}
-          rightIcon={
-            passwordVisible.password ? (
-              <Eye onPress={() => togglePasswordVisibility("password")} />
-            ) : (
-              <EyeOff onPress={() => togglePasswordVisibility("password")} />
-            )
-          }
-          onChangeText={(val) => {
-            setTouched((prev) => ({ ...prev, password: true }));
-            setPassword(val);
-          }}
-          onBlur={() => touched.password && validatePassword()}
-          value={password}
-          secureTextEntry={!passwordVisible.password}
-          placeholder="New password"
-          autoCapitalize="none"
-          error={!!errors.password}
-          errorMessage={errors.password}
-          retainErrorMessageSpace={true}
-          autoComplete="password-new"
-        />
-        <TextInput
-          topLabel="Confirm Password"
-          leftIcon={<Lock />}
-          rightIcon={
-            passwordVisible.confirmPassword ? (
-              <Eye
-                onPress={() => togglePasswordVisibility("confirmPassword")}
-              />
-            ) : (
-              <EyeOff
-                onPress={() => togglePasswordVisibility("confirmPassword")}
-              />
-            )
-          }
-          onChangeText={(val) => {
-            setTouched((prev) => ({ ...prev, confirmPassword: true }));
-            setConfirmPassword(val);
-          }}
-          onBlur={() => touched.confirmPassword && validateConfirmPassword()}
-          value={confirmPassword}
-          secureTextEntry={!passwordVisible.confirmPassword}
-          placeholder="Confirm new password"
-          autoCapitalize="none"
-          error={!!errors.confirmPassword}
-          errorMessage={errors.confirmPassword}
-          retainErrorMessageSpace={true}
-        />
-        <Button
-          onPress={handleSubmit}
-          loading={updatePassword.isPending}
-          style={{ marginTop: 15 }}
-        >
-          Update Password
-        </Button>
+          <Text
+            style={{
+              textAlign: "center",
+              fontSize: 24,
+              fontWeight: "bold",
+              marginBottom: 8,
+            }}
+          >
+            Set new password
+          </Text>
+          <Text style={{ textAlign: "center", marginBottom: 50 }}>
+            Choose a strong password for your account.
+          </Text>
+          <TextInput
+            topLabel="New Password"
+            leftIcon={<Lock />}
+            rightIcon={
+              passwordVisible.password ? (
+                <Eye onPress={() => togglePasswordVisibility("password")} />
+              ) : (
+                <EyeOff onPress={() => togglePasswordVisibility("password")} />
+              )
+            }
+            onChangeText={(val) => {
+              setTouched((prev) => ({ ...prev, password: true }));
+              setPassword(val);
+            }}
+            onBlur={() => touched.password && validatePassword()}
+            value={password}
+            secureTextEntry={!passwordVisible.password}
+            placeholder="New password"
+            autoCapitalize="none"
+            error={!!errors.password}
+            errorMessage={errors.password}
+            retainErrorMessageSpace={true}
+            autoComplete="password-new"
+          />
+          <TextInput
+            topLabel="Confirm Password"
+            leftIcon={<Lock />}
+            rightIcon={
+              passwordVisible.confirmPassword ? (
+                <Eye
+                  onPress={() => togglePasswordVisibility("confirmPassword")}
+                />
+              ) : (
+                <EyeOff
+                  onPress={() => togglePasswordVisibility("confirmPassword")}
+                />
+              )
+            }
+            onChangeText={(val) => {
+              setTouched((prev) => ({ ...prev, confirmPassword: true }));
+              setConfirmPassword(val);
+            }}
+            onBlur={() => touched.confirmPassword && validateConfirmPassword()}
+            value={confirmPassword}
+            secureTextEntry={!passwordVisible.confirmPassword}
+            placeholder="Confirm new password"
+            autoCapitalize="none"
+            error={!!errors.confirmPassword}
+            errorMessage={errors.confirmPassword}
+            retainErrorMessageSpace={true}
+          />
+          <View style={{ gap: 15, marginTop: 50 }}>
+            <Button
+              onPress={handleSubmit}
+              loading={updatePassword.isPending}
+              style={{ width: "65%", alignSelf: "center" }}
+            >
+              Update Password
+            </Button>
+          </View>
+        </ScrollView>
       </View>
     </SafeAreaView>
   );
 
-  if (Platform.OS === "web") {
+  if (isWeb) {
     return (
       <form
         onSubmit={(e) => e.preventDefault()}
-        style={{ display: "flex", flex: 1 }}
+        style={{ display: "flex", flex: 1, minHeight: 0 }}
       >
         {content}
       </form>

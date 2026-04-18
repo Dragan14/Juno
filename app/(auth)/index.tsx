@@ -21,42 +21,39 @@ export default function AuthenticationScreen() {
           maxWidth: 800,
           paddingHorizontal: 10,
           marginHorizontal: "auto",
-          justifyContent: "center",
+          justifyContent: "flex-start",
         }}
       >
         <View
           style={{
             alignItems: "center",
             justifyContent: "center",
-            marginBottom: 75,
+            paddingTop: 50,
           }}
         >
-          <View style={{ position: "relative" }}>
-            <Image
-              source={require("@/assets/images/splash-icon.png")}
-              style={{
-                width: 60,
-                height: 60,
-                position: "absolute",
-                left: -75,
-                top: -10,
-              }}
-            />
-            <SegmentedControl
-              values={[
-                <Text key="tab1">Sign In</Text>,
-                <Text key="tab2">Sign Up</Text>,
-              ]}
-              selectedIndices={selectedIndices}
-              onTabPress={(index) => {
-                setSelectedIndices([index]);
-              }}
-              style={{
-                minHeight: 40,
-                width: 400,
-              }}
-            />
-          </View>
+          <Image
+            source={require("@/assets/images/splash-icon.png")}
+            style={{
+              width: 100,
+              height: 100,
+              marginBottom: 50,
+            }}
+          />
+          <SegmentedControl
+            values={[
+              <Text key="tab1">Sign In</Text>,
+              <Text key="tab2">Sign Up</Text>,
+            ]}
+            selectedIndices={selectedIndices}
+            onTabPress={(index) => {
+              setSelectedIndices([index]);
+            }}
+            style={{
+              minHeight: 40,
+              width: "65%",
+              marginBottom: 50,
+            }}
+          />
         </View>
         <View style={{ display: selectedIndices[0] === 0 ? "flex" : "none" }}>
           <SignInForm />

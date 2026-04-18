@@ -9,6 +9,7 @@ import { useSignUp } from "@/api/useAuth";
 import { z } from "zod";
 import TextInput from "@/components/ui/TextInput";
 import Button from "@/components/ui/Button";
+import View from "@/components/ui/View";
 import { CircleUser, Mail, Lock, Eye, EyeOff } from "lucide-react-native";
 import { useAlert } from "@/context/ui/AlertContext";
 import { useToast } from "@/context/ui/ToastContext";
@@ -247,14 +248,16 @@ export default function SignUpForm() {
         errorMessage={errors.confirmPassword}
         retainErrorMessageSpace={true}
       />
-      <Button
-        disabled={signUp.isPending}
-        onPress={handleSignUp}
-        loading={signUp.isPending}
-        style={{ marginTop: 20 }}
-      >
-        Sign Up
-      </Button>
+      <View style={{ marginTop: 50 }}>
+        <Button
+          disabled={signUp.isPending}
+          onPress={handleSignUp}
+          loading={signUp.isPending}
+          style={{ width: "65%", alignSelf: "center" }}
+        >
+          Sign Up
+        </Button>
+      </View>
     </>
   );
 

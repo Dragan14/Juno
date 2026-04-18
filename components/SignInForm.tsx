@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Keyboard, Platform } from "react-native";
+import { Keyboard, PixelRatio, Platform } from "react-native";
 import { useSignIn, useGoogleSignIn, useAppleSignIn } from "@/api/useAuth";
 import TextInput from "@/components/ui/TextInput";
 import Button from "@/components/ui/Button";
@@ -9,6 +9,7 @@ import { z } from "zod";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react-native";
 import { useAlert } from "@/context/ui/AlertContext";
 import { useToast } from "@/context/ui/ToastContext";
+import { useTheme } from "@/context/ui/ThemeContext";
 import EmailVerificationAlert from "@/components/alerts/EmailVerificationAlert";
 import ForgotPasswordAlert from "@/components/alerts/ForgotPasswordAlert";
 import * as AppleAuthentication from "expo-apple-authentication";
@@ -16,9 +17,12 @@ import * as AppleAuthentication from "expo-apple-authentication";
 export default function SignInForm() {
   const { showAlert, hideAlert } = useAlert();
   const { showToast } = useToast();
+  const { isDark } = useTheme();
   const signIn = useSignIn();
   const googleSignIn = useGoogleSignIn();
   const appleSignIn = useAppleSignIn();
+
+  const appleButtonHeight = Math.round(34 * PixelRatio.getFontScale());
 
   // Form state
   const [email, setEmail] = useState(process.env.EXPO_PUBLIC_DEMO_EMAIL!);
@@ -131,7 +135,7 @@ export default function SignInForm() {
 
   const content = (
     <>
-      <View style={{ gap: 5 }}>
+      <View>
         <TextInput
           topLabel="Email"
           leftIcon={<Mail />}
@@ -166,12 +170,12 @@ export default function SignInForm() {
           autoCapitalize="none"
         />
       </View>
-      <View style={{ gap: 15, marginTop: 75 }}>
+      <View style={{ gap: 15, marginTop: 50 }}>
         <Button
           disabled={signIn.isPending}
           onPress={handleSignIn}
           loading={signIn.isPending}
-          style={{ width: 400, alignSelf: "center" }}
+          style={{ width: "65%", alignSelf: "center" }}
         >
           Sign In
         </Button>
@@ -179,7 +183,7 @@ export default function SignInForm() {
           variant="secondary"
           elevated
           onPress={handleForgotPassword}
-          style={{ width: 400, alignSelf: "center" }}
+          style={{ width: "65%", alignSelf: "center" }}
         >
           Forgot your password?
         </Button>
@@ -191,7 +195,7 @@ export default function SignInForm() {
           disabled={
             googleSignIn.isPending || appleSignIn.isPending || signIn.isPending
           }
-          style={{ width: 400, alignSelf: "center" }}
+          style={{ width: "65%", alignSelf: "center" }}
         >
           Continue with Google
         </Button>
@@ -201,10 +205,16 @@ export default function SignInForm() {
               AppleAuthentication.AppleAuthenticationButtonType.SIGN_IN
             }
             buttonStyle={
-              AppleAuthentication.AppleAuthenticationButtonStyle.BLACK
+              isDark
+                ? AppleAuthentication.AppleAuthenticationButtonStyle.WHITE
+                : AppleAuthentication.AppleAuthenticationButtonStyle.BLACK
             }
             cornerRadius={5}
-            style={{ width: 400, height: 44, alignSelf: "center" }}
+            style={{
+              width: "65%",
+              minHeight: appleButtonHeight,
+              alignSelf: "center",
+            }}
             onPress={handleAppleSignIn}
           />
         )}

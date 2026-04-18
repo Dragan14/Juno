@@ -5,12 +5,7 @@ import {
   passwordSchema,
   nameSchema,
 } from "@/schemas/auth-schemas";
-import {
-  useSignUp,
-  useGoogleSignIn,
-  useAppleSignIn,
-  useIsAuthPending,
-} from "@/api/useAuth";
+import { useSignUp, useGoogleSignIn, useAppleSignIn } from "@/api/useAuth";
 import { z } from "zod";
 import TextInput from "@/components/ui/TextInput";
 import Button from "@/components/ui/Button";
@@ -31,8 +26,6 @@ export default function SignUpForm() {
   const signUp = useSignUp();
   const googleSignIn = useGoogleSignIn();
   const appleSignIn = useAppleSignIn();
-  const isAuthPending = useIsAuthPending();
-
   const appleButtonHeight = Math.round(34 * PixelRatio.getFontScale());
 
   // Form state
@@ -308,7 +301,6 @@ export default function SignUpForm() {
       />
       <View style={{ gap: 15, marginTop: 50 }}>
         <Button
-          disabled={isAuthPending}
           onPress={handleSignUp}
           loading={signUp.isPending}
           style={{ width: "65%", alignSelf: "center" }}
@@ -319,20 +311,12 @@ export default function SignUpForm() {
           leftIcon={<Ionicons name="logo-google" />}
           onPress={handleGoogleSignUp}
           loading={googleSignIn.isPending}
-          disabled={isAuthPending}
           style={{ width: "65%", alignSelf: "center" }}
         >
           Continue with Google
         </Button>
         {Platform.OS === "ios" && (
-          <View
-            style={{
-              width: "65%",
-              alignSelf: "center",
-              opacity: isAuthPending ? 0.5 : 1,
-            }}
-            pointerEvents={isAuthPending ? "none" : "auto"}
-          >
+          <View style={{ width: "65%", alignSelf: "center" }}>
             <AppleAuthentication.AppleAuthenticationButton
               buttonType={
                 AppleAuthentication.AppleAuthenticationButtonType.CONTINUE

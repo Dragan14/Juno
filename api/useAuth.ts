@@ -21,14 +21,7 @@ const generateRawNonce = () => {
 const sha256 = async (value: string) =>
   Crypto.digestStringAsync(Crypto.CryptoDigestAlgorithm.SHA256, value);
 
-export const useIsAuthPending = () => {
-  const { data } = useQuery({
-    queryKey: AUTH_KEYS.isAuthPending,
-    queryFn: () => false,
-    staleTime: Infinity,
-  });
-  return !!data;
-};
+let authLock = false;
 
 // Hook for sign in functionality
 export const useSignIn = () => {
@@ -36,21 +29,22 @@ export const useSignIn = () => {
 
   return useMutation({
     mutationFn: async ({ email, password }: SignInCredentials) => {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
-      if (error) throw error;
-      return data;
+      if (authLock) return;
+      authLock = true;
+      try {
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email,
+          password,
+        });
+        if (error) throw error;
+        return data;
+      } finally {
+        authLock = false;
+      }
     },
     retry: false,
-    onMutate: () => {
-      queryClient.setQueryData(AUTH_KEYS.isAuthPending, true);
-    },
-    onSettled: () => {
-      queryClient.setQueryData(AUTH_KEYS.isAuthPending, false);
-    },
     onSuccess: (data) => {
+      if (!data) return;
       queryClient.setQueryData(AUTH_KEYS.session, data.session);
       queryClient.setQueryData(AUTH_KEYS.user, data.user);
     },
@@ -70,30 +64,31 @@ export const useSignUp = () => {
 
   return useMutation({
     mutationFn: async ({ email, password, name }: SignUpCredentials) => {
-      const redirectUri = makeRedirectUri() + "/account";
-      console.log("Redirect URI for email verification:", redirectUri);
-      const { data, error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          data: { name },
-          emailRedirectTo: redirectUri,
-        },
-      });
-      if (error) throw error;
-      if (!data.session && data?.user && data.user?.identities?.length === 0) {
-        throw new Error("An account with this email already exists");
+      if (authLock) return;
+      authLock = true;
+      try {
+        const redirectUri = makeRedirectUri() + "/account";
+        console.log("Redirect URI for email verification:", redirectUri);
+        const { data, error } = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            data: { name },
+            emailRedirectTo: redirectUri,
+          },
+        });
+        if (error) throw error;
+        if (!data.session && data?.user && data.user?.identities?.length === 0) {
+          throw new Error("An account with this email already exists");
+        }
+        return data;
+      } finally {
+        authLock = false;
       }
-      return data;
     },
     retry: false,
-    onMutate: () => {
-      queryClient.setQueryData(AUTH_KEYS.isAuthPending, true);
-    },
-    onSettled: () => {
-      queryClient.setQueryData(AUTH_KEYS.isAuthPending, false);
-    },
     onSuccess: (data) => {
+      if (!data) return;
       queryClient.setQueryData(AUTH_KEYS.session, data.session);
       queryClient.setQueryData(AUTH_KEYS.user, data.user);
     },
@@ -108,27 +103,26 @@ export const useSignUp = () => {
 };
 
 export const useResendVerificationEmail = () => {
-  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (email: string) => {
-      const redirectUri = makeRedirectUri() + "/account";
-      console.log("Redirect URI for email verification:", redirectUri);
-      const { error } = await supabase.auth.resend({
-        type: "signup",
-        email: email,
-        options: {
-          emailRedirectTo: redirectUri,
-        },
-      });
-      if (error) throw error;
+      if (authLock) return;
+      authLock = true;
+      try {
+        const redirectUri = makeRedirectUri() + "/account";
+        console.log("Redirect URI for email verification:", redirectUri);
+        const { error } = await supabase.auth.resend({
+          type: "signup",
+          email: email,
+          options: {
+            emailRedirectTo: redirectUri,
+          },
+        });
+        if (error) throw error;
+      } finally {
+        authLock = false;
+      }
     },
     retry: false,
-    onMutate: () => {
-      queryClient.setQueryData(AUTH_KEYS.isAuthPending, true);
-    },
-    onSettled: () => {
-      queryClient.setQueryData(AUTH_KEYS.isAuthPending, false);
-    },
     onError: (error) => {
       console.log("Resend verification email error:", error);
     },
@@ -136,24 +130,24 @@ export const useResendVerificationEmail = () => {
 };
 
 export const useResetPassword = () => {
-  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (email: string) => {
-      const redirectUri = makeRedirectUri() + "/reset-password";
-      console.log("Redirect URI for password reset:", redirectUri);
-      const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: redirectUri,
-      });
-      if (error) throw error;
-      return data;
+      if (authLock) return;
+      authLock = true;
+      try {
+        const redirectUri = makeRedirectUri() + "/reset-password";
+        console.log("Redirect URI for password reset:", redirectUri);
+        const { data, error } = await supabase.auth.resetPasswordForEmail(
+          email,
+          { redirectTo: redirectUri },
+        );
+        if (error) throw error;
+        return data;
+      } finally {
+        authLock = false;
+      }
     },
     retry: false,
-    onMutate: () => {
-      queryClient.setQueryData(AUTH_KEYS.isAuthPending, true);
-    },
-    onSettled: () => {
-      queryClient.setQueryData(AUTH_KEYS.isAuthPending, false);
-    },
     onError: (error) => {
       console.log("Reset password error:", error);
     },
@@ -173,17 +167,17 @@ export const useUpdatePassword = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (password: string) => {
-      const { data, error } = await supabase.auth.updateUser({ password });
-      if (error) throw error;
-      return data;
+      if (authLock) return;
+      authLock = true;
+      try {
+        const { data, error } = await supabase.auth.updateUser({ password });
+        if (error) throw error;
+        return data;
+      } finally {
+        authLock = false;
+      }
     },
     retry: false,
-    onMutate: () => {
-      queryClient.setQueryData(AUTH_KEYS.isAuthPending, true);
-    },
-    onSettled: () => {
-      queryClient.setQueryData(AUTH_KEYS.isAuthPending, false);
-    },
     onSuccess: () => {
       setTimeout(() => {
         console.log("Password updated, resetting password recovery state");
@@ -202,45 +196,45 @@ export const useGoogleSignIn = () => {
 
   return useMutation({
     mutationFn: async () => {
-      if (Platform.OS === "web") {
-        const redirectUri = makeRedirectUri();
-        const { error } = await supabase.auth.signInWithOAuth({
+      if (authLock) return;
+      authLock = true;
+      try {
+        if (Platform.OS === "web") {
+          const redirectUri = makeRedirectUri();
+          const { error } = await supabase.auth.signInWithOAuth({
+            provider: "google",
+            options: {
+              redirectTo: redirectUri,
+            },
+          });
+          if (error) throw error;
+          return null;
+        }
+
+        GoogleSignin.configure({
+          iosClientId: process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID,
+          webClientId: process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID,
+          scopes: ["profile", "email"],
+        });
+        await GoogleSignin.hasPlayServices();
+        const response = await GoogleSignin.signIn();
+        if (isCancelledResponse(response)) {
+          console.log("Google sign in cancelled by user");
+          return;
+        }
+        const idToken = response.data?.idToken;
+        if (!idToken) throw new Error("No ID token received from Google");
+        const { data, error } = await supabase.auth.signInWithIdToken({
           provider: "google",
-          options: {
-            redirectTo: redirectUri,
-          },
+          token: idToken,
         });
         if (error) throw error;
-        return null;
+        return data;
+      } finally {
+        authLock = false;
       }
-
-      GoogleSignin.configure({
-        iosClientId: process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID,
-        webClientId: process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID,
-        scopes: ["profile", "email"],
-      });
-      await GoogleSignin.hasPlayServices();
-      const response = await GoogleSignin.signIn();
-      if (isCancelledResponse(response)) {
-        console.log("Google sign in cancelled by user");
-        return;
-      }
-      const idToken = response.data?.idToken;
-      if (!idToken) throw new Error("No ID token received from Google");
-      const { data, error } = await supabase.auth.signInWithIdToken({
-        provider: "google",
-        token: idToken,
-      });
-      if (error) throw error;
-      return data;
     },
     retry: false,
-    onMutate: () => {
-      queryClient.setQueryData(AUTH_KEYS.isAuthPending, true);
-    },
-    onSettled: () => {
-      queryClient.setQueryData(AUTH_KEYS.isAuthPending, false);
-    },
     onSuccess: (data) => {
       if (!data?.session) return;
       queryClient.setQueryData(AUTH_KEYS.session, data.session);
@@ -258,38 +252,38 @@ export const useAppleSignIn = () => {
 
   return useMutation({
     mutationFn: async () => {
-      const rawNonce = generateRawNonce();
-      const hashedNonce = await sha256(rawNonce);
-      let credential: AppleAuthentication.AppleAuthenticationCredential;
+      if (authLock) return;
+      authLock = true;
       try {
-        credential = await AppleAuthentication.signInAsync({
-          requestedScopes: [
-            AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
-            AppleAuthentication.AppleAuthenticationScope.EMAIL,
-          ],
-          nonce: hashedNonce,
+        const rawNonce = generateRawNonce();
+        const hashedNonce = await sha256(rawNonce);
+        let credential: AppleAuthentication.AppleAuthenticationCredential;
+        try {
+          credential = await AppleAuthentication.signInAsync({
+            requestedScopes: [
+              AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
+              AppleAuthentication.AppleAuthenticationScope.EMAIL,
+            ],
+            nonce: hashedNonce,
+          });
+        } catch (error: any) {
+          if (error?.code === "ERR_REQUEST_CANCELED") return;
+          throw error;
+        }
+        if (!credential.identityToken)
+          throw new Error("No identity token received from Apple");
+        const { data, error } = await supabase.auth.signInWithIdToken({
+          provider: "apple",
+          token: credential.identityToken,
+          nonce: rawNonce,
         });
-      } catch (error: any) {
-        if (error?.code === "ERR_REQUEST_CANCELED") return;
-        throw error;
+        if (error) throw error;
+        return data;
+      } finally {
+        authLock = false;
       }
-      if (!credential.identityToken)
-        throw new Error("No identity token received from Apple");
-      const { data, error } = await supabase.auth.signInWithIdToken({
-        provider: "apple",
-        token: credential.identityToken,
-        nonce: rawNonce,
-      });
-      if (error) throw error;
-      return data;
     },
     retry: false,
-    onMutate: () => {
-      queryClient.setQueryData(AUTH_KEYS.isAuthPending, true);
-    },
-    onSettled: () => {
-      queryClient.setQueryData(AUTH_KEYS.isAuthPending, false);
-    },
     onSuccess: (data) => {
       if (!data?.session) return;
       queryClient.setQueryData(AUTH_KEYS.session, data.session);
@@ -307,19 +301,21 @@ export const useSignOut = () => {
 
   return useMutation({
     mutationFn: async () => {
-      const { error } = await supabase.auth.signOut();
-      if (error) throw error;
-      return null;
+      if (authLock) return;
+      authLock = true;
+      try {
+        const { error } = await supabase.auth.signOut();
+        if (error) throw error;
+        return null;
+      } finally {
+        authLock = false;
+      }
     },
     retry: false,
-    onMutate: () => {
-      queryClient.setQueryData(AUTH_KEYS.isAuthPending, true);
-    },
     onError: (error) => {
       console.log("Sign out error:", error);
     },
     onSettled: () => {
-      queryClient.setQueryData(AUTH_KEYS.isAuthPending, false);
       queryClient.setQueryData(AUTH_KEYS.session, null);
       queryClient.setQueryData(AUTH_KEYS.user, null);
       queryClient.setQueryData(PROFILE_KEYS.profile, null);

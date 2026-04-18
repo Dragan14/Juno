@@ -1,11 +1,6 @@
 import { useState } from "react";
 import { Keyboard, PixelRatio, Platform, ScrollView } from "react-native";
-import {
-  useSignIn,
-  useGoogleSignIn,
-  useAppleSignIn,
-  useIsAuthPending,
-} from "@/api/useAuth";
+import { useSignIn, useGoogleSignIn, useAppleSignIn } from "@/api/useAuth";
 import TextInput from "@/components/ui/TextInput";
 import Button from "@/components/ui/Button";
 import View from "@/components/ui/View";
@@ -27,8 +22,6 @@ export default function SignInForm() {
   const signIn = useSignIn();
   const googleSignIn = useGoogleSignIn();
   const appleSignIn = useAppleSignIn();
-  const isAuthPending = useIsAuthPending();
-
   const appleButtonHeight = Math.round(34 * PixelRatio.getFontScale());
 
   // Form state
@@ -191,7 +184,6 @@ export default function SignInForm() {
       </View>
       <View style={{ gap: 15, marginTop: 50 }}>
         <Button
-          disabled={isAuthPending}
           onPress={handleSignIn}
           loading={signIn.isPending}
           style={{ width: "65%", alignSelf: "center" }}
@@ -202,20 +194,12 @@ export default function SignInForm() {
           leftIcon={<Ionicons name="logo-google" />}
           onPress={handleGoogleSignIn}
           loading={googleSignIn.isPending}
-          disabled={isAuthPending}
           style={{ width: "65%", alignSelf: "center" }}
         >
           Continue with Google
         </Button>
         {Platform.OS === "ios" && (
-          <View
-            style={{
-              width: "65%",
-              alignSelf: "center",
-              opacity: isAuthPending ? 0.5 : 1,
-            }}
-            pointerEvents={isAuthPending ? "none" : "auto"}
-          >
+          <View style={{ width: "65%", alignSelf: "center" }}>
             <AppleAuthentication.AppleAuthenticationButton
               buttonType={
                 AppleAuthentication.AppleAuthenticationButtonType.CONTINUE
@@ -240,7 +224,6 @@ export default function SignInForm() {
           outlined
           onPress={handleForgotPassword}
           style={{ width: "65%", alignSelf: "center", marginTop: 30 }}
-          disabled={isAuthPending}
         >
           Forgot your password?
         </Button>

@@ -3,6 +3,7 @@ import View from "@/components/ui/View";
 import Text from "@/components/ui/Text";
 import RadioButton from "@/components/ui/RadioButton";
 import { useTheme } from "@/context/ui/ThemeContext";
+import { Sun, Moon, Cog } from "lucide-react-native";
 
 export default function SettingsScreen() {
   console.log("Settings screen rendered");
@@ -39,16 +40,19 @@ export default function SettingsScreen() {
             label="Light"
             value={themeMode === "light"}
             onValueChange={() => setThemeMode("light")}
+            icon={<Sun />}
           />
           <RadioButton
             label="Dark"
             value={themeMode === "dark"}
             onValueChange={() => setThemeMode("dark")}
+            icon={<Moon />}
           />
           <RadioButton
             label="System"
             value={themeMode === "system"}
             onValueChange={() => setThemeMode("system")}
+            icon={<Cog />}
           />
         </View>
       </View>
